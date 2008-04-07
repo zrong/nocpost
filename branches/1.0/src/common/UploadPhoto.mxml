@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:Canvas xmlns:mx="http://www.adobe.com/2006/mxml" width="240" height="160" creationComplete="init()">
+	<mx:Script>
+		<![CDATA[
+			import flash.net.FileReference;
+			import flash.net.FileFilter;
+			
+			private var _uploadFR:FileReference;
+			private function init():void
+			{
+				_uploadFR = new FileReference();
+				_uploadFR.addEventListener(Event.SELECT, selectHandler);
+			}
+			
+			private function clickHandler(evt:MouseEvent):void
+			{
+				var __typeFilter:FileFilter = new FileFilter('图像文件(*.jpg; *.jpeg; *.gif; *.png)', '*.jpg;*.jpeg;*.gif;*.png');
+				_uploadFR.browse([__typeFilter]);
+			}
+			
+			private function selectHandler(evt:Event):void
+			{
+				trace(evt.target.fileArray);
+				trace(evt.target.name);
+			}
+		]]>
+	</mx:Script>
+	<mx:Button label="上传照片" height="30" click="clickHandler(event)" verticalCenter="0" left="10"/>
+	<mx:Image height="160" width="120" source="@Embed(source='../assets/nophoto.png')" right="0" bottom="0"/>
+	<mx:Label right="20" width="80" textAlign="center" id="percent" verticalCenter="0"/>
+</mx:Canvas>
