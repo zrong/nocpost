@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<!-- validators\RequiredVal.mxml -->
+<mx:Application xmlns:mx="http://www.adobe.com/2006/mxml"> 
+
+    <mx:ZipCodeValidator id="reqV" 
+        source="{inputA}" 
+        property="text" 
+        required="false"/>
+
+    <mx:TextInput id="inputA"/> 
+
+    <mx:Button label="Submit" 
+        click="reqV.validate();"/>
+</mx:Application>
+

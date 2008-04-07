@@ -1,0 +1,19 @@
+/* CSS file */
+
+global
+{
+	fontSize: 12;
+}
+
+Application
+{
+	backgroundColor: #ffffff;
+}
+
+ToolTip{
+	font-size: 12;
+}
+
+.errorTip {
+	fontSize: 12;
+}
