@@ -113,7 +113,7 @@
 	<mx:StringValidator id="zoneV" source="{zoneTI}" property="text" minLength="3" required="false"
 		requiredFieldError="{Config.REQUIRED_FIELD_ERROR}"
 		tooShortError="{StringUtil.substitute(Config.TOO_SHORT_ERROR, this.zoneV.minLength)}"/>
-	<mx:StringValidator id="phoneV" source="{mobileTI}" property="text" minLength="7" required="false" maxLength="8"
+	<mx:StringValidator id="phoneV" source="{phoneTI}" property="text" minLength="7" required="false" maxLength="8"
 		requiredFieldError="{Config.REQUIRED_FIELD_ERROR}"
 		tooShortError="{StringUtil.substitute(Config.TOO_SHORT_ERROR, this.phoneV.minLength)}"/>
 	
