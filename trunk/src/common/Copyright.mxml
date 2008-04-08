@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" label="版权声明">
-	<mx:Script>
-		<![CDATA[
-			import flash.events.Event;
-		]]>
-	</mx:Script>
 	<mx:Text width="100%" leading="10" height="400">
 		<mx:htmlText>
 			<![CDATA[

@@ -28,7 +28,7 @@
 			public function update():void
 			{			
 				var __modify:XML = XML(info.mod_content[0]);
-				Logger.info('StepText.{1}的__modify：{2}', varName, __modify);
+				//Logger.info('StepText.{1}的__modify：{2}', varName, __modify);
 				if(Config.IS_MODIFY)
 				{
 					textTA.text = __modify[varName];
@@ -66,7 +66,8 @@
 		tooLongError="{StringUtil.substitute(Config.TOO_LONG_ERROR, this.txtV.maxLength)}"/>
 	<mx:Text id="labelText" textAlign="center" width="100%" htmlText="{this.label}"/>
 	<mx:TextArea id="textTA" name="内容" width="100%" height="100%" maxChars="1000"/>	
-		
+	<!--	
 	<mx:Button label="自动填写（调试用）" height="40" click="debugFill()"/>
+	-->
 
 </mx:VBox>

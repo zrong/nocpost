@@ -10,6 +10,8 @@ import mx.rpc.events.ResultEvent;
 
 import net.zengrong.utils.Logger;
 
+import teacher.Pay;
+
 import utils.Config;
 import utils.Output;
 import utils.type.*;
@@ -18,6 +20,8 @@ import utils.type.*;
 private var info:XML;
 private var _urlVar:URLVariables = new URLVariables();
 private var _submit:SubmitPanel;
+
+[Bindable] private var _isTeacher:Boolean;
 
 private function init():void
 {
@@ -30,12 +34,12 @@ private function init():void
 	Config.IS_MODIFY = Config.MOD_TYPE == ModeType.MODIFY;
 	Config.IS_USER = Config.USER_TYPE == UserType.USER;
 	//====================调试信息
-	Config.IS_MODIFY = false;
-	Config.URL = '../assets/get_info.xml';
+	//Config.IS_MODIFY = false;
+	//Config.URL = '../assets/get_info.xml';
 	//Config.URL = 'http://10.2.1.3/noc/zpsc/zp_upload_deal_all.php?mod_step=step_get_info';
 	//Config.URL = 'http://10.2.1.3/noc/zpsc/zp_upload_deal_all.php?mod_step=step_get_info&pdt_id=2&mod_type=mod';
-	Config.USER_TYPE = '99';
-	Config.PDT_ID = '2';
+	//Config.USER_TYPE = '99';
+	//Config.PDT_ID = '2';
 	//=====================
 	configRequest.url = Config.URL;	
 	var __var:URLVariables = new URLVariables();
@@ -135,11 +139,13 @@ private function _buildFrame($project:XML):void
 	//如果是教师项目，就增加教师独有的信息，同时根据教师参加的项目的参与者数量添加参与者字段
 	{
 		step2.buildTeacher(__projectID);
+		_isTeacher = true;
 	}
 	else
 	//如果是学生项目，就移除教师独有的表单，同时根据学生参加的项目添加参与者与辅导教师相关的字段
 	{
 		step2.buildStudent(__projectID);
+		_isTeacher = false;
 	}
 }
 
@@ -154,6 +160,7 @@ public function buildVS($isTeacher:Boolean, $projectID:String):void
 	stepUpload.buildUpload($projectID);
 	if($isTeacher)
 	{
+		_isTeacher = true;
 		var __tStep3:StepText = new StepText();
 		__tStep3.width = vs.width;
 		__tStep3.height = vs.height;
@@ -171,10 +178,16 @@ public function buildVS($isTeacher:Boolean, $projectID:String):void
 		__tStep4.label = "<font size='14' color='#ff0000'><b>第四步：备注</b><br>若作品联系人不是作者本人，可在此注明联系人的通讯方式</font>";
 		__tStep4.info = info;
 		
+		var __tStep5:Pay = new Pay();
+		__tStep4.width = vs.width;
+		__tStep4.height = vs.height;
+		__tStep4.name = 'tStep5';
+		
 		stepUpload.label = "<font size='14' color='#ff0000'><b>第五步:上传文件（完成）</b>";
 		
 		vs.addChildAt(__tStep3, vs.getChildIndex(stepUpload));
 		vs.addChildAt(__tStep4, vs.getChildIndex(stepUpload));
+		vs.addChildAt(__tStep5, vs.getChildIndex(stepUpload));
 		
 		__tStep3.update();
 		__tStep4.update();
@@ -182,6 +195,7 @@ public function buildVS($isTeacher:Boolean, $projectID:String):void
 	}
 	else
 	{
+		_isTeacher = false;
 		var __sStep3:StepText = new StepText();
 		__sStep3.width = vs.width;
 		__sStep3.height = vs.height;
