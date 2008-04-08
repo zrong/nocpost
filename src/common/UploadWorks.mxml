@@ -27,6 +27,7 @@
 			{
 				uploadFR = new FileReference();
 				uploadFR.addEventListener(Event.SELECT, selectHandler);
+				buildDownBlankWordBTN();
 			}
 			
 			/**
@@ -36,20 +37,21 @@
 			{
 				Logger.info('uploadItemChange执行,oldValue:{1}\nnewValue:{2}', evt.oldValue, evt.newValue);
 				Logger.info('uploadItemChange执行,kind:{1}\nproperty:{2}', evt.kind, evt.property);
-				/*
 				var blankWordURL:String = (evt.newValue as XML).upload_blank_word.toString();
 				if(blankWordURL.length > 0)
 				//如果提供了空白word电子表格下载地址，就建立一个按钮下载空白电子表格
 				{
-					buildDownBlankWordBTN(blankWordURL);
-				}*/
+					//buildDownBlankWordBTN(blankWordURL);
+				}
 			}
 			
-			public function buildDownBlankWordBTN():void
+			/**
+			 * 建立下载登记表的按钮，该函数必须在本组件create完成后才能执行，因此放在init中了
+			 * */
+			private function buildDownBlankWordBTN():void
 			{
 				var blankWordURL:String = uploadItem.upload_blank_word.toString();
 				Logger.info('buildDownBlankWordBTN执行,blankWordURL：{1},length:{2}', blankWordURL, blankWordURL.length);
-				/*
 				if(blankWordURL.length > 0)
 				//如果提供了空白word电子表格下载地址，就建立一个按钮下载空白电子表格
 				{
@@ -63,9 +65,9 @@
 						downBlankWordBTN.label = '下载空白表格';
 						downBlankWordBTN.toolTip = '点击下载空白Word格式电子表格，填写后上传。';	
 						downBlankWordBTN.addEventListener(MouseEvent.CLICK, clickHandler);
-						//addChildAt(downBlankWordBTN, this.getChildIndex(selectBTN));
+						selectBox.addChildAt(downBlankWordBTN, selectBox.getChildIndex(selectBTN)+1);
 					}
-				}*/
+				}
 				
 			}
 			
@@ -141,7 +143,7 @@
 	</mx:Script>
 	<mx:Validator id="selectV" source="{uploadNameLabel}" property="text" listener="{selectBTN}" 
 		requiredFieldError="{Config.REQUIRED_FIELD_ERROR}"/>
-	<mx:HBox>
+	<mx:HBox id="selectBox">
 		<mx:Label id="itemNameLabel" text="{uploadItem.@name}" width="150" textAlign="right"/>
 		<mx:Button id="selectBTN" label="选择文件" click="clickHandler(event)"/>
 		<mx:Label id="uploadSizeLabel" width="80" text="{uploadItem.upload_file_size}"/>

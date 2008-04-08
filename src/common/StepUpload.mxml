@@ -85,7 +85,6 @@
 					var __upload:UploadWorks = new UploadWorks();
 					__upload.uploadItem = j;
 					__upload.width = 600;
-					__upload.buildDownBlankWordBTN();
 					this.addChild(__upload);
 				}
 			}

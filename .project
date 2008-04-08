@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>NOC Post</name>
+	<name>NOCPost</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -17,9 +17,9 @@
 	</natures>
 	<linkedResources>
 		<link>
-			<name>[source path] src</name>
+			<name>[source path] DEBUGGER</name>
 			<type>2</type>
-			<location>E:/Works/Debugger/src</location>
+			<locationURI>DEBUGGER</locationURI>
 		</link>
 	</linkedResources>
 </projectDescription>
