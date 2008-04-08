@@ -630,7 +630,7 @@
 			<mx:ComboBox id="moduleCB" name="模式" width="135" prompt="请选择" labelField="@name" dataProvider="{info.module_type.item}" dropdownWidth="170" rowCount="6"/>
 		</mx:FormItem>
 	</mx:HBox>
-	<!--
+	
 	<mx:Button label="自动填写（调试用）" height="40" click="debugFill()"/>
-	-->
+	
 </mx:VBox>

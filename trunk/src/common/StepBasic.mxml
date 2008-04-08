@@ -17,7 +17,7 @@
 			[Bindable]
 			public var info:XML;
 			//==========================
-			/*
+			
 			private function debugFill():void
 			{
 				nameTI.text = '用户'+Math.floor(Math.random()*1000).toString();
@@ -33,13 +33,13 @@
 				schoolTI.text = 'abcdefghijklmnopqrstuvwxyz';
 				addressTI.text = 'abcdefghijklmnopqrstuvwxyz';
 			}
-
+			/*
 			private function debugDelFlash():void
 			{
 				var __var:Array = delFlashTI.text.split(',');
 				ExternalInterface.call(__var[0], __var[1]);
 			}
-			*/
+			*/			
 			//==========================
 			
 			private function init():void
@@ -238,9 +238,9 @@
 	<mx:FormItem label="通信地址：" width="100%" required="true">
 		<mx:TextInput id="addressTI" name="通信地址" width="100%" maxChars="200"/>
 	</mx:FormItem>
-	<!--
-	<mx:Button label="自动填写（调试用）" height="40" click="debugFill()"/>
 	
+	<mx:Button label="自动填写（调试用）" height="40" click="debugFill()"/>
+	<!--
 	<mx:HBox>
 		<mx:Button label="调用delFlash" height="40" click="debugDelFlash()"/>
 		<mx:TextInput id="delFlashTI"/>

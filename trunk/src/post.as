@@ -34,12 +34,12 @@ private function init():void
 	Config.IS_MODIFY = Config.MOD_TYPE == ModeType.MODIFY;
 	Config.IS_USER = Config.USER_TYPE == UserType.USER;
 	//====================调试信息
-	//Config.IS_MODIFY = false;
-	//Config.URL = '../assets/get_info.xml';
+	Config.IS_MODIFY = false;
+	Config.URL = '../assets/get_info.xml';
 	//Config.URL = 'http://10.2.1.3/noc/zpsc/zp_upload_deal_all.php?mod_step=step_get_info';
 	//Config.URL = 'http://10.2.1.3/noc/zpsc/zp_upload_deal_all.php?mod_step=step_get_info&pdt_id=2&mod_type=mod';
-	//Config.USER_TYPE = '99';
-	//Config.PDT_ID = '2';
+	Config.USER_TYPE = '99';
+	Config.PDT_ID = '2';
 	//=====================
 	configRequest.url = Config.URL;	
 	var __var:URLVariables = new URLVariables();
