@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" height="100%" horizontalAlign="center" implements="common.IStep">
+	<mx:Script>
+		<![CDATA[
+			import utils.Config;
+			import mx.utils.StringUtil;
+			import net.zengrong.utils.Logger;
+			import utils.type.UserType;
+			
+			[Bindable]
+			public var info:XML;
+			[Bindable]
+			public var isRequired:Boolean = true;
+			//要加入提交变量中的变量名称
+			public var varName:String;
+			
+			//==========================
+			private function debugFill():void
+			{
+				for(var i:int = 0; i <= 3; i++)
+				{
+					textTA.text += '测试内容'+this.label;
+				}
+				
+			}			
+			//==========================
+			
+			public function update():void
+			{			
+				var __modify:XML = XML(info.mod_content[0]);
+				//Logger.info('StepText.{1}的__modify：{2}', varName, __modify);
+				if(Config.IS_MODIFY)
+				{
+					textTA.text = __modify[varName];
+				}
+				else
+				{
+					if(Config.IS_USER)
+					{
+						textTA.text = __modify[varName];
+					}
+					else
+					{
+						//textTA.text = '';
+					}
+				}
+			}
+			
+			public function buildVariable():void
+			{
+				if(isRequired)
+				{
+					if(!Config.validate([txtV], '此项目为必填项！'))
+					{
+						return;
+					}
+				}
+				Config.SUBMIT_VAR[varName] = textTA.text;
+				Logger.info('Config.SUBMIT_VAR:\n{1}', Config.SUBMIT_VAR);
+			}
+		]]>
+	</mx:Script>
+	<mx:StringValidator id="txtV" source="{textTA}" property="text" minLength="0" maxLength="1000"
+		requiredFieldError="{Config.REQUIRED_FIELD_ERROR}"
+		tooShortError="{StringUtil.substitute(Config.TOO_SHORT_ERROR, this.txtV.minLength)}"
+		tooLongError="{StringUtil.substitute(Config.TOO_LONG_ERROR, this.txtV.maxLength)}"/>
+	<mx:Text id="labelText" textAlign="center" width="100%" htmlText="{this.label}"/>
+	<mx:TextArea id="textTA" name="内容" width="100%" height="100%" maxChars="1000"/>	
+		
+	<mx:Button label="自动填写（调试用）" height="40" click="debugFill()"/>
+	
+
+</mx:VBox>

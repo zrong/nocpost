@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:FormItem xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" implements="common.ICopartner">
+	<mx:Script>
+		<![CDATA[
+			public function getVariable():String
+			{
+				return nameTI.text;
+			}
+			
+			public function setVariable($name:XML):void
+			{
+				nameTI.text = $name.name;
+			}
+		]]>
+	</mx:Script>
+	<mx:TextInput id='nameTI' width="100%" maxChars="5"/>
+</mx:FormItem>
