@@ -95,8 +95,8 @@
 		{
 			//Logger.info((vs.selectedChild as Object).name);
 			
-			try
-			{
+			//try
+			//{
 				(vs.selectedChild as IStep).buildVariable();
 				vs.selectedIndex ++;
 				if(vs.selectedIndex > (vs.numChildren -2))
@@ -104,12 +104,12 @@
 					this.removeChild(this.nextBTN);
 					this.addChild(this.submitBTN);
 				}
-			}
+			/*}
 			catch(err:Error)
 			{
 				Logger.debug(err.getStackTrace());
 				Output.alert(err.message);
-			}		
+			}*/		
 		}
 		
 		private function submitClickHandler(evt:MouseEvent):void

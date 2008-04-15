@@ -50,17 +50,20 @@ package utils
 				//将光标定位到第一个错误
 				var __v:ValidationResultEvent = __validatorResults[0] as ValidationResultEvent;
 				//Logger.info('__v.results：{1}', __v.results);
-				var __t:UIComponent = __v.target.source as UIComponent;
-				//Logger.info('__t:{1}', __t);
-				if(__t == null)
-				//如果__t获取失败（例如__t是RadioButtonGroup类，不属于UIComponent，因此__t的值会变成null），就获取Validator的listener
+				if(__v.target != null)
 				{
-					//这是的__t其实是maleRB
-					__t = (__v.target as Validator).listener as UIComponent;
-				}
-				__t.setFocus();
-				Logger.debug('检测字段：\n{1}', __t.id);
-				throw new Error(__t.name+' 填写有误：'+__v.message);
+					var __t:UIComponent = __v.target.source as UIComponent;
+					//Logger.info('__t:{1}', __t);
+					if(__t == null)
+					//如果__t获取失败（例如__t是RadioButtonGroup类，不属于UIComponent，因此__t的值会变成null），就获取Validator的listener
+					{
+						//这是的__t其实是maleRB
+						__t = (__v.target as Validator).listener as UIComponent;
+					}
+					__t.setFocus();
+					Logger.debug('检测字段：\n{1}', __t.id);
+					throw new Error(__t.name+' 填写有误：'+__v.message);
+				}				
 				return false;
 			}
 			return true;

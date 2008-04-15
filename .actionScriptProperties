@@ -20,8 +20,6 @@
 </compiler>
 <applications>
 <application path="post.mxml"/>
-<application path="validators.mxml"/>
-<application path="xmltest.mxml"/>
 </applications>
 <modules/>
 <buildCSSFiles/>
