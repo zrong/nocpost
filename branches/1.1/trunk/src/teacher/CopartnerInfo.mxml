@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" implements="common.ICopartner" xmlns:common="common.*">
+	<mx:Script>
+		<![CDATA[
+			import mx.core.UIComponent;
+			import net.zengrong.utils.Logger;
+			import utils.Config;
+			import mx.utils.StringUtil;
+			
+			[Bindable]
+			public var nationList:XMLList;
+			[Bindable]
+			private var _copartnerInfo:XML;
+			[Bindable]
+			public var copartnerID:String = '';
+			[Bindable]
+			public var index:int;
+			
+			public function getVariable():String
+			{
+				//var __validArr:Array = [nameV, nationV, sexV, emailV, zoneV, phoneV, mobileV, photoUW.selectV];
+				var __validArr:Array = [nameV, nationV, sexV, emailV, zoneV, phoneV, mobileV];
+				if(!Config.validate(__validArr))
+				{
+					return '';
+				}
+				var __arr:Array = new Array();
+				__arr.push(copartnerID);
+				__arr.push(nameTI.text);
+				__arr.push(emailTI.text);
+				__arr.push(phoneTI.text);
+				__arr.push(sexRBG.selectedValue);
+				__arr.push((nationCB.selectedIndex==-1)?'':nationCB.selectedItem.@id);
+				__arr.push(mobileTI.text);
+				__arr.push(ageNS.value);
+				return __arr.join(',');
+			}
+			
+			public function setVariable($xml:XML):void
+			{
+				Logger.info('setVariable执行：\n{1}', $xml);
+				_copartnerInfo = $xml;
+				copartnerID = _copartnerInfo.@id;
+				nameTI.text = _copartnerInfo.name;
+				emailTI.text = _copartnerInfo.email;
+				phoneTI.text = _copartnerInfo.phone;
+				mobileTI.text = _copartnerInfo.mobphone;
+				sexRBG.selectedValue = _copartnerInfo.sex;
+				ageNS.value = _copartnerInfo.age;
+				nationCB.selectedIndex = _getNationIndex(_copartnerInfo.nation);
+			}
+			
+			/**
+			 * 检测非空的控件填写是否复合规则
+			 * */
+			private function _checkNoNullControls():void
+			{
+				var __controls:Array = _getValidatorsFormHasValueControls([nameV, sexV, nationV, emailV, mobileV]);
+				var __validators:Array;
+			}
+			
+			/**
+			 * 根据值不为空的控件获取需要检测的控件
+			 * */
+			private function _getValidatorsFormHasValueControls($valid:Array):Array
+			{
+				var __controls:Array = new Array();
+				var __validators:Array = new Array();
+				for(var i:int=0; i<$valid.length; i++)
+				{
+					var __control:* = $valid[i].source;
+					//if()
+				}
+				return __controls;
+			}
+			
+			/**
+			 * 返回已经选择的nation的值在nation列表中的索引值
+			 * */
+			private function _getNationIndex($id:String):int
+			{
+				for(var i:int=0; i<nationList.length(); i++)
+				{
+					if(nationList[i].@id == $id)
+					{
+						return i;
+					}
+				}
+				return -1;
+			}
+		]]>
+	</mx:Script>
+	<mx:StringValidator id="nameV" source="{nameTI}" property="text" minLength="2" required="false"
+		requiredFieldError="{Config.REQUIRED_FIELD_ERROR}" 
+		tooShortError="{StringUtil.substitute(Config.TOO_SHORT_ERROR, this.nameV.minLength)}"/>
+	<mx:Validator id="sexV" source="{sexRBG}" property="selectedValue"
+		requiredFieldError="{Config.REQUIRED_FIELD_ERROR}"/>
+	<mx:Validator id="nationV" source="{nationCB}" property="selectedLabel" required="false"
+		requiredFieldError="{Config.REQUIRED_FIELD_ERROR}"/>
+	<mx:EmailValidator id="emailV" source="{emailTI}" property="text" required="false"
+		requiredFieldError="{Config.REQUIRED_FIELD_ERROR}"
+		invalidCharError="{Config.INVALID_CHAR_ERROR}"
+		invalidDomainError="{Config.INVALID_DOMAIN_ERROR}"
+		invalidIPDomainError="{Config.INVALID_IP_DOMAIN_ERROR}"
+		invalidPeriodsInDomainError="{Config.INVALID_PERIODS_IN_DOMAIN_ERROR}"
+		missingAtSignError="{Config.MISSING_AT_SIGN_ERROR}"
+		missingPeriodInDomainError="{Config.MISSING_PERIODS_IN_DOMAIN_ERROR}"
+		missingUsernameError="{Config.MISSING_USER_NAME_ERROR}"
+		tooManyAtSignsError="{Config.TOO_MANY_ANT_SIGN_ERROR}"/>
+	<mx:StringValidator id="mobileV" source="{mobileTI}" property="text" minLength="11" required="false"
+		requiredFieldError="{Config.REQUIRED_FIELD_ERROR}"
+		tooShortError="{StringUtil.substitute(Config.TOO_SHORT_ERROR, this.mobileV.minLength)}"/>
+	<mx:StringValidator id="zoneV" source="{zoneTI}" property="text" minLength="3" required="false"
+		requiredFieldError="{Config.REQUIRED_FIELD_ERROR}"
+		tooShortError="{StringUtil.substitute(Config.TOO_SHORT_ERROR, this.zoneV.minLength)}"/>
+	<mx:StringValidator id="phoneV" source="{phoneTI}" property="text" minLength="7" required="false" maxLength="8"
+		requiredFieldError="{Config.REQUIRED_FIELD_ERROR}"
+		tooShortError="{StringUtil.substitute(Config.TOO_SHORT_ERROR, this.phoneV.minLength)}"/>
+	
+	<mx:XML id="uploadItem">
+		<item id="author_other_photo" name="{this.label}-照片">
+			<index>{index}</index>
+			<upload_attribute_introduce>请上传{this.label}的照片</upload_attribute_introduce>
+			<upload_attribute_postfix>*.jpg;*.png;*.gif;*.jpeg</upload_attribute_postfix>
+			<upload_attribute_size_limit>2.0</upload_attribute_size_limit> 
+			<upload_attribute_type>photo</upload_attribute_type> 
+			<upload_blank_word /> 
+		</item>
+	</mx:XML>
+	<mx:Label text="{this.label}" fontWeight="bold"/>
+	<mx:HBox width="580">
+		<mx:FormItem label="姓名：" width="200" required="true">
+			<mx:TextInput  width="100%" id="nameTI" name="{this.label}-姓名" maxChars="5"/>
+		</mx:FormItem>
+		<mx:FormItem label="性别：" direction="horizontal" required="true">
+			<mx:RadioButtonGroup id="sexRBG"/>
+			<mx:RadioButton groupName="sexRBG" label="男" value="0"/>
+			<mx:RadioButton groupName="sexRBG" label="女" value="1"/>
+		</mx:FormItem>
+		<mx:FormItem label="民族：" required="true">
+			<mx:ComboBox id="nationCB" name="{this.label}-民族" width="120" prompt="请选择" rowCount="10" labelField="@name" dataProvider="{nationList}"/>
+		</mx:FormItem>
+	</mx:HBox>
+	<mx:HBox width="580">
+		<mx:FormItem width="50%" label="年龄：" required="true">
+			<mx:NumericStepper id="ageNS" name="{this.label}-年龄" width="100%" maximum="60" minimum="20"/>
+		</mx:FormItem>
+		<mx:FormItem width="50%" label="固定电话：" direction="horizontal" required="true">
+			<mx:TextInput id="zoneTI" name="区号" width="50" maxChars="4" restrict="0-9"/>
+			<mx:Label text="-" width="10"/>
+			<mx:TextInput id="phoneTI" name="{this.label}-固定电话" width="100%" maxChars="8" restrict="0-9"/>
+		</mx:FormItem>
+	</mx:HBox>
+	<mx:HBox width="580">
+		<mx:FormItem width="50%" label="E-mail：" required="true">
+			<mx:TextInput id="emailTI" name="{this.label}-Email" width="100%" maxChars="50"/>
+		</mx:FormItem>
+		<mx:FormItem width="50%" label="移动电话：" required="true">
+			<mx:TextInput id="mobileTI" name="{this.label}-移动电话" width="100%" maxChars="11" restrict="0-9"/>
+		</mx:FormItem>
+	</mx:HBox>
+	<common:UploadWorks id='photoUW' width="580" uploadItem="{uploadItem}"/>
+</mx:VBox>

@@ -1,0 +1,636 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" xmlns:te="teacher.*" horizontalAlign="center" implements="common.IStep" horizontalScrollPolicy="off">
+	<mx:Script>
+		<![CDATA[
+			import flash.utils.getQualifiedClassName;
+			import mx.events.ValidationResultEvent;
+			import mx.core.IContainer;
+			import teacher.CopartnerInfo;
+			import utils.Config;
+			import mx.events.ListEvent;
+			import mx.events.ListEvent;
+			import net.zengrong.utils.Logger;
+			import utils.type.UserType;
+			import mx.containers.Tile;
+			import student.HelppingTeacher;
+			import mx.core.Application;
+			import mx.utils.StringUtil;
+			import flash.utils.getQualifiedClassName;
+			
+			
+			//===========================================
+			//
+			//	实例属性
+			//
+			//===========================================
+			[Bindable]
+			public var info:XML;
+			[Bindable]
+			private var _groupDP:XMLList;
+			[Bindable]
+			private var _gradeDP:XMLList;
+			
+			private var _isTeacher:Boolean;	//当前选中的项目是不是教师项目
+			private var _hasModule:Boolean;	//是否有教学模式属性
+			
+			private var _copartnerArray:Array;
+			private var _helppingTeacherArray:Array;
+			private var _copartnerTile:Tile;
+			private var _helppingTeacherTile:Tile;
+			
+			//==========================
+			private function debugFill():void
+			{
+				nameTI.text = '测试作品名称'+Math.random().toString();
+				projectCB.selectedIndex = 0;
+				groupCB.selectedIndex = 0;
+				gradeCB.selectedIndex = 0;
+				subjectCB.selectedIndex = 0;
+				bookTI.text = '《测试教材名称》'+Math.random().toString();
+				moduleCB.selectedIndex = 0;
+			}			
+			//==========================
+			
+			//======================================================================================
+			//
+			//	实例方法 buildVariable()、update()以及他们调用的方法
+			//
+			//======================================================================================
+			
+			//===========================================
+			//	buildVariable()	被NavButton.nextClickHandler()调用
+			//===========================================
+			/**
+			 * 在要提交的变量中添加本步骤的值
+			 * */
+			public function buildVariable():void
+			{
+				var __validArr:Array = _buildValidation();
+				if(!Config.validate(__validArr, '带星号的项目为必填项'))
+				{
+					return;
+				}
+				Config.SUBMIT_VAR.pdt_name = nameTI.text;
+				Config.SUBMIT_VAR.pdt_kind = projectCB.selectedItem.@id;
+				Config.SUBMIT_VAR.pdt_group = groupCB.selectedItem.@id;					
+				Config.SUBMIT_VAR.pdt_author_grade = gradeCB.selectedItem.@id;
+				if(Config.IS_NEED_COPARTNER_INFO)
+				//如果需要合作者的详细信息，就采用pdt_author_other_info这个变量提交
+				{
+					Config.SUBMIT_VAR.pdt_author_other_info = _buildCopartnerStringForSubmit();
+				}
+				else
+				//如果只需要合作者姓名，就采用pdt_author_other这个变量提交
+				{
+					Config.SUBMIT_VAR.pdt_author_other = _buildCopartnerStringForSubmit();
+				}
+				if(_isTeacher)
+				//只有教师才有科目、教材版本、教学模式信息
+				{
+					Config.SUBMIT_VAR.pdt_subject = subjectCB.selectedItem.@id;
+					Config.SUBMIT_VAR.pdt_book_edition = bookTI.text; 
+					if(_hasModule)
+					//只有当教师的这个项目有模式的时候才需要调用模式信息
+					{
+						Config.SUBMIT_VAR.pdt_module_type = moduleCB.selectedItem.@id;
+					}										
+				}
+				else
+				//只有学生才有辅导教师信息
+				{
+					Config.SUBMIT_VAR.pdt_teacher = _buildHelppingTeacherStrinForSubmit();
+				}					
+				Logger.info('Config.SUBMIT_VAR:\n{1}', Config.SUBMIT_VAR);
+			}
+			
+			//===========================================
+			//	update()	被Application._buildFrameFromModeTypeAndUserType()和buildVS()和调用
+			//===========================================
+			/**
+			 * 更新界面，填写表单元素的初始值
+			 * */
+			public function update():void
+			{
+				
+				if(Config.IS_MODIFY)
+				{
+					_fillForHasValue(!Config.IS_USER, true);	
+					_fillCopartnerAndHelppingTeacher();			
+				}
+				else
+				{
+					if(Config.IS_USER)
+					{
+						_fillForHasValue(false, false);
+					}
+					else
+					{
+						//nameTI.text 
+						projectCB.dataProvider = info.project.item;
+						//projectCB.selectedIndex = 0;
+						//groupCB.dataProvider = _groupDP;
+						//groupCB.selectedIndex = 0;
+						//gradeCB.dataProvider = _gradeDP;
+						//gradeCB.selectedIndex = 0;
+						subjectCB.dataProvider = info.subject.item;
+						//subjectCB.selectedIndex = 0;
+						//bookTI.text = __modify.pdt_book_edition;
+						moduleCB.dataProvider = info.module_type.item;
+						//moduleCB.selectedIndex = 0;
+					}
+				}
+			}
+			
+			//===========================================
+			//	_fillForHasValue()	供update()方法调用
+			//===========================================
+			/**
+			 * 提供界面数据
+			 * $isAdmin 是普通用户还是管理员
+			 * $isModify 是不是修改状态
+			 * */
+			private function _fillForHasValue($isAdmin:Boolean, $isModify:Boolean):void
+			{
+				var __modify:XML = XML(info.mod_content[0]);
+				nameTI.text = __modify.pdt_name;
+				projectCB.dataProvider = info.project.item.(@id==__modify.pdt_kind);
+				projectCB.selectedIndex = 0;
+				projectCB.enabled = false;
+				groupCB.dataProvider = info.group.item.(@id==__modify.pdt_group);
+				groupCB.selectedIndex = 0;
+				groupCB.enabled = false;
+				gradeCB.dataProvider = info.grade.item.(@id==__modify.pdt_author_grade);
+				gradeCB.selectedIndex = 0;
+				gradeCB.enabled = false;
+				if($isModify)
+				//修改状态，就使用选定的值
+				{
+					subjectCB.dataProvider = info.subject.item.(@id==__modify.pdt_subject);
+					moduleCB.dataProvider = info.module_type.item.(@id==__modify.pdt_module_type);
+					subjectCB.selectedIndex = 0;
+					moduleCB.selectedIndex = 0;
+					subjectCB.editable = $isAdmin;				
+					moduleCB.enabled = $isAdmin;
+				}
+				//插入状态，就使用全部的值
+				else
+				{
+					subjectCB.dataProvider = info.subject.item;
+					moduleCB.dataProvider = info.module_type.item;
+				}				
+				bookTI.text = __modify.pdt_book_edition;
+				
+				//在修改的时候，或者添加的但用户不是管理员的时候，也必须给_isTeacher赋值
+				_isTeacher = projectCB.selectedItem.is_teacher == '1';				
+			}
+			
+			//===========================================
+			//	_fillCopartnerAndHelppingTeacher()	供update()方法调用
+			//===========================================
+			/**
+			 * 修改状态下填写参赛者和辅导教师的值
+			 * */
+			private function _fillCopartnerAndHelppingTeacher():void
+			{
+				Logger.info('_fillCopartnerAndHelppingTeacher执行！');
+				//是否需要合作者的详细信息
+				var __isNeedInfo:Boolean = (info.project.item.(@id==info.mod_content.pdt_kind)[0] as XML).author_need_info == '1';
+				//如果需要合作者的详细信息，就使用info.mod_content.pdt_author_other_info，否则使用pdt_author_other
+				var __copartners:XMLList = (__isNeedInfo ? info.mod_content.pdt_author_other_info.item : info.mod_content.pdt_author_other.item);
+				//在修改状态下 还需要为参赛者和辅导教师填充信息				
+				for (var i:int=0; i<_copartnerArray.length; i++)
+				{
+					(_copartnerArray[i] as ICopartner).setVariable(__copartners[i]);
+				}
+				if(_isTeacher) return;
+				//如果用户是学生，那么为辅导教师填充信息
+				var __teacherNum:int = info.mod_content.pdt_teacher.item.length();				
+				Logger.info('__teacherNum <= 0:{1}', __teacherNum <= 0);
+				//如果修改的时候，没有提交过辅导教师信息，就不处理
+				if(__teacherNum <= 0) return;
+				Logger.info('_helppingTeacherArray.length:{1}', _helppingTeacherArray.length);
+				for (var j:int=0; j<_helppingTeacherArray.length; j++)
+				{
+					var __xml:XML = info.mod_content.pdt_teacher.item[j] as XML;
+					//Logger.info('__xml:{1}', __xml);
+					//如果先前用户没有辅导教师信息，就不更新辅导教师信息
+					if(__xml == null) continue;
+					(_helppingTeacherArray[j] as HelppingTeacher).setVariable(__xml);
+				}
+			}
+			
+			//===========================================
+			//	_buildValidation()	供buildVariable()方法调用
+			//===========================================
+			/**
+			 * 根据用户的类型建立需要检测合法性的字段
+			 * */
+			private function _buildValidation():Array
+			{
+				var __thisValidatior:Array = new Array();
+				__thisValidatior.push(nameV);
+				__thisValidatior.push(projectV);
+				__thisValidatior.push(groupV);
+				__thisValidatior.push(gradeV);
+				if(_isTeacher)
+				{
+					__thisValidatior.push(subjectV);
+					__thisValidatior.push(bookV);
+					if(_hasModule)
+					{
+						__thisValidatior.push(moduleV);
+					}				
+				}
+				Logger.debug('StepWorks中加入检测的validator：\n{1}', __thisValidatior);
+				return __thisValidatior;				
+			}
+			
+			//===========================================
+			//	_buildCopartnerStringForSubmit()	供buildVariable()方法调用
+			//===========================================		
+			/**
+			 * 返回合作者的数组（字符串形式）
+			 * */
+			private function _buildCopartnerStringForSubmit():String
+			{
+				Logger.info('_buildCopartnerStrinForSubmit调用,_copartnerArray.length:{1}', _copartnerArray.length);
+				Config.UPLOAD_COPARTNER_PHOTO = [];				
+				var __arr:Array = new Array();
+				//调试用====================================
+				//var __temp:String =_copartnerArray[0].getVariable();
+				//var __tmp:ValidationResultEvent = (_copartnerArray[0] as CopartnerInfo).nameV.validate() as ValidationResultEvent;
+				//Logger.info( 'getQualifiedClassName(__tmp:{1})', getQualifiedClassName(__tmp));
+				//return '';
+				//=========================================
+				for(var i:int = 0; i<_copartnerArray.length; i++)
+				{
+					__arr.push(_copartnerArray[i].getVariable());
+					//如果当前的项目需要合作者详细信息，就更新Config中的需要上传的合作者照片的组件
+					if(Config.IS_NEED_COPARTNER_INFO)
+					{
+						Config.UPLOAD_COPARTNER_PHOTO.push((_copartnerArray[i] as CopartnerInfo).photoUW as UploadWorks);
+					}
+				}
+				return __arr.join(Config.SEPARATOR);
+			}
+			
+			//===========================================
+			//	_buildHelppingTeacherStrinForSubmit()	供buildVariable()方法调用
+			//===========================================
+			/**
+			 * 返回辅导教师数组（字符串形式）
+			 * */
+			private function _buildHelppingTeacherStrinForSubmit():String
+			{
+				Logger.info('_buildHelppingTeacherStrinForSubmit调用');
+				var __arr:Array = new Array();
+				for(var i:int = 0; i<_helppingTeacherArray.length; i++)
+				{
+					__arr.push((_helppingTeacherArray[i]as HelppingTeacher).getVariable());
+				}
+				return __arr.join(Config.SEPARATOR);
+			}
+			
+			//======================================================================================
+			//
+			//	实例方法 公用类	buildTeacher()、buildStudent()以及他们调用的方法
+			//
+			//======================================================================================
+			
+			//===========================================
+			//	buildTeacher()	被_projectChangeHandler()和Application._buildFrame()调用
+			//===========================================
+			/**
+			 * 建立教师的步骤，仅当当前用户为学生的时候才进行
+			 * */
+			public function buildTeacher($projectID:String):void
+			{
+				//根据传来的项目id获取当前的项目
+				var __project:XML = info.project.item.(@id==$projectID)[0] as XML;
+				var __isTeacher:Boolean = __project.is_teacher == '1';
+				var __cnum:int = int(__project.cnum);
+				var __hasModule:Boolean = $projectID == '14';
+				//当项目发生改变的时候 更新IS_NEED_COPARTNER_INFO的值
+				Config.IS_NEED_COPARTNER_INFO = (__project.author_need_info == '1');
+				//Logger.info('buildTeacher执行，__project：\n{1}', info.project.item.(@id=$projectID));
+				Logger.info('buildTeacher执行，$projectID:{1}',$projectID);
+				moduleFI.visible = __hasModule;
+				buildCopartner(__cnum, Config.IS_NEED_COPARTNER_INFO);
+				Application.application.buildVS(true, $projectID);
+				teacherBox.visible = true;
+			}
+			
+			//===========================================
+			//	buildStudent()	被_projectChangeHandler()和Application._buildFrame()调用
+			//===========================================
+			/**
+			 * 建立学生的步骤，仅当当前用户为学生的时候执行
+			 * */
+			public function buildStudent($projectID:String):void
+			{
+				//根据传来的项目id获取当前的项目
+				var __project:XML = info.project.item.(@id==$projectID)[0] as XML;
+				var __cnum:int = int(__project.cnum);
+				var __tnum:int = int(__project.tnum);
+				//当项目发生改变的时候 更新IS_NEED_COPARTNER_INFO的值
+				Config.IS_NEED_COPARTNER_INFO = (__project.author_need_info == '1');
+				Logger.info('buildStudent执行，$projectID:{1}',$projectID);
+				removeTeacher();
+				buildCopartner(__cnum, Config.IS_NEED_COPARTNER_INFO);
+				buildHelppingTeacher(__tnum);
+				Application.application.buildVS(false, $projectID);
+			}
+			
+			//===========================================
+			//	removeTeacher()	被buildStudent()和Application._buildFrameFromModeTypeAndUserType()调用	
+			//===========================================
+			/**
+			 * 移去（其实是隐藏）教师相关的步骤，仅当用户为学生的时候使用
+			 * */
+			public function removeTeacher():void
+			{
+				Logger.info('removeTeacher执行 ');
+				teacherBox.visible = false;
+			}
+			
+			//===========================================
+			//	buildCopartner()	被buildStudent()、buildTeacher()调用
+			//===========================================
+			/**
+			 * 根据数量建立参赛者输入框
+			 * @$cnum 参赛者的数量
+			 * @$needInfo 参赛者是否需要详细信息
+			 * */
+			public function buildCopartner($cnum:int, $needInfo:Boolean):void
+			{
+				Logger.info('buildCopartner执行 ');
+				_copartnerArray = new Array();
+				if(_copartnerTile == null)
+				{
+					_copartnerTile = new Tile();
+				}
+				_copartnerTile.width = 580;
+				_copartnerTile.height = ($needInfo ? 500 : 80);	//如果要显示详细信息 那么高度要更多些
+				_copartnerTile.tileWidth = ($needInfo ? 600 : 165);
+				Logger.info('_copartnerTile.height:{1},titleWidth:{2}', _copartnerTile.height, _copartnerTile.tileWidth);
+				if(!this.contains(_copartnerTile))
+				{
+					this.addChild(_copartnerTile);
+				}
+				_copartnerTile.removeAllChildren();
+				if($cnum > 0)
+				{			
+					for(var i:int=0; i< $cnum; i++)
+					{
+						//是否显示详细信息，生成的填写合作者信息的表单是不同的
+						var __copartner:*;
+						if($needInfo)
+						//如果需要详细信息，同时要提供一个民族的列表
+						{
+							__copartner = new CopartnerInfo();
+							(__copartner as CopartnerInfo).nationList = info.nation.item;
+							(__copartner as CopartnerInfo).index = i;
+						}
+						else
+						{
+							__copartner = new Copartner();
+						}						
+						__copartner.label = '合作者'+(i+1);
+						_copartnerTile.addChild(__copartner);
+						_copartnerArray.push(__copartner);
+					}
+				}
+			}
+			
+			//===========================================
+			//	buildHelppingTeacher()	被buildStudent()调用
+			//===========================================
+			/**
+			 * 为学生参赛者建立辅导教师栏目
+			 * @$tnum	要建立的辅导教师的数量
+			 * */
+			public function buildHelppingTeacher($tnum:int):void
+			{
+				Logger.info('buildHelppingTeacher执行 ');
+				_helppingTeacherArray = new Array();	//清空原来的辅导教师数组
+				if(_helppingTeacherTile == null)
+				//如果没有建立辅导教师容器就建立
+				{
+					_helppingTeacherTile = new Tile();
+					_helppingTeacherTile.width = 580;
+					_helppingTeacherTile.height = 180;
+					_helppingTeacherTile.tileWidth = 580;
+				}
+				if(!this.contains(_helppingTeacherTile))
+				//如果建立了辅导教师容器，但容器不在显示列表中，就显示它
+				{
+					this.addChild(_helppingTeacherTile);
+				}
+				_helppingTeacherTile.removeAllChildren();	//移除当前辅导教师容器中的所有辅导教师
+				if($tnum > 0)
+				//如果数量大于0，就按照数量在容器中建立辅导教师
+				{
+					for(var j:int=0; j< $tnum; j++)
+					{
+						var __id:String = (j+1).toString();
+						var __helppingTeacher:HelppingTeacher = new HelppingTeacher();
+						__helppingTeacher.label = '辅导教师'+__id;
+						__helppingTeacher.nationList = info.nation.item;
+						_helppingTeacherTile.addChild(__helppingTeacher);	//把建立的辅导教师加入显示列表
+						_helppingTeacherArray.push(__helppingTeacher);		//把建立的辅导教师加入数组
+					}
+				}	
+			}
+			 
+			//===========================================
+			//	_removeTile()	被_projectChangeHandler()调用
+			//===========================================
+			/**
+			 * 清空辅导教师容器和参赛者容器中的显示对象
+			 * */
+			private function _removeTile():void
+			{
+				if(_copartnerTile != null)
+				{
+					if(this.contains(_copartnerTile))
+					{
+						this.removeChild(_copartnerTile);
+					}
+				}
+				if(_helppingTeacherTile != null)
+				{
+					if(this.contains(_helppingTeacherTile))
+					{
+						this.removeChild(_helppingTeacherTile);
+					}
+				}				
+			}
+		
+			//======================================================================================
+			//
+			//	实例方法 侦听器类	_projectChangeHandler()、_groupChangeHandler()以及被他们调用的方法
+			//
+			//======================================================================================
+			
+			//===========================================
+			//	_projectChangeHandler()
+			//===========================================		
+			/**
+			 * 当项目列表（projectCB）改变选择的时候进行
+			 * */
+			private function _projectChangeHandler(evt:ListEvent):void
+			{
+				var __xml:XML = evt.currentTarget.selectedItem as XML;
+				_isTeacher = __xml.is_teacher == 1;
+				_hasModule = __xml.@id == 14;	//教学实践评优的id是14，只有它有“模式”这个字段
+				var __projectID:String = __xml.@id;
+				Logger.info('projectChangeHandler执行，__projectID:{1}', __projectID);
+				//Logger.info('projectChangeHandler执行，__xml:{1}', info.project);
+				/*
+				Logger.info('_isTeacher:{1}', _isTeacher);
+				Logger.info('_hasModule:{1}', _hasModule);
+				Logger.info('__cnum:{1}', __cnum);
+				Logger.info('__tnum:{1}', __tnum);*/
+				//每次改变项目，先要清空这两个数组，因为如果管理员先选择学生，后来又改成教师的项目，这时_helppingTeacherArray就有值了。而针对教师应该是没有值的，因此进行清空
+				_copartnerArray = new Array();
+				_helppingTeacherArray = new Array();
+				
+				_removeTile();
+				if(_isTeacher)
+				{
+					buildTeacher(__projectID);
+					_groupDP = _getGroupOfUser(true);
+				}
+				else
+				{
+					buildStudent(__projectID);
+					_groupDP = _getGroupOfUser(false);
+				}
+				groupCB.dataProvider = _groupDP;
+				groupCB.selectedIndex = -1;
+				groupCB.enabled = true;				
+			}
+			
+			//===========================================
+			//	_groupChangeHandler()
+			//===========================================
+			/**
+			 * 当组别列表（groupCB）改变选择的时候进行
+			 * */
+			private function _groupChangeHandler(evt:ListEvent):void
+			{
+				var __xml:XML = evt.currentTarget.selectedItem as XML;
+				if(_isTeacher)
+				{
+					_gradeDP = _getGradeOfGroup(__xml.@teacher_group);
+				}
+				else
+				{
+					_gradeDP = _getGradeOfGroup(__xml.@student_group);	
+				}
+				gradeCB.dataProvider = _gradeDP;
+				gradeCB.selectedIndex = -1;
+				gradeCB.enabled = true;
+			}
+			
+			//===========================================
+			//	_getGroupOfUser()	被projectChangeHandler()方法调用
+			//===========================================
+			/**
+			 * 根据xml中的用户类型，返回相应的用户对应的组别级属性
+			 * */
+			private function _getGroupOfUser($isTeacher:Boolean):XMLList
+			{
+				//Logger.info('_getGroupOfUser执行');
+				var __xmlList:XMLList;
+				if($isTeacher)
+				{
+					__xmlList = info.group.item.(@teacher_group.toString().length!=0);
+					//Logger.info('用户是教师：\n{1}', __xmlList);	
+					return __xmlList;
+				}
+				__xmlList = info.group.item.(@student_group.toString().length!=0);
+				//Logger.info('用户是学生：\n{1}', __xmlList);	
+				return __xmlList;
+			}
+			
+			//===========================================
+			//	_getGradeOfGroup()	被groupChangeHandler()方法调用
+			//===========================================
+			/**
+			 * 根据给定的group中包含的教师或者学生年级id，返回这个组别中的年级
+			 * */
+			private function _getGradeOfGroup($str:String):XMLList
+			{
+				//Logger.info('_getGradeOfGroup执行');
+				var __strArr:Array = $str.split(',');	//将grade的相关id值转成数组
+				/**
+				 * 对数组进行操作的函数，把数组中的每个元素前面加上^，后面加上$
+				 * */
+				var __fun:Function = function($item:*, $index:int, $arr:Array):void
+				{
+					$arr[$index] = '^'+$item+'$';
+				}
+				__strArr.forEach(__fun);
+				//生成待处理的正则表达式，根据group中指定的id值对xml进行筛选
+				var __reg:RegExp = new RegExp(__strArr.join('|'));
+				/*
+				Logger.info('正则表达式：{1}', __strArr.join('|'));
+				Logger.info('查询到的当前年级：\n{1}', info.grade.item.(__reg.test(@id)));
+				*/	
+				return info.grade.item.(__reg.test(@id));
+			}					
+		]]>
+	</mx:Script>
+	<mx:StringValidator id="nameV" source="{nameTI}" property="text" minLength="1"
+		requiredFieldError="{Config.REQUIRED_FIELD_ERROR}" 
+		tooShortError="{StringUtil.substitute(Config.TOO_SHORT_ERROR, this.nameV.minLength)}"
+		tooLongError="{StringUtil.substitute(Config.TOO_LONG_ERROR, this.nameV.maxLength)}"/>
+	<mx:Validator id="projectV" source="{projectCB}" property="selectedLabel" 
+		requiredFieldError="{Config.REQUIRED_FIELD_ERROR}"/>
+	<mx:Validator id="groupV" source="{groupCB}" property="selectedLabel"
+		requiredFieldError="{Config.REQUIRED_FIELD_ERROR}"/>
+	<mx:Validator id="gradeV" source="{gradeCB}" property="selectedLabel"
+		requiredFieldError="{Config.REQUIRED_FIELD_ERROR}"/>
+	<mx:Validator id="subjectV" source="{subjectCB}" property="selectedLabel"
+		requiredFieldError="{Config.REQUIRED_FIELD_ERROR}"/>
+	<mx:StringValidator id="bookV" source="{bookTI}" property="text" minLength="4"
+		requiredFieldError="{Config.REQUIRED_FIELD_ERROR}" 
+		tooShortError="{StringUtil.substitute(Config.TOO_SHORT_ERROR, this.bookV.minLength)}"
+		tooLongError="{StringUtil.substitute(Config.TOO_LONG_ERROR, this.bookV.maxLength)}"/>
+	<mx:Validator id="moduleV" source="{moduleCB}" property="selectedLabel"
+		requiredFieldError="{Config.REQUIRED_FIELD_ERROR}"/>
+		
+	<mx:Text textAlign="center" width="100%" fontWeight="bold" fontSize="14" color="#FF0000">
+		<mx:text>{this.label}</mx:text>
+	</mx:Text>	
+	<mx:FormItem label="作品名称：" width="100%" required="true">
+			<mx:TextInput id="nameTI" name="作品名称" width="100%" maxChars="50"/>
+		</mx:FormItem>
+	<mx:HBox width="100%" id="addBox">
+		<mx:FormItem label="项目：" width="33%" required="true">
+			<mx:ComboBox id="projectCB" name="项目" width="135" prompt="请选择" labelField="@name" change="_projectChangeHandler(event)"
+				dropdownWidth="200" rowCount="10"/>
+		</mx:FormItem>
+		<mx:FormItem label="组别：" width="33%" required="true">
+			<mx:ComboBox id="groupCB" name="组别" width="130" prompt="请选择" labelField="@name" enabled="false" change="_groupChangeHandler(event)"/>
+		</mx:FormItem>	
+		<mx:FormItem label="年级：" width="34%" required="true">
+			<mx:ComboBox id="gradeCB" name="年级" width="135" prompt="请选择" labelField="@name" enabled="false"/>
+		</mx:FormItem>								
+	</mx:HBox>
+	<mx:HBox width="100%" id="teacherBox">
+		<mx:FormItem id="subjectFI" label="学科：" width="33%" required="true">
+			<mx:ComboBox id="subjectCB" name="学科" width="135" prompt="请选择" labelField="@name" dropdownWidth="200" rowCount="10"/>
+		</mx:FormItem>
+		<mx:FormItem id="TMFI" label="教材：" width="33%" required="true">
+			<mx:TextInput id="bookTI" name="教材" width="130" maxChars="40"/>
+		</mx:FormItem>
+		<mx:FormItem id="moduleFI" label="模式：" width="34%" required="true">
+			<mx:ComboBox id="moduleCB" name="模式" width="135" prompt="请选择" labelField="@name" dataProvider="{info.module_type.item}" dropdownWidth="170" rowCount="6"/>
+		</mx:FormItem>
+	</mx:HBox>
+	
+	<mx:Button label="自动填写（调试用）" height="40" click="debugFill()"/>
+	
+</mx:VBox>

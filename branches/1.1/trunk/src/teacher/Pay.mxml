@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" label="版权声明" implements="common.IStep">
+	<mx:Script>
+		<![CDATA[
+			public function buildVariable():void
+			{
+			}
+			public function update():void
+			{
+			}
+		]]>
+	</mx:Script>
+	<mx:Text width="100%" leading="10" height="400">
+		<mx:htmlText>
+			<![CDATA[
+参加第六届NOC活动各教师赛项的选手，在提交作品的同时，每件作品须缴纳评审费<font size='14' color='#ff0000'><b>100</b></font>元。组委会确认收到评审费后，将开始进入作品评审环节。　　
+
+汇款方式如下（汇款请注明为“作品评审费”）：
+<b>1.银行帐号：</b>
+户  名：《网络科技时代》杂志社有限公司
+账  号：0200  0227  0906  6186  035
+开户行：工行北京潘家园支行
+<b>2.邮局汇款：</b>
+地址：北京市朝阳区东三环南路25号北汽大厦601室
+邮编：100021
+收款人：NOC组委会
+注：<b>需要发票的选手，请汇款后与NOC组委会联系确认</b>（联系人：于老师，电话：010-87664136/3438转8077）。
+]]>
+		</mx:htmlText>
+	</mx:Text>
+</mx:VBox>
