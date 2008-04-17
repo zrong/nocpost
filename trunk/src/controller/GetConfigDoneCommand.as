@@ -7,7 +7,7 @@ package controller
 	{
 		override public function execute(notification:INotification):void
 		{
-			var __
+			//var __
 		}
 	}
 }
