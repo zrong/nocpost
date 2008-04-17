@@ -3,7 +3,7 @@
 	<mx:Script>
 		<![CDATA[
 			import mx.core.UIComponent;
-			import net.zengrong.utils.Logger;
+			import net.zengrong.logging.Logger;
 			import utils.Config;
 			import mx.utils.StringUtil;
 			

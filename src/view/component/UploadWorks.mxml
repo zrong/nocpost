@@ -10,7 +10,7 @@
 			import flash.net.FileFilter;
 			import utils.Config;
 			import utils.type.*;
-			import net.zengrong.utils.Logger;
+			import net.zengrong.logging.Logger;
 			import mx.controls.Button;
 			
 			[Bindable]

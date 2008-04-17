@@ -10,7 +10,7 @@
 		import mx.containers.ViewStack;
 		import flash.events.MouseEvent;
 		import mx.core.Application;
-		import net.zengrong.utils.Logger;
+		import net.zengrong.logging.Logger;
 		
 		[Bindable]
 		public var vs:ViewStack;

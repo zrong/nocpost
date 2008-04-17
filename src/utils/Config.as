@@ -6,7 +6,7 @@ package utils
 	import mx.events.ValidationResultEvent;
 	import mx.validators.Validator;
 	
-	import net.zengrong.utils.Logger;
+	import net.zengrong.logging.Logger;
 	[Bindable]
 	public final class Config
 	{

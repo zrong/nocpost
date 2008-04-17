@@ -8,7 +8,7 @@ import mx.managers.PopUpManager;
 import mx.rpc.events.FaultEvent;
 import mx.rpc.events.ResultEvent;
 
-import net.zengrong.utils.Logger;
+import net.zengrong.logging.Logger;
 
 import teacher.Pay;
 

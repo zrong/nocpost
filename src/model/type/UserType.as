@@ -1,4 +1,4 @@
-package utils.type
+package model.type
 {
 	public final class UserType
 	{

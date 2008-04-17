@@ -11,7 +11,7 @@
 			import mx.rpc.http.HTTPService;
 			import utils.Config;
 			import utils.type.UserType;
-			import net.zengrong.utils.Logger;
+			import net.zengrong.logging.Logger;
 			import mx.utils.StringUtil;
 			
 			[Bindable]

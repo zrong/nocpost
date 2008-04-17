@@ -4,7 +4,7 @@
 	<mx:Script>
 		<![CDATA[
 			import mx.core.UIComponent;
-			import net.zengrong.utils.Logger;
+			import net.zengrong.logging.Logger;
 			import utils.Config;
 			import utils.type.*;
 			import flash.net.FileReference;

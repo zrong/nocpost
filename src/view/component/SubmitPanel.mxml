@@ -4,7 +4,7 @@
 		<![CDATA[
 			import mx.containers.Tile;
 			import mx.controls.ProgressBarMode;
-			import net.zengrong.utils.Logger;
+			import net.zengrong.logging.Logger;
 			import mx.rpc.events.FaultEvent;
 			import mx.rpc.events.ResultEvent;
 			import utils.type.ModeType;
