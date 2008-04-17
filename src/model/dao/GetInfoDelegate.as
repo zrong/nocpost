@@ -17,14 +17,15 @@ package model.dao
 		public function GetInfoDelegate($responer:IResponder)
 		{
 			_service = new HTTPService();
+			_service.resultFormat = HTTPService.RESULT_FORMAT_E4X;
 			_responder = $responer;
 		}
 		
 		public function getInfo($url:String, $param:URLVariables=null):void
-		{
-			_service = $url;
-			var __token:AsyncToken = _service.send($param); 
-			__token.addResponder(_responder);
+		{			
+				_service = $url;
+				var __token:AsyncToken = _service.send($param); 
+				__token.addResponder(_responder);
 		}
 
 	}

@@ -18,5 +18,13 @@
 	</mx:ViewStack>
 	<view:NavButton id="navBTN" vs="{vs}" width="100%"/>	
 	<mx:Style source="../assets/style.css"/>
-	<mx:Script source="post.as"/>
+	<mx:Script>
+		<![CDATA[
+			private var facade:ApplicationFacade = ApplicationFacade.getInstance();
+			private function init():void
+			{
+				facade.startup(this);
+			}
+		]]>
+	</mx:Script>
 </mx:Application>
