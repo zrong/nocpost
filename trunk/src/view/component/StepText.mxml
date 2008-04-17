@@ -4,7 +4,7 @@
 		<![CDATA[
 			import utils.Config;
 			import mx.utils.StringUtil;
-			import net.zengrong.utils.Logger;
+			import net.zengrong.logging.Logger;
 			import utils.type.UserType;
 			
 			[Bindable]

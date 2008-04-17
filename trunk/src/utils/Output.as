@@ -4,7 +4,7 @@ package utils
 	
 	import mx.core.Application;
 	
-	import net.zengrong.utils.Logger;
+	import net.zengrong.logging.Logger;
 	
 	public final class Output
 	{
