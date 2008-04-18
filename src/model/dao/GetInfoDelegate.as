@@ -3,6 +3,7 @@
  * */
 package model.dao
 {
+	import flash.net.URLRequestMethod;
 	import flash.net.URLVariables;
 	
 	import mx.rpc.AsyncToken;
@@ -22,10 +23,11 @@ package model.dao
 		}
 		
 		public function getInfo($url:String, $param:URLVariables=null):void
-		{			
-				_service = $url;
-				var __token:AsyncToken = _service.send($param); 
-				__token.addResponder(_responder);
+		{
+			_service.method = URLRequestMethod.POST;
+			_service.url = $url;
+			var __token:AsyncToken = _service.send($param); 
+			__token.addResponder(_responder);
 		}
 
 	}

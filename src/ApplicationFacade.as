@@ -1,5 +1,9 @@
 package
 {
+	import controller.StartupCommand;
+	
+	import net.zengrong.logging.Logger;
+	
 	import org.puremvc.as3.patterns.facade.Facade;
 
 	public class ApplicationFacade extends Facade
@@ -23,6 +27,7 @@ package
 		
 		public function startup(app:Object):void
 		{
+			Logger.TYPE = Logger.TRACE;
 			sendNotification(STARTUP, app);
 		}
 		

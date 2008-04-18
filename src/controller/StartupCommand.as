@@ -7,7 +7,7 @@ package controller
 	
 	public class StartupCommand extends MacroCommand
 	{
-		override public function initializeMacroCommand():void
+		override protected function initializeMacroCommand():void
 		{
 			addSubCommand(ModelPrepCommand);
 			addSubCommand(CtrlPrepCommand);
