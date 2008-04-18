@@ -34,13 +34,13 @@ package model
 		{
 			Logger.info('HTTP提交返回成功');
 			data = $data.result as XML;
-			Logger.info(data.toString());
+			//Logger.info(data.province);
 			sendNotification(ApplicationFacade.STEP_GET_INFO_DONE);
 		}
 		
 		public function fault($info:Object):void
 		{
-			var __fault:String = $info.fault.message+"\n"+evt.message.toString();
+			var __fault:String = $info.fault.message+"\n"+$info.message.toString();
 			sendNotification(ApplicationFacade.STEP_GET_INFO_FAIL, __fault);
 		}
 		

@@ -4,6 +4,10 @@ package model
 	
 	import model.type.*;
 	
+	import mx.core.Application;
+	
+	import net.zengrong.logging.Logger;
+	
 	import org.puremvc.as3.patterns.proxy.Proxy;
 	
 	[Bindable]
@@ -26,6 +30,7 @@ package model
 		
 		public static var IS_MODIFY:Boolean;	//保存当前对数据库到做的类型是否是添加，这个值是为了方便调用，因为每次判断Config.MOE_TYPE==mod太费事情
 		public static var IS_USER:Boolean;		//保存当前用户是否是参赛用户，这个值是为了方便调用，因为每次判断Config.USER_TYPE==3太费时
+		public static var IS_TEACHER:Boolean;	//保存当前用户是否是教师用户。
 		
 		public static const SEPARATOR:String = '[*]';
 		
@@ -50,28 +55,35 @@ package model
 		public function getConfig():void
 		{
 			var __param:Object = Application.application.parameters; 
-			ConfigProxy.URL = __param.config;
-			ConfigProxy.USER_TYPE = __param.user_type;
-			ConfigProxy.PDT_ID = __param.pdt_id;
-			ConfigProxy.MOD_TYPE = __param.mod_type;
+			URL = __param.config;
+			USER_TYPE = __param.user_type;
+			PDT_ID = __param.pdt_id;
+			MOD_TYPE = __param.mod_type;
 			
-			ConfigProxy.IS_MODIFY = (Config.MOD_TYPE == ModeType.MODIFY);
-			ConfigProxy.IS_USER = (Config.USER_TYPE == UserType.USER);
+			IS_MODIFY = (MOD_TYPE == ModeType.MODIFY);
+			IS_USER = (USER_TYPE == UserType.USER);
 			//====================调试信息
-			ConfigProxy.IS_MODIFY = false;
-			ConfigProxy.URL = '../assets/get_info.xml';
+			IS_MODIFY = false;
+			URL = '../assets/get_info.xml';
 			//Config.URL = 'http://10.2.1.3/noc/zpsc/zp_upload_deal_all.php?mod_step=step_get_info';
 			//Config.URL = 'http://10.2.1.3/noc/zpsc/zp_upload_deal_all.php?mod_step=step_get_info&pdt_id=2&mod_type=mod';
-			ConfigProxy.USER_TYPE = '99';
-			ConfigProxy.PDT_ID = '2';
+			USER_TYPE = '99';
+			PDT_ID = '2';
 			//=====================
 			
-			URL_GET_INFO_VAR = new URLVariables();
-			URL_GET_INFO_VAR[StepType.STEP_NAME] = StepType.STEP_GET_INFO;
-			URL_GET_INFO_VAR.pdt_id = ConfigProxy.PDT_ID;
-			URL_GET_INFO_VAR.mod_type = ConfigProxy.MOD_TYPE;
+			URL_GET_INFO_VAR = buildUrlGetInfoVar();
 			
+			Logger.debug('url:{0}',URL_GET_INFO_VAR);
 			sendNotification(ApplicationFacade.STEP_GET_CONFIG_DONE);
+		}
+		
+		private function buildUrlGetInfoVar():URLVariables
+		{
+			var __var:URLVariables = new URLVariables();
+			__var[StepType.STEP_NAME] = StepType.STEP_GET_INFO;
+			__var.pdt_id = PDT_ID;
+			__var.mod_type = MOD_TYPE;
+			return __var;
 		}
 	}
 }
