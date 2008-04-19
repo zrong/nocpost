@@ -1,4 +1,4 @@
-package common
+package view.interfaces
 {
 	public interface ICopartner
 	{

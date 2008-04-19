@@ -1,23 +1,30 @@
 package view
 {
+	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
+	
+	import view.component.StepVS;
 
 	public class StepVSMediator extends Mediator
 	{
-		public static const NAME:String = 'VSMediagor';
+		public static const NAME:String = 'StepVSMediator';
+		
 		public function StepVSMediator(viewComponent:Object=null)
 		{
 			super(NAME, viewComponent);
 		}
 		
-		public function get app():post
+		public function get vs():StepVS
 		{
-			return viewComponent as post;
+			return viewComponent as StepVS;
 		}
 		
 		override public function listNotificationInterests():Array
 		{
-			return [	ApplicationFacade.STEP_GET_INFO_DONE	];
+			return [	ApplicationFacade.STEP_GET_INFO_DONE,
+						ApplicationFacade.NAV_ACCEPT,
+						ApplicationFacade.NAV_NEXT,
+						ApplicationFacade.NAV_PREV	];
 		}
 		
 		override public function handleNotification(notification:INotification):void
@@ -27,6 +34,37 @@ package view
 				case ApplicationFacade.STEP_GET_INFO_DONE:
 					
 					break;
+				case ApplicationFacade.NAV_ACCEPT:
+					toNextStep();
+					break;
+				case ApplicationFacade.NAV_NEXT:
+					toNextStep();
+					break;
+				case ApplicationFacade.NAV_START:
+					toPrevStep();
+					break;
+			}
+		}
+		
+		private function toNextStep():void
+		{
+			vs.selectedIndex ++;
+			if(vs.selectedIndex > (vs.numChildren -2))
+			{
+				sendNotification(ApplicationFacade.NAV_END);
+			}
+		}
+		
+		private function toPrevStep():void
+		{
+			vs.selectedIndex--;
+			if(vs.selectedIndex <= 0)
+			{
+				sendNotification(ApplicationFacade.NAV_START);
+			}
+			else if(vs.selectedIndex == (vs.numChildren-2))
+			{
+				sendNotification(ApplicationFacade.NAV_BEFORE_END);
 			}
 		}
 		
@@ -39,6 +77,7 @@ package view
 		 * @cNum		参与者数量
 		 * @tNum		辅导教师数量（仅当参与者为学生时）
 		 * */
+		 /*
 		private function _buildFrameFromModeTypeAndUserType($isModify:Boolean, $isUser:Boolean):void
 		{
 			Logger.info('_buildFrameFromModeTypeAndUserType运行，$isModify:{1}', $isModify);
@@ -92,10 +131,12 @@ package view
 				_isTeacher = false;
 			}
 		}
+		*/
 		
 		/**
 		 * 建立第一步和第二步表单之后的表单
 		 * */
+		 /*
 		public function buildVS($isTeacher:Boolean, $projectID:String):void
 		{
 			Logger.info('buildVS运行');
@@ -178,10 +219,13 @@ package view
 			}
 			Logger.info('建立表单之后的vs子数量：{1}', vs.numChildren);
 		}
+		*/
 		
 		/**
 		 * 在根据用户类型建立VS之前，必须先将VS还原成初始状态
 		 * */
+		 
+		/*
 		private function removeVS():void{
 			Logger.info('removeVS运行，删除前的vs子数量：{1}', vs.numChildren);
 			var __toRemovedArr:Array = new Array();
@@ -201,5 +245,6 @@ package view
 			}
 			Logger.info('removeVS运行，删除后的vs子数量：{1}', vs.numChildren);
 		}
+		*/
 	}
 }

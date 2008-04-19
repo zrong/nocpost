@@ -19,6 +19,17 @@ package
 		public static var STEP_SET_INFO_DONE:String = 'stepSetInfoDone';
 		public static var STEP_UPLOAD_DONE:String = 'stepUploadDone';
 		
+		public static var NAV_ACCEPT:String = 'navAccept';
+		public static var NAV_REJECT :String = 'navReject';
+		public static var NAV_PREV:String = 'navPrev';
+		public static var NAV_NEXT:String = 'navNext';
+		public static var NAV_SUBMIT:String = 'navSubmit';
+		public static var NAV_END:String = 'navEnd';
+		public static var NAV_BEFORE_END:String = 'navBeforeEnd';	//beforeEnd的意思是倒数第二个
+		public static var NAV_START:String = 'navStart';
+		
+		public static var VAR_UPDATE:String = 'varUpdate';
+		
 		public static function getInstance():ApplicationFacade
 		{
 			if(instance == null) instance = new ApplicationFacade();

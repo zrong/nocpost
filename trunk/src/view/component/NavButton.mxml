@@ -2,15 +2,17 @@
 <mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" horizontalAlign="center" creationComplete="init()">
 <mx:Script>
 	<![CDATA[
-		import common.IStep;
-		import utils.Config;
-		import common.StepUpload;
 		import utils.Output;
 		import mx.controls.Button;
 		import mx.containers.ViewStack;
 		import flash.events.MouseEvent;
-		import mx.core.Application;
 		import net.zengrong.logging.Logger;
+		
+		public static const PREV:String = 'prev';
+		public static const NEXT:String = 'next';
+		public static const ACCEPT:String = 'accept';
+		public static const REJECT:String = 'reject';
+		public static const SUBMIT:String = 'submit';
 		
 		[Bindable]
 		public var vs:ViewStack;
@@ -34,96 +36,62 @@
 			acceptBTN.width = 100;
 			acceptBTN.height = 30;
 			acceptBTN.label = '同意';
-			acceptBTN.addEventListener(MouseEvent.CLICK, acceptClickHandler);
+			acceptBTN.addEventListener(MouseEvent.CLICK, function(){sendEvent(ACCEPT)});
 			acceptBTN.enabled = false;
 			
 			rejectBTN = new Button();
 			rejectBTN.width = 100;
 			rejectBTN.height = 30;
 			rejectBTN.label = '不同意';
-			rejectBTN.addEventListener(MouseEvent.CLICK, rejectClickHandler);
+			rejectBTN.addEventListener(MouseEvent.CLICK, function(){sendEvent(REJECT)});
 			
 			prevBTN = new Button();
 			prevBTN.width = 100;
 			prevBTN.height = 30;
 			prevBTN.label = '上一步';
-			prevBTN.addEventListener(MouseEvent.CLICK, prevClickHandler);
+			prevBTN.addEventListener(MouseEvent.CLICK, function(){sendEvent(PREV)});
 			
 			nextBTN = new Button();
 			nextBTN.width = 100;
 			nextBTN.height = 30;
 			nextBTN.label = '下一步';
-			nextBTN.addEventListener(MouseEvent.CLICK, nextClickHandler);
+			nextBTN.addEventListener(MouseEvent.CLICK, function(){sendEvent(NEXT)});
 			
 			submitBTN = new Button();
 			submitBTN.width = 100;
 			submitBTN.height = 30;
 			submitBTN.label = '提交';
-			submitBTN.addEventListener(MouseEvent.CLICK, submitClickHandler);
+			submitBTN.addEventListener(MouseEvent.CLICK, function(){sendEvent(SUBMIT)});
 		}
 		
+		private function sendEvent($evtName:String):void
+		{
+			dispatchEvent(new Event($evtName));
+		}
 		private function acceptClickHandler(evt:MouseEvent):void
 		{
-			this.removeAllChildren();
-			this.addChild(this.prevBTN);
-			this.addChild(this.nextBTN);
-			vs.selectedIndex ++;
+			sendEvent(ACCEPT);
 		}
 		
 		private function rejectClickHandler(evt:MouseEvent):void
 		{
-			
+			sendEvent(REJECT);
 		}
 		
 		private function prevClickHandler(evt:MouseEvent):void
 		{
-			vs.selectedIndex--;
-			if(vs.selectedIndex <= 0)
-			{
-				this.removeAllChildren();
-				this.addChild(this.rejectBTN);
-				this.addChild(this.acceptBTN);
-			}
-			else if(vs.selectedIndex == (vs.numChildren-2))
-			{
-				this.removeChild(this.submitBTN);
-				this.addChild(this.nextBTN);
-			}
+			sendEvent(PREV);
 		}
 		
 		private function nextClickHandler(evt:MouseEvent):void
 		{
-			//Logger.info((vs.selectedChild as Object).name);
-			
-			//try
-			//{
-				(vs.selectedChild as IStep).buildVariable();
-				vs.selectedIndex ++;
-				if(vs.selectedIndex > (vs.numChildren -2))
-				{
-					this.removeChild(this.nextBTN);
-					this.addChild(this.submitBTN);
-				}
-			/*}
-			catch(err:Error)
-			{
-				Logger.debug(err.getStackTrace());
-				Output.alert(err.message);
-			}*/		
+			sendEvent(NEXT);
+	
 		}
 		
 		private function submitClickHandler(evt:MouseEvent):void
 		{
-			try
-			{
-				(vs.selectedChild as StepUpload).validateUpload(); 
-				Application.application.submit();
-			}
-			catch(err:Error)
-			{
-				Logger.debug(err.getStackTrace());
-				Output.alert(err.message);
-			}
+			sendEvent(SUBMIT);
 		}
 	]]>
 </mx:Script>
