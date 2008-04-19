@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" implements="common.ICopartner" xmlns:common="common.*">
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" 
+	implements="view.interfaces.ICopartner" xmlns:common="common.*">
 	<mx:Script>
 		<![CDATA[
 			import mx.core.UIComponent;

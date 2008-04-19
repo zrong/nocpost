@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:FormItem xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" implements="common.ICopartner">
+<mx:FormItem xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" 
+	implements="view.interfaces.ICopartner">
 	<mx:Script>
 		<![CDATA[
 			public function getVariable():String

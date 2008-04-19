@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" xmlns:te="teacher.*" horizontalAlign="center" implements="common.IStep" horizontalScrollPolicy="off">
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" width="100%" 
+	xmlns:te="teacher.*" horizontalAlign="center" 
+	implements="view.interfaces.IStep" horizontalScrollPolicy="off">
 	<mx:Script>
 		<![CDATA[
 			import flash.utils.getQualifiedClassName;

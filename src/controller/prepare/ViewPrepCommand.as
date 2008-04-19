@@ -6,12 +6,23 @@ package controller.prepare
 	import org.puremvc.as3.patterns.command.SimpleCommand;
 	
 	import view.ApplicationMediator;
+	import view.NavButtonMediator;
+	import view.StepBasicMediator;
+	import view.StepVSMediator;
 
 	public class ViewPrepCommand extends SimpleCommand
 	{
 		override public function execute(notification:INotification):void
 		{
-			facade.registerMediator(new ApplicationMediator(notification.getBody()));
+			var __app:post = notification.getBody() as post;
+			
+			facade.registerMediator(new ApplicationMediator(__app));
+			facade.registerMediator(new NavButtonMediator(__app.nav));
+			facade.registerMediator(new StepVSMediator(__app.vs));			
+			facade.registerMediator(new StepBasicMediator(__app.vs.stepBasic));
+			//facade.registerMediator(new StepWorksMediator(__app.vs.stepWorks));
+			//facade.registerMediator(new StepUploadMediator(__app.vs.stepUpload));
+			
 			var __configProxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
 			__configProxy.getConfig();
 		}
