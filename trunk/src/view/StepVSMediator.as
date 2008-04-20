@@ -1,9 +1,15 @@
 package view
 {
+	import model.type.ErrorType;
+	import model.type.StepType;
+	
+	import mx.core.UIComponent;
+	
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
 	
 	import view.component.StepVS;
+	import view.interfaces.IStep;
 
 	public class StepVSMediator extends Mediator
 	{
@@ -35,7 +41,7 @@ package view
 					
 					break;
 				case ApplicationFacade.NAV_ACCEPT:
-					toNextStep();
+					vs.selectedIndex ++;
 					break;
 				case ApplicationFacade.NAV_NEXT:
 					toNextStep();
@@ -46,13 +52,37 @@ package view
 			}
 		}
 		
+		/**
+		 * 根据当前的VS子部件获取该子部件的Mediator，并返回
+		 * */
+		private function getStep($step:UIComponent):IStep
+		{
+			var __step:IStep;
+			switch($step.name)
+			{
+				case StepType.STEP_BASIC:
+					__step = facade.retrieveMediator(StepBasicMediator.NAME) as IStep;
+					break;
+			}
+			return __step;
+		}
+		
 		private function toNextStep():void
 		{
-			vs.selectedIndex ++;
-			if(vs.selectedIndex > (vs.numChildren -2))
+			try
 			{
-				sendNotification(ApplicationFacade.NAV_END);
+				getStep(vs.selectedChild).buildVariable();
+				vs.selectedIndex ++;
+				if(vs.selectedIndex > (vs.numChildren -2))
+				{
+					sendNotification(ApplicationFacade.NAV_END);
+				}
 			}
+			catch(err:Error)
+			{
+				sendNotification(ApplicationFacade.ERROR, err.message, ErrorType.ALERT);
+			}
+			
 		}
 		
 		private function toPrevStep():void
