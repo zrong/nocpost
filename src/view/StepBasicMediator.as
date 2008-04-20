@@ -11,6 +11,7 @@ package view
 	
 	import net.zengrong.logging.Logger;
 	
+	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
 	
 	import view.component.StepBasic;
@@ -20,15 +21,13 @@ package view
 	{
 		public static const NAME:String = 'StepBasicMediators';
 		
-		[Bindable] private var _data:XML;
+		private var _data:XML;
 		private var _getInfoProxy:GetInfoProxy;
 		
 		public function StepBasicMediator(viewComponent:Object=null)
 		{
 			super(NAME, viewComponent);
-			_getInfoProxy = facade.retrieveProxy(GetInfoProxy.NAME) as GetInfoProxy;
-			_data = _getInfoProxy.getData() as XML;
-			
+			_getInfoProxy = facade.retrieveProxy(GetInfoProxy.NAME) as GetInfoProxy;			
 			stepBasic.addEventListener(StepBasic.DEBUG_FILL, _debugFill);
 		}
 		
@@ -37,30 +36,20 @@ package view
 			return viewComponent as StepBasic;
 		}
 		
-		//=================================================
-		private function _debugFill(evt:Event):void
+		override public function listNotificationInterests():Array
 		{
-			stepBasic.nameTI.text = '用户'+Math.floor(Math.random()*1000).toString();
-			stepBasic.nationCB.selectedIndex = 0;
-			stepBasic.maleRB.selected = true;
-			stepBasic.ageNS.value = 10;
-			stepBasic.areaCB.selectedIndex = 0;
-			stepBasic.emailTI.text = 'zrongzrong@gmail.com';
-			stepBasic.zoneTI.text = Math.floor(Math.random()*10000).toString();
-			stepBasic.phoneTI.text = Math.floor(Math.random()*100000000).toString();
-			stepBasic.mobileTI.text = Math.floor(Math.random()*1000000000000).toString();
-			stepBasic.zipTI.text = Math.floor(Math.random()*1000000).toString();
-			stepBasic.schoolTI.text = 'abcdefghijklmnopqrstuvwxyz';
-			stepBasic.addressTI.text = 'abcdefghijklmnopqrstuvwxyz';
+			return [	ApplicationFacade.RPC_STEP_GET_INFO_DONE	];
 		}
-		/*
-		private function debugDelFlash():void
+		
+		override public function handleNotification(notification:INotification):void
 		{
-			var __var:Array = stepBasic.delFlashTI.text.split(',');
-			ExternalInterface.call(__var[0], __var[1]);
+			switch(notification.getName())
+			{
+				case ApplicationFacade.RPC_STEP_GET_INFO_DONE:
+					update();
+					break;
+			}
 		}
-		*/			
-		//==========================
 		
 		public function buildVariable():void
 		{
@@ -71,6 +60,8 @@ package view
 		
 		public function update():void
 		{
+			Logger.debug('StepBasicMediator.update执行！');
+			_data = _getInfoProxy.getData() as XML;
 			if(ConfigProxy.IS_MODIFY)
 			{
 				_fillForHasValue(!ConfigProxy.IS_USER)				
@@ -153,5 +144,30 @@ package view
 			
 			sendNotification(ApplicationFacade.VAR_UPDATE, __basicVO);
 		}
+		
+		//=================================================
+		private function _debugFill(evt:Event):void
+		{
+			stepBasic.nameTI.text = '用户'+Math.floor(Math.random()*1000).toString();
+			stepBasic.nationCB.selectedIndex = 0;
+			stepBasic.maleRB.selected = true;
+			stepBasic.ageNS.value = 10;
+			stepBasic.areaCB.selectedIndex = 0;
+			stepBasic.emailTI.text = 'zrongzrong@gmail.com';
+			stepBasic.zoneTI.text = Math.floor(Math.random()*10000).toString();
+			stepBasic.phoneTI.text = Math.floor(Math.random()*100000000).toString();
+			stepBasic.mobileTI.text = Math.floor(Math.random()*1000000000000).toString();
+			stepBasic.zipTI.text = Math.floor(Math.random()*1000000).toString();
+			stepBasic.schoolTI.text = 'abcdefghijklmnopqrstuvwxyz';
+			stepBasic.addressTI.text = 'abcdefghijklmnopqrstuvwxyz';
+		}
+		/*
+		private function debugDelFlash():void
+		{
+			var __var:Array = stepBasic.delFlashTI.text.split(',');
+			ExternalInterface.call(__var[0], __var[1]);
+		}
+		*/			
+		//==========================
 	}
 }

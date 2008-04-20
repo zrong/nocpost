@@ -2,6 +2,7 @@ package controller.prepare
 {
 	import model.ConfigProxy;
 	import model.GetInfoProxy;
+	import model.SetInfoProxy;
 	
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.command.SimpleCommand;
@@ -12,6 +13,7 @@ package controller.prepare
 		{
 			facade.registerProxy(new ConfigProxy());
 			facade.registerProxy(new GetInfoProxy());
+			facade.registerProxy(new SetInfoProxy());
 		}
 		
 	}
