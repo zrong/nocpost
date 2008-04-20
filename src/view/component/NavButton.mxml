@@ -2,7 +2,6 @@
 <mx:HBox xmlns:mx="http://www.adobe.com/2006/mxml" horizontalAlign="center" creationComplete="init()">
 <mx:Script>
 	<![CDATA[
-		import utils.Output;
 		import mx.controls.Button;
 		import mx.containers.ViewStack;
 		import flash.events.MouseEvent;

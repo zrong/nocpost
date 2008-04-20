@@ -28,7 +28,8 @@ package view
 		
 		override public function listNotificationInterests():Array
 		{
-			return [	ApplicationFacade.NAV_END,
+			return [	ApplicationFacade.STEP_GET_INFO_DONE,
+						ApplicationFacade.NAV_END,
 						ApplicationFacade.NAV_START,
 						ApplicationFacade.NAV_BEFORE_END	];
 		}
@@ -37,6 +38,9 @@ package view
 		{
 			switch(notification.getName())
 			{
+				case ApplicationFacade.STEP_GET_INFO_DONE:
+					nav.acceptBTN.enabled = true;
+					break;
 				case ApplicationFacade.NAV_END:
 					nav.removeChild(nav.nextBTN);
 					nav.addChild(nav.submitBTN);

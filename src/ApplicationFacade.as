@@ -9,6 +9,7 @@ package
 	public class ApplicationFacade extends Facade
 	{
 		public static var STARTUP:String = 'startup';
+		public static var ERROR:String = 'error';
 		
 		public static var STEP_GET_CONFIG_DONE:String = 'stepGetConfigDone';
 		

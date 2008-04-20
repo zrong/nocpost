@@ -1,5 +1,6 @@
 package controller.prepare
 {
+	import controller.ErrorCommand;
 	import controller.GetConfigDoneCommand;
 	import controller.GetInfoDoneCommand;
 	import controller.VarUpdateCommand;
@@ -11,6 +12,7 @@ package controller.prepare
 	{
 		override public function execute(notification:INotification):void
 		{
+			facade.registerCommand(ApplicationFacade.ERROR, ErrorCommand);
 			facade.registerCommand(ApplicationFacade.STEP_GET_CONFIG_DONE, GetConfigDoneCommand);
 			facade.registerCommand(ApplicationFacade.STEP_GET_INFO_DONE, GetInfoDoneCommand);
 			

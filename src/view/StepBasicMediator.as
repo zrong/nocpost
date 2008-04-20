@@ -1,5 +1,7 @@
 package view
 {
+	import flash.events.Event;
+	
 	import model.ConfigProxy;
 	import model.GetInfoProxy;
 	import model.type.*;
@@ -7,11 +9,14 @@ package view
 	
 	import mx.utils.StringUtil;
 	
+	import net.zengrong.logging.Logger;
+	
 	import org.puremvc.as3.patterns.mediator.Mediator;
 	
 	import view.component.StepBasic;
+	import view.interfaces.IStep;
 
-	public class StepBasicMediator extends Mediator
+	public class StepBasicMediator extends Mediator implements IStep
 	{
 		public static const NAME:String = 'StepBasicMediators';
 		
@@ -24,7 +29,7 @@ package view
 			_getInfoProxy = facade.retrieveProxy(GetInfoProxy.NAME) as GetInfoProxy;
 			_data = _getInfoProxy.getData() as XML;
 			
-			stepBasic.addEventListener(StepBasic.DEBUG_FILL, debugFill);
+			stepBasic.addEventListener(StepBasic.DEBUG_FILL, _debugFill);
 		}
 		
 		private function get stepBasic():StepBasic
@@ -33,7 +38,7 @@ package view
 		}
 		
 		//=================================================
-		private function debugFill():void
+		private function _debugFill(evt:Event):void
 		{
 			stepBasic.nameTI.text = '用户'+Math.floor(Math.random()*1000).toString();
 			stepBasic.nationCB.selectedIndex = 0;
@@ -46,7 +51,7 @@ package view
 			stepBasic.mobileTI.text = Math.floor(Math.random()*1000000000000).toString();
 			stepBasic.zipTI.text = Math.floor(Math.random()*1000000).toString();
 			stepBasic.schoolTI.text = 'abcdefghijklmnopqrstuvwxyz';
-			astepBasic.ddressTI.text = 'abcdefghijklmnopqrstuvwxyz';
+			stepBasic.addressTI.text = 'abcdefghijklmnopqrstuvwxyz';
 		}
 		/*
 		private function debugDelFlash():void
@@ -56,6 +61,14 @@ package view
 		}
 		*/			
 		//==========================
+		
+		public function buildVariable():void
+		{
+			Logger.info('StepBasicMediator.buildVariable执行');	
+			stepBasic.validate();
+			_sendVO();					
+		}
+		
 		public function update():void
 		{
 			if(ConfigProxy.IS_MODIFY)
@@ -100,7 +113,7 @@ package view
 			stepBasic.gameCodeLabel.text = __modify.game_code;
 			stepBasic.nameTI.text = __modify.pdt_author;
 			stepBasic.nameTI.enabled = $isAdmin;
-			stepBasic.nationCB.dataProvider = info.nation.item.(@id==__modify.pdt_author_nation);
+			stepBasic.nationCB.dataProvider = _data.nation.item.(@id==__modify.pdt_author_nation);
 			stepBasic.nationCB.enabled = false;
 			stepBasic.nationCB.selectedIndex = 0;
 			stepBasic.sexRBG.selectedValue = __modify.pdt_author_sex;
@@ -123,18 +136,12 @@ package view
 			stepBasic.addressTI.text = __modify.pdt_author_address;
 		}
 		
-		public function buildVariable():void
+		private function _sendVO():void
 		{
-			var __validArr:Array = [nameV, nationV, sexV, ageV, areaV, emailV, zipV, zoneV, phoneV, mobileV, schoolV, addressV];
-			if(!Config.validate(__validArr, '带星号的项目为必填项'))
-			{
-				return;
-			}
-			Logger.info('StepBasic.buildVariable执行');
 			var __basicVO:StepBasicVO = new StepBasicVO();
 			__basicVO.pdt_author = StringUtil.trim(stepBasic.nameTI.text);
 			__basicVO.pdt_author_nation = stepBasic.nationCB.selectedItem.@id;
-			__basicVO.pdt_author_sex = stepBasic.sexRBG.selectedValue;
+			__basicVO.pdt_author_sex = stepBasic.sexRBG.selectedValue.toString();
 			__basicVO.pdt_author_age = stepBasic.ageNS.value;
 			__basicVO.pdt_area = stepBasic.areaCB.selectedItem.@id;
 			__basicVO.pdt_author_email = stepBasic.emailTI.text; 
