@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" 
-	implements="view.interfaces.ICopartner" xmlns:common="common.*">
+	implements="view.interfaces.ICopartner" xmlns:view="view.sub.component.*">
 	<mx:Script>
 		<![CDATA[
 			import mx.core.UIComponent;
@@ -160,5 +160,5 @@
 			<mx:TextInput id="mobileTI" name="{this.label}-移动电话" width="100%" maxChars="11" restrict="0-9"/>
 		</mx:FormItem>
 	</mx:HBox>
-	<common:UploadWorks id='photoUW' width="580" uploadItem="{uploadItem}"/>
+	<view:UploadWorks id='photoUW' width="580" uploadItem="{uploadItem}"/>
 </mx:VBox>

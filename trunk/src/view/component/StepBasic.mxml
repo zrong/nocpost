@@ -4,6 +4,7 @@
 	<mx:Script>
 		<![CDATA[
 			import model.ConfigProxy;
+			import model.txt.Message;
 			import mx.core.UIComponent;
 			import mx.events.ValidationResultEvent;
 			import net.zengrong.logging.Logger;
@@ -16,7 +17,7 @@
 				dispatchEvent(new Event($name));
 			}
 			
-			public function validate($error:String='带星号的项目为必填项'):Boolean
+			public function validate($error:String='带星号的项目为必填项'):void
 			{
 				var __validArr:Array = [nameV, nationV, sexV, ageV, areaV, emailV, zipV, zoneV, phoneV, mobileV, schoolV, addressV];
 				Logger.info("StepBasic.validate执行,__validArr.length:{0}", __validArr.length);
@@ -40,59 +41,57 @@
 						Logger.debug('检测字段：\n{0}', __t.id);
 						throw new Error(__t.name+' 填写有误：'+__v.message);
 					}				
-					return false;
 				}
-				return true;
 			}
 		]]>
 	</mx:Script>
 	<mx:StringValidator 
 		id="nameV" source="{nameTI}" property="text" minLength="2" maxLength="5" 
-		requiredFieldError="{ConfigProxy.REQUIRED_FIELD_ERROR}" 
-		tooShortError="{StringUtil.substitute(ConfigProxy.TOO_SHORT_ERROR, this.nameV.minLength)}" 
-		tooLongError="{StringUtil.substitute(ConfigProxy.TOO_LONG_ERROR, this.nameV.maxLength)}"/>
+		requiredFieldError="{Message.REQUIRED_FIELD_ERROR}" 
+		tooShortError="{StringUtil.substitute(Message.TOO_SHORT_ERROR, this.nameV.minLength)}" 
+		tooLongError="{StringUtil.substitute(Message.TOO_LONG_ERROR, this.nameV.maxLength)}"/>
 	<mx:Validator id="nationV" source="{nationCB}" property="selectedLabel" 
-		requiredFieldError="{ConfigProxy.REQUIRED_FIELD_ERROR}"/>
+		requiredFieldError="{Message.REQUIRED_FIELD_ERROR}"/>
 	<mx:Validator id="sexV" source="{sexRBG}" property="selectedValue" listener="{maleRB}"
-		requiredFieldError="{ConfigProxy.REQUIRED_FIELD_ERROR}"/>
+		requiredFieldError="{Message.REQUIRED_FIELD_ERROR}"/>
 	<mx:Validator id="ageV" source="{ageNS}" property="value"
-		requiredFieldError="{ConfigProxy.REQUIRED_FIELD_ERROR}"/>
+		requiredFieldError="{Message.REQUIRED_FIELD_ERROR}"/>
 	<mx:Validator id="areaV" source="{areaCB}" property="selectedLabel"
-		requiredFieldError="{ConfigProxy.REQUIRED_FIELD_ERROR}"/>
+		requiredFieldError="{Message.REQUIRED_FIELD_ERROR}"/>
 	<mx:EmailValidator id="emailV" source="{emailTI}" property="text"
-		requiredFieldError="{ConfigProxy.REQUIRED_FIELD_ERROR}"
-		invalidCharError="{ConfigProxy.INVALID_CHAR_ERROR}"
-		invalidDomainError="{ConfigProxy.INVALID_DOMAIN_ERROR}"
-		invalidIPDomainError="{ConfigProxy.INVALID_IP_DOMAIN_ERROR}"
-		invalidPeriodsInDomainError="{ConfigProxy.INVALID_PERIODS_IN_DOMAIN_ERROR}"
-		missingAtSignError="{ConfigProxy.MISSING_AT_SIGN_ERROR}"
-		missingPeriodInDomainError="{ConfigProxy.MISSING_PERIODS_IN_DOMAIN_ERROR}"
-		missingUsernameError="{ConfigProxy.MISSING_USER_NAME_ERROR}"
-		tooManyAtSignsError="{ConfigProxy.TOO_MANY_ANT_SIGN_ERROR}"/>
+		requiredFieldError="{Message.REQUIRED_FIELD_ERROR}"
+		invalidCharError="{Message.INVALID_CHAR_ERROR}"
+		invalidDomainError="{Message.INVALID_DOMAIN_ERROR}"
+		invalidIPDomainError="{Message.INVALID_IP_DOMAIN_ERROR}"
+		invalidPeriodsInDomainError="{Message.INVALID_PERIODS_IN_DOMAIN_ERROR}"
+		missingAtSignError="{Message.MISSING_AT_SIGN_ERROR}"
+		missingPeriodInDomainError="{Message.MISSING_PERIODS_IN_DOMAIN_ERROR}"
+		missingUsernameError="{Message.MISSING_USER_NAME_ERROR}"
+		tooManyAtSignsError="{Message.TOO_MANY_ANT_SIGN_ERROR}"/>
 	<mx:StringValidator id="zipV" source="{zipTI}" property="text" minLength="6" maxLength="6"
-		requiredFieldError="{ConfigProxy.REQUIRED_FIELD_ERROR}"
-		tooShortError="{StringUtil.substitute(ConfigProxy.TOO_SHORT_ERROR, this.zipV.minLength)}"
-		tooLongError="{StringUtil.substitute(ConfigProxy.TOO_LONG_ERROR, this.zipV.maxLength)}"/>
+		requiredFieldError="{Message.REQUIRED_FIELD_ERROR}"
+		tooShortError="{StringUtil.substitute(Message.TOO_SHORT_ERROR, this.zipV.minLength)}"
+		tooLongError="{StringUtil.substitute(Message.TOO_LONG_ERROR, this.zipV.maxLength)}"/>
 	<mx:StringValidator id="zoneV" source="{zoneTI}" property="text" minLength="3" maxLength="4"
-		requiredFieldError="{ConfigProxy.REQUIRED_FIELD_ERROR}"
-		tooShortError="{StringUtil.substitute(ConfigProxy.TOO_SHORT_ERROR, this.zoneV.minLength)}"
-		tooLongError="{StringUtil.substitute(ConfigProxy.TOO_LONG_ERROR, this.zoneV.maxLength)}"/>
+		requiredFieldError="{Message.REQUIRED_FIELD_ERROR}"
+		tooShortError="{StringUtil.substitute(Message.TOO_SHORT_ERROR, this.zoneV.minLength)}"
+		tooLongError="{StringUtil.substitute(Message.TOO_LONG_ERROR, this.zoneV.maxLength)}"/>
 	<mx:StringValidator id="phoneV" source="{phoneTI}" property="text" minLength="6" maxLength="8"
-		requiredFieldError="{ConfigProxy.REQUIRED_FIELD_ERROR}"
-		tooShortError="{StringUtil.substitute(ConfigProxy.TOO_SHORT_ERROR, this.phoneV.minLength)}"
-		tooLongError="{StringUtil.substitute(ConfigProxy.TOO_LONG_ERROR, this.phoneV.maxLength)}"/>
+		requiredFieldError="{Message.REQUIRED_FIELD_ERROR}"
+		tooShortError="{StringUtil.substitute(Message.TOO_SHORT_ERROR, this.phoneV.minLength)}"
+		tooLongError="{StringUtil.substitute(Message.TOO_LONG_ERROR, this.phoneV.maxLength)}"/>
 	<mx:StringValidator id="mobileV" source="{mobileTI}" property="text" minLength="11"
-		requiredFieldError="{ConfigProxy.REQUIRED_FIELD_ERROR}"
-		tooShortError="{StringUtil.substitute(ConfigProxy.TOO_SHORT_ERROR, this.mobileV.minLength)}"
-		tooLongError="{StringUtil.substitute(ConfigProxy.TOO_LONG_ERROR, this.mobileV.maxLength)}"/>
+		requiredFieldError="{Message.REQUIRED_FIELD_ERROR}"
+		tooShortError="{StringUtil.substitute(Message.TOO_SHORT_ERROR, this.mobileV.minLength)}"
+		tooLongError="{StringUtil.substitute(Message.TOO_LONG_ERROR, this.mobileV.maxLength)}"/>
 	<mx:StringValidator id="schoolV" source="{schoolTI}" property="text" minLength="6"
-		requiredFieldError="{ConfigProxy.REQUIRED_FIELD_ERROR}"
-		tooShortError="{StringUtil.substitute(ConfigProxy.TOO_SHORT_ERROR, this.schoolV.minLength)}"
-		tooLongError="{StringUtil.substitute(ConfigProxy.TOO_LONG_ERROR, this.schoolV.maxLength)}"/>
+		requiredFieldError="{Message.REQUIRED_FIELD_ERROR}"
+		tooShortError="{StringUtil.substitute(Message.TOO_SHORT_ERROR, this.schoolV.minLength)}"
+		tooLongError="{StringUtil.substitute(Message.TOO_LONG_ERROR, this.schoolV.maxLength)}"/>
 	<mx:StringValidator id="addressV" source="{addressTI}" property="text" minLength="7"
-		requiredFieldError="{ConfigProxy.REQUIRED_FIELD_ERROR}"
-		tooShortError="{StringUtil.substitute(ConfigProxy.TOO_SHORT_ERROR, this.addressV.minLength)}"
-		tooLongError="{StringUtil.substitute(ConfigProxy.TOO_LONG_ERROR, this.addressV.maxLength)}"/>
+		requiredFieldError="{Message.REQUIRED_FIELD_ERROR}"
+		tooShortError="{StringUtil.substitute(Message.TOO_SHORT_ERROR, this.addressV.minLength)}"
+		tooLongError="{StringUtil.substitute(Message.TOO_LONG_ERROR, this.addressV.maxLength)}"/>
 	
 	<mx:Text textAlign="center" width="100%" fontWeight="bold" fontSize="14" color="#FF0000">
 		<mx:text>{this.label}</mx:text>

@@ -2,14 +2,15 @@
 <mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" horizontalAlign="center" verticalAlign="middle" horizontalScrollPolicy="off" creationComplete="init()">
 	<mx:Script>
 		<![CDATA[
+			import model.ConfigProxy;
+			import model.type.ModeType;
 			import flash.net.navigateToURL;
 			import mx.charts.BubbleChart;
 			import mx.events.PropertyChangeEvent;
 			import utils.Output;		
 			import flash.net.FileReference;
 			import flash.net.FileFilter;
-			import utils.Config;
-			import utils.type.*;
+			import model.type.*;
 			import net.zengrong.logging.Logger;
 			import mx.controls.Button;
 			
@@ -116,7 +117,7 @@
 			{
 				var __var:URLVariables = new URLVariables();
 				__var[StepType.STEP_NAME] = StepType.STEP_UPLOAD;
-				__var[ModeType.MODE_NAME] = Config.MOD_TYPE;
+				__var[ModeType.MODE_NAME] = ConfigProxy.MOD_TYPE;
 				__var.upload_attribute_id = uploadItem.@id;
 				__var.pdt_id = Config.RESULT_DATA.pdt_id;
 				__var.game_code = Config.RESULT_DATA.game_code;

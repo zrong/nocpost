@@ -19,14 +19,14 @@ package view
 		
 		override public function listNotificationInterests():Array
 		{
-			return [	ApplicationFacade.STEP_GET_INFO_DONE	];
+			return [	ApplicationFacade.RPC_STEP_GET_INFO_DONE	];
 		}
 		
 		override public function handleNotification(notification:INotification):void
 		{
 			switch(notification.getName())
 			{
-				case ApplicationFacade.STEP_GET_INFO_DONE:
+				case ApplicationFacade.RPC_STEP_GET_INFO_DONE:
 					
 					break;
 			}

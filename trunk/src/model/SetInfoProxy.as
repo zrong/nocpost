@@ -4,6 +4,8 @@ package model
 	
 	import model.vo.IVariables;
 	
+	import net.zengrong.logging.Logger;
+	
 	import org.puremvc.as3.patterns.proxy.Proxy;
 
 	public class SetInfoProxy extends Proxy
@@ -22,8 +24,12 @@ package model
 		{
 			for(var i:String in $var)
 			{
-				data[i] = $var[i];
+				if($var[i] != null)
+				{
+					data[i] = $var[i];
+				}
 			}
+			Logger.debug('要提交的变量：{0}' , data);
 		}
 		
 	}

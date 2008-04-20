@@ -26,7 +26,7 @@ package model
 			}
 			catch(err:Error)
 			{
-				sendNotification(ApplicationFacade.STEP_GET_INFO_ERROR, err.toString());
+				sendNotification(ApplicationFacade.RPC_STEP_GET_INFO_ERROR, err.toString());
 			}
 		}
 		
@@ -35,13 +35,13 @@ package model
 			Logger.info('HTTP提交返回成功');
 			data = $data.result as XML;
 			//Logger.info(data.province);
-			sendNotification(ApplicationFacade.STEP_GET_INFO_DONE);
+			sendNotification(ApplicationFacade.RPC_STEP_GET_INFO_DONE);
 		}
 		
 		public function fault($info:Object):void
 		{
-			var __fault:String = $info.fault.message+"\n"+$info.message.toString();
-			sendNotification(ApplicationFacade.STEP_GET_INFO_FAIL, __fault);
+			Logger.info('HTTP提交返回失败：\n{0}\n{1}{2}',$info.fault.getStackTrace(), $info.messageId, $info.message);
+			sendNotification(ApplicationFacade.ERROR, $info.fault.message+"\n"+$info.message.toString());
 		}
 		
 	}
