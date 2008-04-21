@@ -43,12 +43,12 @@ package view
 			{
 				case ApplicationFacade.RPC_STEP_GET_INFO_DONE:
 					_data = _getInfoProxy.getData() as XML;
-					update();
+					_update();
 					break;
 			}
 		}
 			
-		public function update():void
+		private function _update():void
 		{
 			var __modify:XML = XML(_data.mod_content[0]);
 			//Logger.info('StepText.{1}的__modify：{2}', varName, __modify);

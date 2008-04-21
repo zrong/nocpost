@@ -15,8 +15,8 @@ package view
 	
 	import view.component.StepWorks;
 	import view.interfaces.IStep;
-	import view.sub.component.Copartner;
-	import view.sub.component.CopartnerInfo;
+	import view.sub.component.CopartnerSimple;
+	import view.sub.component.CopartnerComplex;
 	import view.sub.component.HelppingTeacher;
 
 	public class StepWorksMediator extends Mediator implements IStep
@@ -72,7 +72,7 @@ package view
 					_data = _getInfoProxy.getData() as XML;
 					stepWorks.info = _data;
 					_buildFrameFromModeTypeAndUserType();
-					update();
+					_update();
 					break;
 			}
 		}		
@@ -130,7 +130,7 @@ package view
 		/**
 		 * 更新界面，填写表单元素的初始值
 		 * */
-		public function update():void
+		private function _update():void
 		{
 			
 			if(ConfigProxy.IS_MODIFY)
