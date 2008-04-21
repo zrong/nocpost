@@ -7,6 +7,7 @@ package view
 	import model.vo.StepWorksVO;
 	
 	import mx.containers.Tile;
+	import mx.containers.VBox;
 	
 	import net.zengrong.logging.Logger;
 	
@@ -14,10 +15,15 @@ package view
 	import org.puremvc.as3.patterns.mediator.Mediator;
 	
 	import view.component.StepWorks;
+	import view.interfaces.ICopartner;
 	import view.interfaces.IStep;
-	import view.sub.component.CopartnerSimple;
+	import view.sub.CopartnerComplexMediator;
+	import view.sub.CopartnerSimpleMediator;
+	import view.sub.HelppingTeacherMediator;
 	import view.sub.component.CopartnerComplex;
+	import view.sub.component.CopartnerSimple;
 	import view.sub.component.HelppingTeacher;
+	import view.sub.component.UploadResource;
 
 	public class StepWorksMediator extends Mediator implements IStep
 	{
@@ -210,7 +216,6 @@ package view
 		 * */
 		private function _fillCopartnerAndHelppingTeacher():void
 		{
-			/*
 			Logger.info('_fillCopartnerAndHelppingTeacher执行！');
 			//是否需要合作者的详细信息。合作者的详细信息尽在项目列表为“网络教育团队”的时候才需要
 			var __isNeedInfo:Boolean = (_data.project.item.(@id==_data.mod_content.pdt_kind)[0] as XML).author_need_info == '1';
@@ -219,23 +224,25 @@ package view
 			//在修改状态下 还需要为参赛者和辅导教师填充信息				
 			for (var i:int=0; i<_copartnerArray.length; i++)
 			{
-				(_copartnerArray[i] as ICopartner).setVariable(__copartners[i]);
+				var __copartnerMediator:ICopartner = facade.retrieveMediator(_copartnerArray[i]);
+				__copartnerMediator.setVariable(__copartners[i]);
 			}
 			if(_isTeacher) return;
 			//如果用户是学生，那么为辅导教师填充信息
 			var __teacherNum:int = _data.mod_content.pdt_teacher.item.length();				
-			Logger.info('__teacherNum <= 0:{1}', __teacherNum <= 0);
+			Logger.info('__teacherNum <= 0:{0}', __teacherNum <= 0);
 			//如果修改的时候，没有提交过辅导教师信息，就不处理
 			if(__teacherNum <= 0) return;
-			Logger.info('_helppingTeacherArray.length:{1}', _helppingTeacherArray.length);
+			Logger.info('_helppingTeacherArray.length:{0}', _helppingTeacherArray.length);
 			for (var j:int=0; j<_helppingTeacherArray.length; j++)
 			{
 				var __xml:XML = _data.mod_content.pdt_teacher.item[j] as XML;
-				//Logger.info('__xml:{1}', __xml);
+				//Logger.info('__xml:{0}', __xml);
 				//如果先前用户没有辅导教师信息，就不更新辅导教师信息
 				if(__xml == null) continue;
-				(_helppingTeacherArray[j] as HelppingTeacher).setVariable(__xml);
-			}*/
+				var __helppingTeacherMediator:ICopartner = facade.retrieveMediator(_helppingTeacherArray[j]);
+				__helppingTeacherMediator.setVariable(__xml);
+			}
 		}
 		
 		//===========================================
@@ -297,10 +304,10 @@ package view
 		 * */
 		private function _buildCopartnerStringForSubmit():String
 		{
-			/*
-			Logger.info('_buildCopartnerStrinForSubmit调用,_copartnerArray.length:{1}', _copartnerArray.length);
-			ConfigProxy.UPLOAD_COPARTNER_PHOTO = [];				
+			Logger.info('_buildCopartnerStrinForSubmit调用,_copartnerArray.length:{0}', _copartnerArray.length);
+
 			var __arr:Array = new Array();
+			var __photoArr:Array = new Array();
 			//调试用====================================
 			//var __temp:String =_copartnerArray[0].getVariable();
 			//var __tmp:ValidationResultEvent = (_copartnerArray[0] as CopartnerInfo).nameV.validate() as ValidationResultEvent;
@@ -308,16 +315,19 @@ package view
 			//=========================================
 			for(var i:int = 0; i<_copartnerArray.length; i++)
 			{
-				__arr.push(_copartnerArray[i].getVariable());
+				var __mediator:ICopartner = facade.retrieveMediator(_copartnerArray[i]);
+				__arr.push(__mediator.getVariable());
 				//如果当前的项目需要合作者详细信息，就更新Config中的需要上传的合作者照片的组件
 				if(ConfigProxy.IS_NEED_COPARTNER_INFO)
 				{
-					ConfigProxy.UPLOAD_COPARTNER_PHOTO.push((_copartnerArray[i] as CopartnerInfo).photoUW as UploadWorks);
+					__photoArr.push((__mediator as CopartnerComplexMediator).photoUW as UploadResource);
 				}
 			}
+			if(ConfigProxy.IS_NEED_COPARTNER_INFO)
+			{
+				sendNotification(ApplicationFacade.SET_CONFIG_UPLOAD_COPARTNER_PHOTO, __photoArr);
+			}
 			return __arr.join(ConfigProxy.SEPARATOR);
-			*/
-			return '';
 		}
 		
 		//===========================================
@@ -384,9 +394,6 @@ package view
 			Logger.info('_hasModule:{1}', _hasModule);
 			Logger.info('__cnum:{1}', __cnum);
 			Logger.info('__tnum:{1}', __tnum);*/
-			//每次改变项目，先要清空这两个数组，因为如果管理员先选择学生，后来又改成教师的项目，这时_helppingTeacherArray就有值了。而针对教师应该是没有值的，因此进行清空
-			_copartnerArray = new Array();
-			_helppingTeacherArray = new Array();
 			
 			_removeTile();
 			if(_isTeacher)
@@ -460,6 +467,18 @@ package view
 		 * */
 		private function _removeTile():void
 		{
+			//每次改变项目，先要清空这两个数组，因为如果管理员先选择学生，后来又改成教师的项目，
+			//这时_helppingTeacherArray就有值了。而针对教师应该是没有值的，因此进行清空
+			while(_copartnerArray.length>0)
+			//如果建立过辅导教师，就取消mediator的注册
+			{
+				facade.removeMediator(_copartnerArray.shift());
+			}
+			while(_helppingTeacherArray.length>0)
+			//如果建立过辅导教师，就取消mediator的注册
+			{
+				facade.removeMediator(_helppingTeacherArray.shift());
+			}			
 			if(_copartnerTile != null)
 			{
 				if(stepWorks.contains(_copartnerTile))
@@ -538,7 +557,6 @@ package view
 		 * */
 		public function buildCopartner($cnum:int, $needInfo:Boolean):void
 		{
-			/*
 			Logger.info('buildCopartner执行 ');
 			_copartnerArray = new Array();
 			if(_copartnerTile == null)
@@ -559,23 +577,29 @@ package view
 				for(var i:int=0; i< $cnum; i++)
 				{
 					//是否显示详细信息，生成的填写合作者信息的表单是不同的
-					var __copartner:*;
+					var __copartner:VBox;
+					var __copartnerMediator:ICopartner;
+					var __mediatorName:String;
 					if($needInfo)
 					//如果需要详细信息，同时要提供一个民族的列表
 					{
-						__copartner = new CopartnerInfo();
-						(__copartner as CopartnerInfo).nationList = _data.nation.item;
-						(__copartner as CopartnerInfo).index = i;
+						__mediatorName = CopartnerComplexMediator.NAME + i.toString();
+						__copartner = new CopartnerComplex();
+						__copartnerMediator = new CopartnerComplexMediator(__mediatorName, __copartner);
+						__copartnerMediator.index = i;
 					}
 					else
 					{
-						__copartner = new Copartner();
+						__mediatorName = CopartnerSimple.NAME + i.toString();
+						__copartner = new CopartnerSimple();
+						__copartnerMediator = new CopartnerSimpleMediator(__mediatorName, __copartner);
 					}						
 					__copartner.label = '合作者'+(i+1);
 					_copartnerTile.addChild(__copartner);
-					_copartnerArray.push(__copartner);
+					facade.registerMediator(__copartnerMediator);
+					_copartnerArray.push(__mediatorName);
 				}
-			}*/
+			}
 		}
 		
 		//===========================================
@@ -609,11 +633,12 @@ package view
 				for(var j:int=0; j< $tnum; j++)
 				{
 					var __id:String = (j+1).toString();
+					var __mediatorName:String = HelppingTeacherMediator.NAME + __id;
 					var __helppingTeacher:HelppingTeacher = new HelppingTeacher();
 					__helppingTeacher.label = '辅导教师'+__id;
-					__helppingTeacher.nationList = _data.nation.item;
 					_helppingTeacherTile.addChild(__helppingTeacher);	//把建立的辅导教师加入显示列表
-					_helppingTeacherArray.push(__helppingTeacher);		//把建立的辅导教师加入数组
+					facade.registerMediator(new HelppingTeacherMediator(__mediatorName, __helppingTeacher));	//注册辅导教师的Mediator
+					_helppingTeacherArray.push(__mediatorName);		//把建立的辅导教师的Mediator名称加入数组，以便于移除辅导教师的时候解除注册
 				}
 			}	
 		}
