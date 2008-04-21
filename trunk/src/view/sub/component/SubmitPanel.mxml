@@ -80,7 +80,7 @@
 					//数据写入成功后，如果当前的合作者需要详细信息，就把合作者的照片加入上传列表中
 					if(Config.IS_NEED_COPARTNER_INFO)
 					{
-						for each(var i:UploadWorks in Config.UPLOAD_COPARTNER_PHOTO)
+						for each(var i:UploadResource in Config.UPLOAD_COPARTNER_PHOTO)
 						{
 							i.buildVariable();
 							Config.UPLOAD_FILES.push(i);
@@ -110,7 +110,7 @@
 					_close();
 					return;					
 				}
-				var __uploadWork:UploadWorks = Config.UPLOAD_FILES.shift();
+				var __uploadWork:UploadResource = Config.UPLOAD_FILES.shift();
 				var __file:FileReference = __uploadWork.uploadFR;
 				var __request:URLRequest = new URLRequest(Config.URL);
 				__request.method = URLRequestMethod.POST;

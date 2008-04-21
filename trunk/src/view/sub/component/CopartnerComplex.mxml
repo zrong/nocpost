@@ -160,5 +160,5 @@
 			<mx:TextInput id="mobileTI" name="{this.label}-移动电话" width="100%" maxChars="11" restrict="0-9"/>
 		</mx:FormItem>
 	</mx:HBox>
-	<view:UploadWorks id='photoUW' width="580" uploadItem="{uploadItem}"/>
+	<view:UploadResource id='photoUW' width="580" uploadItem="{uploadItem}"/>
 </mx:VBox>

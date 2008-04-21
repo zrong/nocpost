@@ -46,7 +46,7 @@ package view
 			switch(notification.getName())
 			{
 				case ApplicationFacade.RPC_STEP_GET_INFO_DONE:
-					update();
+					_update();
 					break;
 			}
 		}
@@ -58,7 +58,7 @@ package view
 			_sendVO();					
 		}
 		
-		public function update():void
+		private function _update():void
 		{
 			Logger.debug('StepBasicMediator.update执行！');
 			_data = _getInfoProxy.getData() as XML;
