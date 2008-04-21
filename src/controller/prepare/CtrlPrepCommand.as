@@ -1,11 +1,7 @@
 package controller.prepare
 {
-	import controller.ErrorCommand;
-	import controller.GetConfigDoneCommand;
-	import controller.GetInfoDoneCommand;
-	import controller.VarUpdateCommand;
-	import controller.setConfig.SetIsNeedCopartnerInfoCommand;
-	import controller.setConfig.SetIsTeacherCommand;
+	import controller.*;
+	import controller.setConfig.*;
 	
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.command.SimpleCommand;
@@ -22,6 +18,7 @@ package controller.prepare
 			
 			facade.registerCommand(ApplicationFacade.SET_CONFIG_IS_TEACHER, SetIsTeacherCommand);
 			facade.registerCommand(ApplicationFacade.SET_CONFIG_IS_NEED_COPARTNER_INFO, SetIsNeedCopartnerInfoCommand);
+			facade.registerCommand(ApplicationFacade.SET_CONFIG_UPLOAD_COPARTNER_PHOTO, SetUploadCopartnerPhotoCommand);
 		}
 		
 	}

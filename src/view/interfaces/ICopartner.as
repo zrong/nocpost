@@ -4,5 +4,6 @@ package view.interfaces
 	{
 		function getVariable():String;
 		function setVariable($xml:XML):void;
+		function set index($index:int):void;
 	}
 }
