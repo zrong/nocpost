@@ -12,7 +12,6 @@ package view
 	import org.puremvc.as3.patterns.mediator.Mediator;
 	
 	import view.component.StepWorks;
-
 	import view.interfaces.IStep;
 	import view.sub.CopartnerAndTeacherMediator;
 
@@ -92,41 +91,34 @@ package view
 		{
 			var __project:XML;
 			var __projectID:String;
-			if(ConfigProxy.IS_MODIFY)
+			if(ConfigProxy.IS_MODIFY || ConfigProxy.IS_USER)
 			{
 				__project = _data.project.item.(@id==_data.mod_content.pdt_kind)[0] as XML;
-				_buildFrame(__project);				
+				_buildFrame(__project, ConfigProxy.IS_TEACHER);				
 			}
 			else
 			{
-				if(ConfigProxy.IS_USER)
-				{
-					__project = _data.project.item.(@id==_data.mod_content.pdt_kind)[0] as XML;
-					_buildFrame(__project);					
-				}
-				else
-				{
-					stepWorks.removeTeacher();
-				}
+				stepWorks.hideTeacher();
 			}
 		}
 		
-		private function _buildFrame($project:XML):void
+		private function _buildFrame($project:XML, $isTeacher:Boolean):void
 		{
-			var __projectID:String = $project.@id;
-			//var __isTeacher:Boolean = $project.is_teacher == '1';
+			_isTeacher = $isTeacher;
 			Logger.info('_buildFrame执行，__project：\n{0}', $project);
-			_isTeacher = ConfigProxy.IS_TEACHER;
 			_hasModule = _getHasModule($project);
 			if(_isTeacher)
 			//如果是教师项目，就增加教师独有的信息，同时根据教师参加的项目的参与者数量添加参与者字段
 			{
-				_buildTeacher(__projectID);
+				stepWorks.moduleFI.visible = _hasModule;
+				stepWorks.hideTeacher();
+				_catMediator.buildTeacher($project);
 			}
 			else
 			//如果是学生项目，就移除教师独有的表单，同时根据学生参加的项目添加参与者与辅导教师相关的字段
 			{
-				_buildStudent(__projectID);
+				stepWorks.showTeacher();
+				_catMediator.buildStudent($project);
 			}
 		}
 		//===========================================
@@ -275,10 +267,8 @@ package view
 		 * */
 		private function _projectChangeHandler(evt:Event):void
 		{
-			var __xml:XML = stepWorks.projectCB.selectedItem as XML;
-			_isTeacher = _getIsTeacher(__xml);
-			_hasModule = _getHasModule(__xml);	//教学实践评优的id是14，只有它有“模式”这个字段
-			var __projectID:String = __xml.@id;
+			var __project:XML = stepWorks.projectCB.selectedItem as XML;
+			_buildFrame(__project, _getIsTeacher(__project));
 			Logger.info('projectChangeHandler执行，__projectID:{1}', __projectID);
 			//Logger.info('projectChangeHandler执行，__xml:{1}', _data.project);
 			/*
@@ -286,16 +276,12 @@ package view
 			Logger.info('_hasModule:{1}', _hasModule);
 			Logger.info('__cnum:{1}', __cnum);
 			Logger.info('__tnum:{1}', __tnum);*/
-			
-			_catMediator.removeCAT();
 			if(_isTeacher)
 			{
-				_buildTeacher(__projectID);
 				_groupDP = _getGroupOfUser(true);
 			}
 			else
 			{
-				_buildStudent(__projectID);
 				_groupDP = _getGroupOfUser(false);
 			}
 			stepWorks.groupCB.dataProvider = _groupDP;
@@ -379,51 +365,7 @@ package view
 		//
 		//======================================================================================
 		
-		//===========================================
-		//	buildTeacher()	被_projectChangeHandler()和Application._buildFrame()调用
-		//===========================================
-		/**
-		 * 建立教师的步骤，仅当当前用户为学生的时候才进行
-		 * */
-		private function _buildTeacher($projectID:String):void
-		{
-			//根据传来的项目id获取当前的项目
-			var __project:XML = _data.project.item.(@id==$projectID)[0] as XML;
-			var __cnum:int = int(__project.cnum);
-			var __isNeedCopartnerInfo:Boolean = (__project.author_need_info == '1');
-			//Logger.info('buildTeacher执行，__project：\n{1}', _data.project.item.(@id=$projectID));
-			Logger.info('buildTeacher执行，$projectID:{0}',$projectID);			
-			stepWorks.moduleFI.visible = _hasModule;
-			_catMediator.buildCopartner(__cnum, __isNeedCopartnerInfo);
-			stepWorks.teacherBox.visible = true;
-			//当项目发生改变的时候 更新IS_NEED_COPARTNER_INFO的值
-			sendNotification(ApplicationFacade.SET_CONFIG_IS_NEED_COPARTNER_INFO, __isNeedCopartnerInfo);
-			sendNotification(ApplicationFacade.BUILD_TEACHER, $projectID);
-		}
-		
-		//===========================================
-		//	buildStudent()	被_projectChangeHandler()和Application._buildFrame()调用
-		//===========================================
-		/**
-		 * 建立学生的步骤，仅当当前用户为学生的时候执行
-		 * */
-		private function _buildStudent($projectID:String):void
-		{
-			//根据传来的项目id获取当前的项目
-			var __project:XML = _data.project.item.(@id==$projectID)[0] as XML;
-			var __cnum:int = int(__project.cnum);
-			var __tnum:int = int(__project.tnum);
-			var __isNeedCopartnerInfo:Boolean = (__project.author_need_info == '1')
-			Logger.info('buildStudent执行，$projectID:{0}',$projectID);
-			stepWorks.removeTeacher();
-			_catMediator.buildCopartner(__cnum, ConfigProxy.IS_NEED_COPARTNER_INFO);
-			_catMediator.buildHelppingTeacher(__tnum);
-			//当项目发生改变的时候 更新IS_NEED_COPARTNER_INFO的值
-			sendNotification(ApplicationFacade.SET_CONFIG_IS_NEED_COPARTNER_INFO, __isNeedCopartnerInfo);
-			sendNotification(ApplicationFacade.BUILD_STUDENT, $projectID);
-		}		
-
-		
+	
 		private function _getIsTeacher($xml:XML):Boolean
 		{
 			var __isTeacher:Boolean = $xml.is_teacher == '1';

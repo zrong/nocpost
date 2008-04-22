@@ -38,6 +38,8 @@ package
 		public static var BUILD_TEACHER:String = 'buildTeacher';
 		public static var BUILD_STUDENT:String = 'buildStudent';
 		
+		public static var UPLOAD_FILE_FILLED:String = 'uploadFileFilled';
+		
 		public static function getInstance():ApplicationFacade
 		{
 			if(instance == null) instance = new ApplicationFacade();

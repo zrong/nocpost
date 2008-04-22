@@ -78,10 +78,18 @@
 		/**
 		 * 移去（其实是隐藏）教师相关的步骤，仅当用户为学生的时候使用
 		 * */
-		public function removeTeacher():void
+		public function hideTeacher():void
 		{
-			Logger.info('removeTeacher执行 ');
+			Logger.info('hideTeacher执行 ');
 			teacherBox.visible = false;
+			teacherBox.height = 0;
+		}
+		
+		public function showTeacher():void
+		{
+			Logger.info('showTeacher执行 ');
+			teacherBox.height = 24;
+			teacherBox.visible = true;
 		}
 		]]>
 	</mx:Script>
@@ -122,7 +130,7 @@
 			<mx:ComboBox id="gradeCB" name="年级" width="135" prompt="请选择" labelField="@name" enabled="false"/>
 		</mx:FormItem>								
 	</mx:HBox>
-	<mx:HBox width="100%" id="teacherBox">
+	<mx:HBox width="100%" id="teacherBox" height="24">
 		<mx:FormItem id="subjectFI" label="学科：" width="33%" required="true">
 			<mx:ComboBox id="subjectCB" name="学科" width="135" prompt="请选择" labelField="@name" dropdownWidth="200" rowCount="10"/>
 		</mx:FormItem>
