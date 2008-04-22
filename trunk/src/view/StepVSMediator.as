@@ -56,10 +56,10 @@ package view
 					toPrevStep();
 					break;
 				case ApplicationFacade.BUILD_TEACHER:
-					_buildTeacherVS(notification.getBody().toString());
+					_buildTeacherVS();
 					break;
 				case ApplicationFacade.BUILD_STUDENT:
-					_buildStudentVS(notification.getBody().toString());
+					_buildStudentVS();
 					break;
 			}
 		}
@@ -114,12 +114,10 @@ package view
 		 * 建立第一步和第二步表单之后的表单
 		 * */
 		 
-		private function _buildTeacherVS($projectID:String):void
+		private function _buildTeacherVS():void
 		{
 			/*
 			_removeVS();
-			
-			stepUpload.buildUpload($projectID);
 			
 			var __tStep3:StepText = new StepText();
 			__tStep3.width = vs.width;
@@ -151,16 +149,13 @@ package view
 			
 			__tStep3.update();
 			__tStep4.update();
-			stepUpload.update();
 			*/
 		}
 		
-		private function _buildStudentVS($projectID:String):void
+		private function _buildStudentVS():void
 		{
 			/*
 			_removeVS();
-			
-			stepUpload.buildUpload($projectID);
 			
 			var __sStep3:StepText = new StepText();
 			__sStep3.width = vs.width;
@@ -196,7 +191,6 @@ package view
 			__sStep3.update();
 			__sStep4.update();
 			__sStep5.update();
-			stepUpload.update();
 			*/
 		}
 

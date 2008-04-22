@@ -4,9 +4,9 @@ package view.sub
 	
 	import org.puremvc.as3.patterns.mediator.Mediator;
 	
-	import view.sub.component.CopartnerAndTeacher;
-	
 	import view.interfaces.ICopartner;
+	import view.sub.component.CopartnerAndTeacher;
+	import view.sub.component.CopartnerSimple;
 
 	public class CopartnerAndTeacherMediator extends Mediator
 	{
@@ -66,16 +66,61 @@ package view.sub
 		}
 		
 		//===========================================
+		//	buildTeacher()	被_projectChangeHandler()和Application._buildFrame()调用
+		//===========================================
+		/**
+		 * 建立教师的步骤，仅当当前用户为学生的时候才进行
+		 * */
+		public function buildTeacher($project:XML):void
+		{
+			_removeCAT();
+			//根据传来的项目id获取当前的项目
+			var __isNeedCopartnerInfo:Boolean = _getIsNeedCopartnerInfo($project);
+			var __cnum:int = int($project.cnum);			
+			//Logger.info('buildTeacher执行，__project：\n{1}', _data.project.item.(@id=$projectID));
+			Logger.info('buildTeacher执行，$project:{0}',$project);			
+			if(__isNeedCopartnerInfo)
+			{
+				_buildCopartnerComplex(__cnum)
+			}
+			else
+			{
+				_buildCopartnerSimple(__cnum);
+			}
+			//当项目发生改变的时候 更新IS_NEED_COPARTNER_INFO的值			
+			sendNotification(ApplicationFacade.BUILD_TEACHER, $project);
+		}
+		
+		//===========================================
+		//	buildStudent()	被_projectChangeHandler()和Application._buildFrame()调用
+		//===========================================
+		/**
+		 * 建立学生的步骤，仅当当前用户为学生的时候执行
+		 * */
+		public function buildStudent($project:XML):void
+		{
+			_removeCAT();
+			//根据传来的项目id获取当前的项目
+			var __isNeedCopartnerInfo:Boolean = _getIsNeedCopartnerInfo($project);
+			var __cnum:int = int($project.cnum);
+			var __tnum:int = int($project.tnum);
+			Logger.info('buildStudent执行，$project:{0}',$project);
+			_buildCopartnerSimple(__cnum);
+			_buildHelppingTeacher(__tnum);
+			//当项目发生改变的时候 更新IS_NEED_COPARTNER_INFO的值
+			sendNotification(ApplicationFacade.BUILD_STUDENT, $project);
+		}	
+		
+		//===========================================
 		//	buildCopartner()	被buildStudent()、buildTeacher()调用
 		//===========================================
 		/**
-		 * 根据数量建立参赛者输入框
+		 * 根据数量建立简单的合作参赛者输入框
 		 * @$cnum 参赛者的数量
-		 * @$needInfo 参赛者是否需要详细信息
 		 * */
-		public function buildCopartner($cnum:int, $needInfo:Boolean):void
+		private function _buildCopartnerSimple($cnum:int):void
 		{
-			Logger.info('buildCopartner执行 ');
+			Logger.info('_buildCopartnerSimple执行 ');
 			_copartnerArray = new Array();
 			//_copartnerTile.height = ($needInfo ? 500 : 80);	//如果要显示详细信息 那么高度要更多些
 			//_copartnerTile.tileWidth = ($needInfo ? 600 : 165);
@@ -86,29 +131,43 @@ package view.sub
 				for(var i:int=0; i< $cnum; i++)
 				{
 					//是否显示详细信息，生成的填写合作者信息的表单是不同的
-					var __copartner:VBox;
-					var __copartnerMediator:ICopartner;
-					var __mediatorName:String;
-					if($needInfo)
-					//如果需要详细信息，同时要提供一个民族的列表
-					{
-						__mediatorName = CopartnerComplexMediator.NAME + i.toString();
-						__copartner = new CopartnerComplex();
-						__copartnerMediator = new CopartnerComplexMediator(__mediatorName, __copartner);
-						__copartnerMediator.index = i;
-					}
-					else
-					{
-						__mediatorName = CopartnerSimple.NAME + i.toString();
-						__copartner = new CopartnerSimple();
-						__copartnerMediator = new CopartnerSimpleMediator(__mediatorName, __copartner);
-					}						
+					var __mediatorName:String = CopartnerSimple.NAME + i.toString();
+					var __copartner:CopartnerSimple = new CopartnerSimple();;
+					var __copartnerMediator:CopartnerSimpleMediator = new CopartnerSimpleMediator(__mediatorName, __copartner);;
 					__copartner.label = '合作者'+(i+1);
 					copartnerTile.addChild(__copartner);
 					facade.registerMediator(__copartnerMediator);
 					_copartnerArray.push(__mediatorName);
 				}
 			}
+		}
+		
+		/**
+		 * 根据数量建立复杂的合作参赛者输入框
+		 * @$cnum 参赛者的数量
+		 * */
+		private function _buildCopartnerComplex($cnum:int):void
+		{
+			Logger.info('_buildCopartnerComplex执行 ');
+			_copartnerArray = new Array();
+			Logger.info('copartnerTile.height:{0},titleWidth:{1}', cat.copartnerTile.height, cat.copartnerTile.tileWidth);
+			cat.copartnerTile.removeAllChildren();
+			if($cnum > 0)
+			{			
+				for(var i:int=0; i< $cnum; i++)
+				{
+					//是否显示详细信息，生成的填写合作者信息的表单是不同的
+					var __copartner:CopartnerComplex = new CopartnerComplex();
+					var __mediatorName:String = CopartnerComplexMediator.NAME + i.toString();
+					var __copartnerMediator:CopartnerComplexMediator = new CopartnerComplexMediator(__mediatorName, __copartner);
+					__copartnerMediator.index = i;
+					__copartner.label = '合作者'+(i+1);
+					copartnerTile.addChild(__copartner);
+					facade.registerMediator(__copartnerMediator);
+					_copartnerArray.push(__mediatorName);
+				}
+			}
+				
 		}
 		
 		//===========================================
@@ -118,7 +177,7 @@ package view.sub
 		 * 为学生参赛者建立辅导教师栏目
 		 * @$tnum	要建立的辅导教师的数量
 		 * */
-		public function buildHelppingTeacher($tnum:int):void
+		private function _buildHelppingTeacher($tnum:int):void
 		{
 			Logger.info('buildHelppingTeacher执行 ');
 			_helppingTeacherArray = new Array();	//清空原来的辅导教师数组
@@ -148,7 +207,7 @@ package view.sub
 		 * 清空辅导教师容器和参赛者容器中的显示对象
 		 * CAT = CopartnerAndTeacher
 		 * */
-		public function removeCAT():void
+		private function _removeCAT():void
 		{
 			//每次改变项目，先要清空这两个数组，因为如果管理员先选择学生，后来又改成教师的项目，
 			//这时_helppingTeacherArray就有值了。而针对教师应该是没有值的，因此进行清空
@@ -198,6 +257,18 @@ package view.sub
 				sendNotification(ApplicationFacade.SET_CONFIG_UPLOAD_COPARTNER_PHOTO, __photoArr);
 			}
 			return __arr.join(ConfigProxy.SEPARATOR);
+		}
+		
+		private function _getProject($projectID:String):XML
+		{
+			return _data.project.item.(@id==$projectID)[0] as XML;
+		}
+		
+		private function _getIsNeedCopartnerInfo($project:XML):Boolean
+		{
+			var __bool:Boolean = $project.author_need_info == '1';
+			sendNotification(ApplicationFacade.SET_CONFIG_IS_NEED_COPARTNER_INFO, __bool);
+			return __bool;
 		}
 		
 		//===========================================
