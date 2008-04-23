@@ -18,6 +18,10 @@ package
 		public static var RPC_STEP_GET_INFO_ERROR:String = 'stepGetInfoError';
 		
 		public static var RPC_STEP_SET_INFO_DONE:String = 'stepSetInfoDone';
+		public static var RPC_STEP_SET_INFO_FAIL:String = 'stepSetInfoFail';
+		public static var RPC_STEP_SET_INFO_ERROR:String = 'stepSetInfoError';
+		
+		public static var RPC_STEP_SET_INFO_DONE:String = 'stepSetInfoDone';
 		public static var RPC_STEP_UPLOAD_DONE:String = 'stepUploadDone';
 		
 		public static var NAV_ACCEPT:String = 'navAccept';
@@ -30,6 +34,8 @@ package
 		public static var NAV_START:String = 'navStart';
 		
 		public static var VAR_UPDATE:String = 'varUpdate';
+		public static var VAR_SUBMIT:String = 'varSubmit';
+		public static var VAR_SUBMIT_SET_PROGRESS_BAR:String = 'varSubmitSetPB';
 		
 		public static var SET_CONFIG_IS_TEACHER:String = 'setIsTeacher';
 		public static var SET_CONFIG_IS_NEED_COPARTNER_INFO:String = 'setIsNeedCopartnerInfo';
@@ -39,6 +45,7 @@ package
 		public static var BUILD_STUDENT:String = 'buildStudent';
 		
 		public static var UPLOAD_FILE_FILLED:String = 'uploadFileFilled';
+		public static var UPLOAD_FILE_SUBMIT:String = 'uploadFileSubmit';
 		
 		public static function getInstance():ApplicationFacade
 		{

@@ -4,5 +4,6 @@ package model.type
 	{
 		public static const ALERT:String = 'alert';
 		public static const ERROR:String = 'error';
+		public static const CLOSE:String = 'close';
 	}
 }

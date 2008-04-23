@@ -6,11 +6,5 @@
 	<view:StepCopyright id="copyright" name="copyright" width="100%"/>
 	<view:StepBasic id="stepBasic" name="stepBasic" label="第一步：基本信息" width="100%" height="100%"/>
 	<view:StepWorks id="stepWorks" name='stepWorks' label='第二步：参赛信息' width="100%" height="100%"/>
-	<!--
-	<view:StepUpload id="stepUpload" name="stepUpload" width="100%" height="100%" label="&lt;font size='14' color='#ff0000'&gt;&lt;b&gt;第六步:上传文件（完成）&lt;/b&gt;"/>
-	-->
-	<mx:Script>
-		<![CDATA[
-		]]>
-	</mx:Script>
+	<view:StepUpload id="stepUpload" name="stepUpload" width="100%" height="100%"/>
 </mx:ViewStack>

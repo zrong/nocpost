@@ -2,6 +2,8 @@ package view
 {
 	import flash.events.Event;
 	
+	import model.type.ErrorType;
+	
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
 	
@@ -65,23 +67,6 @@ package view
 		private function nextClick(evt:Event):void
 		{
 			sendNotification(ApplicationFacade.NAV_NEXT);
-			//Logger.info((vs.selectedChild as Object).name);
-			/*
-			try
-			{
-				(vs.selectedChild as IStep).buildVariable();
-				vs.selectedIndex ++;
-				if(vs.selectedIndex > (vs.numChildren -2))
-				{
-					this.removeChild(this.nextBTN);
-					this.addChild(this.submitBTN);
-				}
-			}
-			catch(err:Error)
-			{
-				Logger.debug(err.getStackTrace());
-				Output.alert(err.message);
-			}*/	
 		}
 		
 		private function acceptClick(evt:Event):void
@@ -100,18 +85,6 @@ package view
 		private function submitClick(evt:Event):void
 		{
 			sendNotification(ApplicationFacade.NAV_SUBMIT);
-			/*
-			try
-			{
-				(vs.selectedChild as StepUpload).validateUpload(); 
-				Application.application.submit();
-			}
-			catch(err:Error)
-			{
-				Logger.debug(err.getStackTrace());
-				Output.alert(err.message);
-			}
-			*/
 		}
 	}
 }

@@ -11,6 +11,8 @@ package model.type
 		
 		public static const STEP_BASIC:String = 'stepBasic';
 		public static const STEP_WORKS:String = 'stepWorks';
+		public static const STEP_UPLOAD:String = 'stepUpload';
+		public static const STEP_TEACHER_PAY:String = 'stepTeacherPay';
 
 	}
 }

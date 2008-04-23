@@ -19,9 +19,9 @@ package view
 		private var _data:XML;
 		private var _getInfoProxy:GetInfoProxy;
 		
-		public function StepTextMediator(viewComponent:Object=null)
+		public function StepTextMediator($name:String, viewComponent:Object=null)
 		{
-			super(NAME, viewComponent);
+			super($name, viewComponent);
 			_getInfoProxy = facade.retrieveProxy(GetInfoProxy.NAME) as GetInfoProxy;
 			
 			stepText.addEventListener(StepText.DEBUG_FILL, _debugFill);
@@ -81,7 +81,7 @@ package view
 		private function _sendVO():void
 		{
 			var __vo:StepTextVO = new StepTextVO();
-			switch(stepText.varName)
+			switch(stepText.name)
 			{
 				case TextVarNameType.IDEA:
 					__vo.pdt_idea = stepText.textTA.text;
