@@ -18,7 +18,7 @@ package controller.prepare
 			facade.registerMediator(new StepVSMediator(__app.vs));			
 			facade.registerMediator(new StepBasicMediator(__app.vs.stepBasic));
 			facade.registerMediator(new StepWorksMediator(__app.vs.stepWorks));
-			//facade.registerMediator(new StepUploadMediator(__app.vs.stepUpload));
+			facade.registerMediator(new StepUploadMediator(__app.vs.stepUpload));
 			
 			var __configProxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
 			__configProxy.getConfig();

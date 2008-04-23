@@ -1,6 +1,3 @@
-import common.StepText;
-import common.SubmitPanel;
-
 import flash.net.URLVariables;
 
 import mx.core.UIComponent;
@@ -10,11 +7,9 @@ import mx.rpc.events.ResultEvent;
 
 import net.zengrong.logging.Logger;
 
-import teacher.Pay;
-
-import utils.Config;
-import utils.Output;
 import utils.type.*;
+
+import view.component.StepTeacherPay;
 
 [Bindable]
 private var info:XML;
@@ -178,10 +173,10 @@ public function buildVS($isTeacher:Boolean, $projectID:String):void
 		__tStep4.label = "<font size='14' color='#ff0000'><b>第四步：备注</b><br>若作品联系人不是作者本人，可在此注明联系人的通讯方式</font>";
 		__tStep4.info = info;
 		
-		var __tStep5:Pay = new Pay();
+		var __tStep5:Pay = new StepTeacherPay();
 		__tStep4.width = vs.width;
 		__tStep4.height = vs.height;
-		__tStep4.name = 'tStep5';
+		__tStep4.name = 'stepTeacherPay';
 		
 		stepUpload.label = "<font size='14' color='#ff0000'><b>第五步:上传文件（完成）</b>";
 		

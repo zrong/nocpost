@@ -25,6 +25,9 @@ package controller
 					alert(notification.getBody().toString());
 					close();
 					break;
+				case ErrorType.CLOSE:
+					close();
+					break;
 			}
 		}
 		

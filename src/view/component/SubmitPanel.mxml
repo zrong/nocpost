@@ -2,34 +2,11 @@
 <mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical" width="400" height="100"  creationComplete="init()">
 	<mx:Script>
 		<![CDATA[
-			import mx.containers.Tile;
 			import mx.controls.ProgressBarMode;
 			import net.zengrong.logging.Logger;
-			import mx.rpc.events.FaultEvent;
-			import mx.rpc.events.ResultEvent;
-			import utils.type.ModeType;
-			import utils.type.StepType;
-			import mx.rpc.http.HTTPService;
-			import flash.net.URLRequestMethod;
-			import mx.managers.PopUpManager;
-			import utils.*;
-			
-			[Bindable]
-			public var url:String;
-			
-			private var _http:HTTPService;
-			
-			private function init():void
-			{
-				_http = new HTTPService();
-				_http.url = url;
-				_http.resultFormat = HTTPService.RESULT_FORMAT_E4X;
-				_http.method = URLRequestMethod.POST;
-				_http.useProxy = false;
-				_http.addEventListener(ResultEvent.RESULT, _resultHandler);
-				_http.addEventListener(FaultEvent.FAULT, _faultHandler);
-			}
-			
+			import model.type.ModeType;
+			import model.type.StepType;
+	
 			/**
 			 * 每换一个提交对象的时候设置进度条 
 			 * */
@@ -40,26 +17,8 @@
 				pb.label = $pbLabel;
 				pb.mode = $mode;
 				pb.source = $source;
-			}
-			
-			/**
-			 * 当用户按下提交按钮的时候调用，向服务器提交用户填写的数据
-			 * */
-			public function send():void
-			{
-				Config.SUBMIT_VAR[StepType.STEP_NAME] = StepType.STEP_SET_INFO;
-				Config.SUBMIT_VAR[ModeType.MODE_NAME] = Config.MOD_TYPE;
-				Config.SUBMIT_VAR.pdt_id = Config.PDT_ID;
-				try{
-					_http.send(Config.SUBMIT_VAR);
-					setPB(true, '提交数据到服务器', '提交数据到服务器，请稍候...'); 
-				}
-				catch(err:Error)
-				{
-					Output.alert(err.toString());
-					Logger.debug(err.toString());
-				}
-			}
+			}			
+
 			
 			/**
 			 * 当提交填写的数据成功的时候调用
@@ -90,15 +49,6 @@
 				}
 			}
 			
-			/**
-			 * 当提交填写的数据失败的时候调用
-			 * */
-			private function _faultHandler(evt:FaultEvent):void
-			{
-				Logger.info('_http提交失败！\n{1}\n错误id：{2}\n错误信息：{3}', evt.fault, evt.messageId, evt.message);
-				Output.alert('提交数据失败，请重新提交。');
-				PopUpManager.removePopUp(this);
-			}
 			
 			/**
 			 * 上传队列中的文件
