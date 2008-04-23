@@ -37,7 +37,7 @@ package model
 			}
 			catch(err:Error)
 			{
-				sendNotification(ApplicationFacade.ERROR0, err.message, ErrorType.ALERT);
+				sendNotification(ApplicationFacade.ERROR, err.message, ErrorType.ALERT);
 			}
 		}
 		
@@ -62,14 +62,14 @@ package model
 			if($data.result.is_error=='true')
 			{
 				sendNotification(ApplicationFacade.ERROR, '提交数据失败，请重新提交。', ErrorType.ALERT);
-				sendNotification(ApplicationFacade.RPC_STEP_SET_INFO_FAIL);
+				_removeSubmitPanel();
 			}
 			else
 			//数据提交和写入都成功，进入上传文件流程
 			{
 				Logger.info('提交数据成功！准备开始上传流程。');
 				data = $data.result as XML;
-				sendNotification(ApplicationFacade.RPC_STEP_SET_INFO_DONE);
+				_removeSubmitPanel();
 				//sendNotification(ApplicationFacade.UPLOAD_FILE_SUBMIT);
 			}
 		}
@@ -78,7 +78,12 @@ package model
 		{
 			Logger.info('_http提交失败！\n{0}\n错误id：{1}\n错误信息：{2}', $info.fault, $info.messageId, $info.message);
 			sendNotification(ApplicationFacade.ERROR, '提交数据失败，请重新提交。', ErrorType.ALERT);
-			sendNotification(ApplicationFacade.RPC_STEP_SET_INFO_FAIL);
+			_removeSubmitPanel();
+		}
+		
+		private _removeSubmitPanel():void
+		{
+			sendNotification(ApplicationFacade.SUBMIT_PANEL_REMOVE);
 		}
 		
 	}

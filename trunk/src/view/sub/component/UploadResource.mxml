@@ -3,7 +3,9 @@
 	<mx:Script>
 		<![CDATA[
 			import model.txt.Message;
+			
 			public static const UPLOAD_CLICK:String = 'uploadClick';
+
 			[Bindable] public var uploadItem:XML;
 			
 			private function sendEvent($name:String):void
@@ -16,7 +18,7 @@
 		requiredFieldError="{Message.REQUIRED_FIELD_ERROR}"/>
 	<mx:HBox id="selectBox">
 		<mx:Label id="itemNameLabel" text="{uploadItem.@name}" width="150" textAlign="right"/>
-		<mx:Button id="selectBTN" label="选择文件" click="sendEvent(UPLOAD_CLICK)"/>
+		<mx:Button id="selectBTN" label="选择文件" click="_selectBTNClickHandler(event)"/>
 		<mx:Label id="uploadSizeLabel" width="80" text="{uploadItem.upload_file_size}"/>
 		<mx:Label id="uploadNameLabel" name="{itemNameLabel.text}" width="400" text="{uploadItem.upload_file_name}"/>
 	</mx:HBox>

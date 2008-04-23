@@ -47,6 +47,9 @@ package
 		public static var UPLOAD_FILE_FILLED:String = 'uploadFileFilled';
 		public static var UPLOAD_FILE_SUBMIT:String = 'uploadFileSubmit';
 		
+		public static var SUBMIT_PANEL_BUILD:String = 'spBuild';
+		public static var SUBMIT_PANEL_REMOVE:String = 'spRemove';
+		
 		public static function getInstance():ApplicationFacade
 		{
 			if(instance == null) instance = new ApplicationFacade();
