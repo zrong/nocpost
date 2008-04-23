@@ -15,12 +15,16 @@ package controller.prepare
 			facade.registerCommand(ApplicationFacade.RPC_STEP_GET_INFO_DONE, GetInfoDoneCommand);
 			
 			facade.registerCommand(ApplicationFacade.VAR_UPDATE, VarUpdateCommand);
+			facade.registerCommand(ApplicationFacade.VAR_SUBMIT, VarSubmitCommand);
 			
 			facade.registerCommand(ApplicationFacade.SET_CONFIG_IS_TEACHER, SetIsTeacherCommand);
 			facade.registerCommand(ApplicationFacade.SET_CONFIG_IS_NEED_COPARTNER_INFO, SetIsNeedCopartnerInfoCommand);
 			facade.registerCommand(ApplicationFacade.SET_CONFIG_UPLOAD_COPARTNER_PHOTO, SetUploadCopartnerPhotoCommand);
 			
 			facade.registerCommand(ApplicationFacade.UPLOAD_FILE_FILLED, UploadFilledCommand);
+			
+			facade.removeCommand(ApplicationFacade.SUBMIT_PANEL_BUILD, SubmitPanelBuildCommand);
+			facade.removeCommand(ApplicationFacade.SUBMIT_PANEL_REMOVE, SubmitPanelRemoveCommand);
 		}
 		
 	}

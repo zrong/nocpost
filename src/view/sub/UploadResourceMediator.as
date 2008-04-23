@@ -5,7 +5,9 @@ package view.sub
 	import flash.net.navigateToURL;
 	
 	import model.ConfigProxy;
+	import model.SetInfoProxy;
 	import model.type.*;
+	import model.vo.UploadResourceVO;
 	
 	import mx.controls.Button;
 	import mx.events.PropertyChangeEvent;
@@ -16,11 +18,11 @@ package view.sub
 	
 	import view.sub.component.UploadResource;
 	
-	[Bindable]	public var uploadItem:XML;
-	[Bindable]	public var uploadFR:FileReference;
+	public var uploadItem:XML;
+	private var _uploadFR:FileReference;
 	
 	private var _downBlankWordBTN:Button;
-	
+	private var _setInfoProxy:SetInfoProxy;
 	//只有这个值为真，才会允许将这个上传模块加入上传列表中
 	public var isModify:Boolean;	
 		
@@ -31,6 +33,7 @@ package view.sub
 		public function UploadResourceMediator(mediatorName:String=null, viewComponent:Object=null)
 		{
 			super(mediatorName, viewComponent);
+			_setInfoProxy = facade.retrieveProxy(SetInfoProxy.NAME) as SetInfoProxy;
 			init();
 		}
 		
@@ -40,18 +43,18 @@ package view.sub
 		}
 			
 		private function init():void
-		{
+		{			
 			uploadResource.uploadItem = uploadItem;
 			uploadResource.addEventListener(UploadResource.UPLOAD_CLICK, _selectBTNClickHandler);
-			uploadFR = new FileReference();
-			uploadFR.addEventListener(Event.SELECT, selectHandler);
-			build_downBlankWordBTN();
+			_uploadFR = new FileReference();
+			_uploadFR.addEventListener(Event.SELECT, selectHandler);
+			_buildDownBlankWordBTN();
 		}
 		
 		private function _selectBTNClickHandler(evt:Event):void
 		{
 			var __typeFilter:FileFilter = new FileFilter(uploadItem.@name+'('+uploadItem.upload_attribute_postfix+')', uploadItem.upload_attribute_postfix);
-			uploadFR.browse([__typeFilter]);
+			_uploadFR.browse([__typeFilter]);
 		}
 		
 		/**
@@ -72,7 +75,7 @@ package view.sub
 		/**
 		 * 建立下载登记表的按钮，该函数必须在本组件create完成后才能执行，因此放在init中了
 		 * */
-		private function build_downBlankWordBTN():void
+		private function _buildDownBlankWordBTN():void
 		{
 			var blankWordURL:String = uploadItem.upload_blank_word.toString();
 			Logger.info('build_downBlankWordBTN执行,blankWordURL：{0},length:{1}', blankWordURL, blankWordURL.length);
@@ -121,26 +124,27 @@ package view.sub
 			if(!validateType(__file.type))
 			{
 				sendNotification(ApplicationFacade.ERROR, '选择的文件类型不对！', ErrorType.ALERT);
-				uploadSizeLabel.text = '';
-				uploadNameLabel.text = '';
+				uploadResource.uploadSizeLabel.text = '';
+				uploadResource.uploadNameLabel.text = '';
 				return;
 			}
 			isModify = true;
-			uploadSizeLabel.text = _toByteName(__file.size);
-			uploadNameLabel.text = __file.name;
+			uploadResource.uploadSizeLabel.text = _toByteName(__file.size);
+			uploadResource.uploadNameLabel.text = __file.name;
 		}
 		
-		public function buildVariable():URLVariables
+		public function getUpload():UploadResourceVO
 		{
+			var __setInfoData:XML = _setInfoProxy.getData() as XML;
 			var __var:URLVariables = new URLVariables();
 			__var[StepType.STEP_NAME] = StepType.STEP_UPLOAD;
 			__var[ModeType.MODE_NAME] = ConfigProxy.MOD_TYPE;
 			__var.upload_attribute_id = uploadItem.@id;
-			__var.pdt_id = ConfigProxy.RESULT_DATA.pdt_id;
-			__var.game_code = ConfigProxy.RESULT_DATA.game_code;
-			__var.pdt_kind_code = ConfigProxy.RESULT_DATA.pdt_kind_code;
-			__var.pdt_group = ConfigProxy.RESULT_DATA.pdt_group;
-			__var.pdt_area = ConfigProxy.RESULT_DATA.pdt_area;
+			__var.pdt_id = __setInfoData.pdt_id;
+			__var.game_code = __setInfoData.game_code;
+			__var.pdt_kind_code = __setInfoData.pdt_kind_code;
+			__var.pdt_group = __setInfoData.pdt_group;
+			__var.pdt_area = __setInfoData.pdt_area;
 			/** 如果这个项目需要详细的合作者信息，并且uploadItem.index有值，就设置author_other_info_id的值
 			 * uploaditem.index在默认的情况下不会有值，因为如果是从PHP获取的XML，根本就没有这个节点。
 			 * 只有是在CopartnerInfo类中设置的XML才添加了这个index节点
@@ -148,14 +152,14 @@ package view.sub
 			 * 它的值，来自于step_set_info时返回的值
 			 * uploadItem.index的值是基于0的序号，正好可以用来获取Config.RESULT_DATA.pdt_author_other_info_id.item这个XMLList的值
 			 * */
-			 Logger.info("Config.IS_NEED_COPARTNER_INFO:{0}", Config.IS_NEED_COPARTNER_INFO);
+			 Logger.info("Config.IS_NEED_COPARTNER_INFO:{0}", ConfigProxy.IS_NEED_COPARTNER_INFO);
 			 Logger.info(" uploadItem.index:{0}",  uploadItem.index);
 			if(ConfigProxy.IS_NEED_COPARTNER_INFO && (uploadItem.index != null))				
 			{
-				//__var.author_other_info_id = Config.RESULT_DATA.pdt_author_other_info_id.item[uploadItem.index].@id;
+				__var.author_other_info_id = __setInfoData.pdt_author_other_info_id.item[uploadItem.index].@id;
 			}
 			Logger.info('__var:\n{0}', __var);
-			return __var;
+			return new UploadResourceVO(_uploadFR, __var);
 		}
 		
 		/**

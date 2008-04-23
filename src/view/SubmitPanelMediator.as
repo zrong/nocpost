@@ -1,5 +1,7 @@
 package view
 {
+	import mx.managers.PopUpManager;
+	
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
 	
@@ -33,6 +35,11 @@ package view
 					submitPanel.setPB.apply(null, notification.getBody() as Array);
 					break;
 			}
+		}
+		
+		public function removeSubmitPanel():void
+		{
+			PopUpManager.removePopUp(submitPanel);
 		}
 		
 		
