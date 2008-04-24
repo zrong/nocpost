@@ -70,7 +70,7 @@ package model
 				Logger.info('提交数据成功！准备开始上传流程。');
 				data = $data.result as XML;
 				_removeSubmitPanel();
-				//sendNotification(ApplicationFacade.UPLOAD_FILE_SUBMIT);
+				sendNotification(ApplicationFacade.UPLOAD_FILE_SUBMIT);
 			}
 		}
 		

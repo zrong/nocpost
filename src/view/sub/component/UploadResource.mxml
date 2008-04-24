@@ -2,6 +2,7 @@
 <mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" horizontalAlign="center" verticalAlign="middle" horizontalScrollPolicy="off" creationComplete="init()">
 	<mx:Script>
 		<![CDATA[
+			import mx.events.ValidationResultEvent;
 			import model.txt.Message;
 			
 			public static const UPLOAD_CLICK:String = 'uploadClick';
@@ -11,6 +12,16 @@
 			private function sendEvent($name:String):void
 			{
 				dispatchEvent(new Event($name));
+			}
+			
+			public function validate():void
+			{
+				var __v:ValidationResultEvent = selectV.validate() as ValidationResultEvent;
+				if(__v.type == ValidationResultEvent.INVALID)
+				{
+					selectBTN.setFocus();
+					throw new Error('必须选择一个要上传的文件！');
+				}
 			}
 		]]>
 	</mx:Script>
