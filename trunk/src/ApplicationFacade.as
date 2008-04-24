@@ -39,7 +39,6 @@ package
 		
 		public static var SET_CONFIG_IS_TEACHER:String = 'setIsTeacher';
 		public static var SET_CONFIG_IS_NEED_COPARTNER_INFO:String = 'setIsNeedCopartnerInfo';
-		public static var SET_CONFIG_UPLOAD_COPARTNER_PHOTO:String = 'setUploadCopartnerPhoto';
 		
 		public static var BUILD_TEACHER:String = 'buildTeacher';
 		public static var BUILD_STUDENT:String = 'buildStudent';

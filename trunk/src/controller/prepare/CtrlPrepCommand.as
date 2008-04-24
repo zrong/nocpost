@@ -19,7 +19,6 @@ package controller.prepare
 			
 			facade.registerCommand(ApplicationFacade.SET_CONFIG_IS_TEACHER, SetIsTeacherCommand);
 			facade.registerCommand(ApplicationFacade.SET_CONFIG_IS_NEED_COPARTNER_INFO, SetIsNeedCopartnerInfoCommand);
-			facade.registerCommand(ApplicationFacade.SET_CONFIG_UPLOAD_COPARTNER_PHOTO, SetUploadCopartnerPhotoCommand);
 			
 			facade.registerCommand(ApplicationFacade.UPLOAD_FILE_FILLED, UploadFilledCommand);
 			

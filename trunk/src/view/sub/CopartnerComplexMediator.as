@@ -6,6 +6,7 @@ package view.sub
 	
 	import view.interfaces.ICopartner;
 	import view.sub.component.CopartnerComplex;
+	import view.sub.component.UploadResource;
 
 	public class CopartnerComplexMediator extends Mediator implements ICopartner
 	{
@@ -27,6 +28,11 @@ package view.sub
 		private function get copartner():CopartnerComplex
 		{
 			return viewComponent as CopartnerComplex;
+		}
+		
+		public function get uploadResource():UploadResource
+		{
+			
 		}
 		
 		public function set index($index:int):void

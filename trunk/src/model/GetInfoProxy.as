@@ -1,5 +1,7 @@
 package model
 {
+	import flash.net.URLVariables;
+	
 	import model.dao.GetInfoDelegate;
 	
 	import mx.rpc.IResponder;
@@ -11,6 +13,7 @@ package model
 	public class GetInfoProxy extends Proxy implements IResponder
 	{
 		public static const NAME:String = 'GetInfoProxy';
+		private var _configProxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
 		
 		public function GetInfoProxy(data:Object=null)
 		{
@@ -22,7 +25,7 @@ package model
 			var __delegate:GetInfoDelegate = new GetInfoDelegate(this);
 			try
 			{
-				__delegate.getInfo(ConfigProxy.URL, ConfigProxy.URL_GET_INFO_VAR);
+				__delegate.getInfo(ConfigProxy.URL, _configProxy.getData() as URLVariables);
 			}
 			catch(err:Error)
 			{

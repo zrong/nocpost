@@ -7,30 +7,7 @@
 			import view.sub.component.UploadResource;
 			import mx.core.UIComponent;
 			import net.zengrong.logging.Logger;
-			
-			public function get uploadFiles():Array
-			{	
-				var __uploadArr:Array = new Array();	
-				for(var i:int=0; i<this.numChildren; i++)
-				{
-					var __child:UIComponent = this.getChildAt(i) as UIComponent;
-					if(__child is UploadResource)
-					{
-						var __uploadChild:UploadResource = __child as UploadResource;
-						/** 只有当上传模块被改变了，才被允许加入上传列表
-						 * 这是为了处理修改已有作品的问题
-						 * 如果当前的状态是修改已有作品，并且不检测当前上传的项目是否重新选择过了
-						 * 这是没有选择的upload也会被加入队列，造成上传失败
-						 * */
-						if(__uploadChild.isModify)
-						{
-							__uploadArr.push(__child);
-						}
-					}
-				}
-				return __uploadArr;
-			}
-			
+						
 			private function get _uploadValidator():Array
 			{
 				//上传列表中检测对象的数组
@@ -45,36 +22,6 @@
 					}
 				}
 				return __uploadValidatorArr;
-			}
-			
-			public function buildUpload($project:XML):void
-			{
-				Logger.info('StepUpload.buildUpload执行');
-				//要移除的子显示对象列表
-				var __toRemovedArr:Array = new Array();
-				//建立界面前先清空除了Text、uploadPhoto、uploadPicture之外的子显示对象
-				for(var i:int=0; i<this.numChildren; i++)
-				{
-					var __child:UIComponent = this.getChildAt(i) as UIComponent;
-					if(__child is UploadResource)
-					{
-						__toRemovedArr.push(__child);
-					}
-				}
-				for each(var k:UIComponent in __toRemovedArr)
-				{
-					this.removeChild(k);
-				}
-				//获取待上传的信息列表
-				var __uploadList:XMLList = $project.upload_attribute.item;
-				//根据获取的待上传的项目信息列表，重建上传显示对象
-				for each(var j:XML in __uploadList)
-				{
-					var __upload:UploadResource = new UploadResource();
-					__upload.uploadItem = j;
-					__upload.width = 600;
-					this.addChild(__upload);
-				}
 			}
 			
 			/**

@@ -1,6 +1,7 @@
 package view.sub
 {
 	import model.GetInfoProxy;
+	import model.type.StepType;
 	
 	import org.puremvc.as3.patterns.mediator.Mediator;
 	
@@ -249,19 +250,15 @@ package view.sub
 				//如果当前的项目需要合作者详细信息，就更新Config中的需要上传的合作者照片的组件
 				if(ConfigProxy.IS_NEED_COPARTNER_INFO)
 				{
-					__photoArr.push((__mediator as CopartnerComplexMediator).photoUW as UploadResource);
+					//__photoArr.push((__mediator as CopartnerComplexMediator).photoUW as UploadResource);
 				}
 			}
 			if(ConfigProxy.IS_NEED_COPARTNER_INFO)
 			{
-				sendNotification(ApplicationFacade.SET_CONFIG_UPLOAD_COPARTNER_PHOTO, __photoArr);
+				//如果处于“网络教研团队”类型，就将要上传的文件填充到UploadProxy中，并指名是第二步中填充的
+				sendNotification(ApplicationFacade.UPLOAD_FILE_FILLED, __photoArr, StepType.RPC_STEP_PHOTO);
 			}
 			return __arr.join(ConfigProxy.SEPARATOR);
-		}
-		
-		private function _getProject($projectID:String):XML
-		{
-			return _data.project.item.(@id==$projectID)[0] as XML;
 		}
 		
 		private function _getIsNeedCopartnerInfo($project:XML):Boolean

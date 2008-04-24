@@ -17,18 +17,18 @@ package view.sub
 	import org.puremvc.as3.patterns.mediator.Mediator;
 	
 	import view.sub.component.UploadResource;
-	
-	public var uploadItem:XML;
-	private var _uploadFR:FileReference;
-	
-	private var _downBlankWordBTN:Button;
-	private var _setInfoProxy:SetInfoProxy;
-	//只有这个值为真，才会允许将这个上传模块加入上传列表中
-	public var isModify:Boolean;	
 		
 	public class UploadResourceMediator extends Mediator
 	{
 		public static const NAME:String = 'UploadResourceMediator';
+		
+		public var uploadItem:XML;
+		private var _uploadFR:FileReference;
+		
+		private var _downBlankWordBTN:Button;
+		private var _setInfoProxy:SetInfoProxy;
+		//只有这个值为真，才会允许将这个上传模块加入上传列表中
+		public var isModify:Boolean;	
 		
 		public function UploadResourceMediator(mediatorName:String=null, viewComponent:Object=null)
 		{
@@ -135,6 +135,7 @@ package view.sub
 		
 		public function getUpload():UploadResourceVO
 		{
+			uploadResource.validate();
 			var __setInfoData:XML = _setInfoProxy.getData() as XML;
 			var __var:URLVariables = new URLVariables();
 			__var[StepType.STEP_NAME] = StepType.STEP_UPLOAD;
@@ -159,6 +160,7 @@ package view.sub
 				__var.author_other_info_id = __setInfoData.pdt_author_other_info_id.item[uploadItem.index].@id;
 			}
 			Logger.info('__var:\n{0}', __var);
+			
 			return new UploadResourceVO(_uploadFR, __var);
 		}
 		

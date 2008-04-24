@@ -15,15 +15,9 @@ package model
 	{
 		public static const NAME:String = 'ConfigProxy';
 		
-		public static var CONFIG_DATA:XML;		//第一次获取（get_info）的时候保存在这个变量中
-		public static var RESULT_DATA:XML;	//数据提交后返回的信息保存在这个变量中
-		public static var SUBMIT_VAR:URLVariables = new URLVariables();	//要提交的变量
-		public static var UPLOAD_FILES:Array = new Array();	//要上传的文件对象数组
-		public static var UPLOAD_COPARTNER_PHOTO:Array = new Array();	//合作者的照片数组，仅当需要合作者详细信息的时候，这个数组才有用
 		public static var IS_NEED_COPARTNER_INFO:Boolean;	//是否需要详细的合作者信息
 		
 		public static var URL:String;	//保存要提交的网址，此值从URL变量传来
-		public static var URL_GET_INFO_VAR:URLVariables;	//保存要获取信息时提交的变量
 		public static var PDT_ID:String;	//保存作品的ID，此值从URL变量传来
 		public static var USER_TYPE:String;	//保存用户类型，此值从URL变量传来
 		public static var MOD_TYPE:String;	//保存对数据库进行操作的类型，此值从URL变量传来，可能的值见model.type.ModeType
@@ -34,9 +28,9 @@ package model
 		
 		public static const SEPARATOR:String = '[*]';
 		
-		public function ConfigProxy(data:Object=null)
+		public function ConfigProxy()
 		{
-			super(NAME, data);
+			super(NAME, new URLVariables());
 		}
 		
 		public function getConfig():void
@@ -58,19 +52,17 @@ package model
 			PDT_ID = '2';
 			//=====================
 			
-			URL_GET_INFO_VAR = buildUrlGetInfoVar();
+			buildUrlGetInfoVar();
 			
-			Logger.debug('url:{0}',URL_GET_INFO_VAR);
+			Logger.debug('url:{0}',data);
 			sendNotification(ApplicationFacade.RPC_STEP_GET_CONFIG_DONE);
 		}
 		
 		private function buildUrlGetInfoVar():URLVariables
 		{
-			var __var:URLVariables = new URLVariables();
-			__var[StepType.RPC_STEP_NAME] = StepType.RPC_STEP_GET_INFO;
-			__var.pdt_id = PDT_ID;
-			__var.mod_type = MOD_TYPE;
-			return __var;
+			data[StepType.RPC_STEP_NAME] = StepType.RPC_STEP_GET_INFO;
+			data.pdt_id = PDT_ID;
+			data.mod_type = MOD_TYPE;
 		}
 	}
 }
