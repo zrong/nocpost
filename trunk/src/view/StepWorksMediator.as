@@ -90,7 +90,6 @@ package view
 		private function _buildFrameFromModeTypeAndUserType():void
 		{
 			var __project:XML;
-			var __projectID:String;
 			if(ConfigProxy.IS_MODIFY || ConfigProxy.IS_USER)
 			{
 				__project = _data.project.item.(@id==_data.mod_content.pdt_kind)[0] as XML;
@@ -268,6 +267,7 @@ package view
 		private function _projectChangeHandler(evt:Event):void
 		{
 			var __project:XML = stepWorks.projectCB.selectedItem as XML;
+			sendNotification(ApplicationFacade.PROJECT_CHANGE, __project);
 			_buildFrame(__project, _getIsTeacher(__project));
 			Logger.info('projectChangeHandler执行，__projectID:{1}', __projectID);
 			//Logger.info('projectChangeHandler执行，__xml:{1}', _data.project);
