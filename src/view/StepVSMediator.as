@@ -1,5 +1,6 @@
 package view
 {
+	import model.GetInfoProxy;
 	import model.txt.Message;
 	import model.type.StepType;
 	import model.type.TextVarNameType;
@@ -18,11 +19,14 @@ package view
 	public class StepVSMediator extends Mediator
 	{
 		public static const NAME:String = 'StepVSMediator';
+		private var _data:XML;
+		private var _project:XML;
 		private var _stepTextMediatorList:Array = [];	//保存动态注册的Mediator的名称
 		
 		public function StepVSMediator(viewComponent:Object=null)
 		{
 			super(NAME, viewComponent);
+			_data = (facade.retrieveProxy(GetInfoProxy.NAME) as GetInfoProxy).getData() as XML;
 		}
 		
 		public function get vs():StepVS
@@ -45,8 +49,15 @@ package view
 			switch(notification.getName())
 			{
 				case ApplicationFacade.RPC_STEP_GET_INFO_DONE:
-					
+					if(ConfigProxy.IS_MODIFY || ConfigProxy.IS_USER)
+					{
+						_project = _data.project.item.(@id==_data.mod_content.pdt_kind)[0] as XML;
+						_buildVS(_project);	
+					}					
 					break;
+				case ApplicationFacade.PROJECT_CHANGE:
+					_project = notification.getBody() as XML;
+					_buildVS(_project);
 				case ApplicationFacade.NAV_ACCEPT:
 					vs.selectedIndex ++;
 					break;
@@ -117,6 +128,26 @@ package view
 				Logger.debug(err.getStackTrace());
 				sendNotification(ApplicationFacade.ERROR, err.message, ErrorType.ALERT);
 			}
+		}
+		
+		private function _buildVS($project:XML):void
+		{
+			_removeVS();
+			//根据传来的项目id获取当前的项目
+			var __isNeedCopartnerInfo:Boolean = _getIsNeedCopartnerInfo($project);
+			var __cnum:int = int($project.cnum);			
+			//Logger.info('buildTeacher执行，__project：\n{1}', _data.project.item.(@id=$projectID));
+			Logger.info('buildTeacher执行，$project:{0}',$project);			
+			if(__isNeedCopartnerInfo)
+			{
+				_buildCopartnerComplex(__cnum)
+			}
+			else
+			{
+				_buildCopartnerSimple(__cnum);
+			}
+			//当项目发生改变的时候 更新IS_NEED_COPARTNER_INFO的值			
+			sendNotification(ApplicationFacade.BUILD_TEACHER, $project);
 		}
 		
 		/**
@@ -221,6 +252,20 @@ package view
 			{
 				facade.removeMediator(_stepTextMediatorList.shift().toString());
 			}
+		}
+		
+		private function _getIsNeedCopartnerInfo($project:XML):Boolean
+		{
+			var __bool:Boolean = $project.author_need_info == '1';
+			sendNotification(ApplicationFacade.SET_CONFIG_IS_NEED_COPARTNER_INFO, __bool);
+			return __bool;
+		}
+		
+		private function _getIsTeacher($xml:XML):Boolean
+		{
+			var __isTeacher:Boolean = $xml.is_teacher == '1';
+			sendNotification(ApplicationFacade.SET_CONFIG_IS_TEACHER, __isTeacher);	
+			return __isTeacher;
 		}
 	}
 }

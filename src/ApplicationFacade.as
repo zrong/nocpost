@@ -8,46 +8,48 @@ package
 
 	public class ApplicationFacade extends Facade
 	{
-		public static var STARTUP:String = 'startup';
-		public static var ERROR:String = 'error';
+		public static const STARTUP:String = 'startup';
+		public static const ERROR:String = 'error';
 		
-		public static var RPC_STEP_GET_CONFIG_DONE:String = 'stepGetConfigDone';
+		public static const RPC_STEP_GET_CONFIG_DONE:String = 'stepGetConfigDone';
 		
-		public static var RPC_STEP_GET_INFO_DONE:String = 'stepGetInfoDone';
-		public static var RPC_STEP_GET_INFO_FAIL:String = 'stepGetInfoFail';
-		public static var RPC_STEP_GET_INFO_ERROR:String = 'stepGetInfoError';
+		public static const RPC_STEP_GET_INFO_DONE:String = 'stepGetInfoDone';
+		public static const RPC_STEP_GET_INFO_FAIL:String = 'stepGetInfoFail';
+		public static const RPC_STEP_GET_INFO_ERROR:String = 'stepGetInfoError';
 		
-		public static var RPC_STEP_SET_INFO_DONE:String = 'stepSetInfoDone';
-		public static var RPC_STEP_SET_INFO_FAIL:String = 'stepSetInfoFail';
-		public static var RPC_STEP_SET_INFO_ERROR:String = 'stepSetInfoError';
+		public static const RPC_STEP_SET_INFO_DONE:String = 'stepSetInfoDone';
+		public static const RPC_STEP_SET_INFO_FAIL:String = 'stepSetInfoFail';
+		public static const RPC_STEP_SET_INFO_ERROR:String = 'stepSetInfoError';
 		
-		public static var RPC_STEP_SET_INFO_DONE:String = 'stepSetInfoDone';
-		public static var RPC_STEP_UPLOAD_DONE:String = 'stepUploadDone';
+		public static const RPC_STEP_SET_INFO_DONE:String = 'stepSetInfoDone';
+		public static const RPC_STEP_UPLOAD_DONE:String = 'stepUploadDone';
 		
-		public static var NAV_ACCEPT:String = 'navAccept';
-		public static var NAV_REJECT :String = 'navReject';
-		public static var NAV_PREV:String = 'navPrev';
-		public static var NAV_NEXT:String = 'navNext';
-		public static var NAV_SUBMIT:String = 'navSubmit';
-		public static var NAV_END:String = 'navEnd';
-		public static var NAV_BEFORE_END:String = 'navBeforeEnd';	//beforeEnd的意思是倒数第二个
-		public static var NAV_START:String = 'navStart';
+		public static const NAV_ACCEPT:String = 'navAccept';
+		public static const NAV_REJECT :String = 'navReject';
+		public static const NAV_PREV:String = 'navPrev';
+		public static const NAV_NEXT:String = 'navNext';
+		public static const NAV_SUBMIT:String = 'navSubmit';
+		public static const NAV_END:String = 'navEnd';
+		public static const NAV_BEFORE_END:String = 'navBeforeEnd';	//beforeEnd的意思是倒数第二个
+		public static const NAV_START:String = 'navStart';
 		
-		public static var VAR_UPDATE:String = 'varUpdate';
-		public static var VAR_SUBMIT:String = 'varSubmit';
-		public static var VAR_SUBMIT_SET_PROGRESS_BAR:String = 'varSubmitSetPB';
+		public static const VAR_UPDATE:String = 'varUpdate';
+		public static const VAR_SUBMIT:String = 'varSubmit';
+		public static const VAR_SUBMIT_SET_PROGRESS_BAR:String = 'varSubmitSetPB';
 		
-		public static var SET_CONFIG_IS_TEACHER:String = 'setIsTeacher';
-		public static var SET_CONFIG_IS_NEED_COPARTNER_INFO:String = 'setIsNeedCopartnerInfo';
+		public static const SET_CONFIG_IS_TEACHER:String = 'setIsTeacher';
+		public static const SET_CONFIG_IS_NEED_COPARTNER_INFO:String = 'setIsNeedCopartnerInfo';
 		
-		public static var BUILD_TEACHER:String = 'buildTeacher';
-		public static var BUILD_STUDENT:String = 'buildStudent';
+		public static const BUILD_TEACHER:String = 'buildTeacher';
+		public static const BUILD_STUDENT:String = 'buildStudent';
 		
-		public static var UPLOAD_FILE_FILLED:String = 'uploadFileFilled';
-		public static var UPLOAD_FILE_SUBMIT:String = 'uploadFileSubmit';
+		public static const UPLOAD_FILE_FILLED:String = 'uploadFileFilled';
+		public static const UPLOAD_FILE_SUBMIT:String = 'uploadFileSubmit';
 		
-		public static var SUBMIT_PANEL_BUILD:String = 'spBuild';
-		public static var SUBMIT_PANEL_REMOVE:String = 'spRemove';
+		public static const SUBMIT_PANEL_BUILD:String = 'spBuild';
+		public static const SUBMIT_PANEL_REMOVE:String = 'spRemove';
+		
+		public static const PROJECT_CHANGE:String = 'projectChange';
 		
 		public static function getInstance():ApplicationFacade
 		{
