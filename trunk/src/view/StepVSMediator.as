@@ -259,7 +259,7 @@ package view
 			__stepCopartner.percentWidth = 100;
 			__stepCopartner.percentHeight = 100;
 			vs.addChildAt(__stepCopartner, vs.getChildIndex(stepUpload));
-			var __mediator:StepCopartnerSimpleMediator = new StepCopartnerSimpleMediator(StepCopartnerSimpleMediator.NAME, __stepCopartner);
+			var __mediator:StepCopartnerSimpleMediator = new StepCopartnerSimpleMediator(__stepCopartner);
 			__mediator.buildSub($num);
 			facade.registerMediator(__mediator);
 			_dynamicStepMediatorList.push(StepCopartnerSimpleMediator.NAME);
@@ -271,7 +271,7 @@ package view
 			__stepCopartner.percentWidth = 100;
 			__stepCopartner.percentHeight = 100;
 			vs.addChildAt(i__stepCopartner, vs.getChildIndex(stepUpload));
-			var __mediator:StepCopartnerComplexMediator = new StepCopartnerComplexMediator(StepCopartnerComplexMediator.NAME, __stepCopartner);
+			var __mediator:StepCopartnerComplexMediator = new StepCopartnerComplexMediator(__stepCopartner);
 			__mediator.buildSub($num);
 			facade.registerMediator(__mediator);
 			_dynamicStepMediatorList.push(StepCopartnerComplexMediator.NAME);
@@ -283,7 +283,7 @@ package view
 			__stepHelppingTeacher.percentWidth = 100;
 			__stepHelppingTeacher.percentHeight = 100;
 			vs.addChildAt(__stepHelppingTeacher, vs.getChildIndex(stepUpload));
-			var __mediator:StepHelppingTeacherMediator = new StepHelppingTeacherMediator(HelppingTeacherMediator.NAME, __stepHelppingTeacher);
+			var __mediator:StepHelppingTeacherMediator = new StepHelppingTeacherMediator(__stepHelppingTeacher);
 			__mediator.buildSub($num);
 			facade.registerMediator(__mediator);
 			_dynamicStepMediatorList.push(StepHelppingTeacherMediator.NAME);

@@ -1,12 +1,12 @@
 package view.sub
 {
 	import model.GetInfoProxy;
+	import model.vo.UploadResourceVO;
 	
 	import org.puremvc.as3.patterns.mediator.Mediator;
 	
 	import view.interfaces.ICopartner;
 	import view.sub.component.CopartnerComplex;
-	import view.sub.component.UploadResource;
 
 	public class CopartnerComplexMediator extends Mediator implements ICopartner
 	{
@@ -16,42 +16,49 @@ package view.sub
 		private var _nationList:XMLList;
 		private var _copartnerInfo:XML;
 		private var _copartnerID:String = '';
+		private var _photoMediator:UploadResourceMediator;
+		private var _index:int;
 		
-		public function CopartnerSimpleMediator($name:String, viewComponent:Object=null)
+		public function CopartnerSimpleMediator($index:int, viewComponent:Object=null)
 		{
-			super($name, viewComponent);
+			super(NAME+$index.toString(), viewComponent);
 			_getInfoProxy = facade.retrieveProxy(GetInfoProxy.NAME) as GetInfoProxy;
 			_nationList = (_getInfoProxy.getData() as XML).nation.item;
-			copartner.nationCB.dataProvider = _nationList;
+			_view.nationCB.dataProvider = _nationList;
+			_index = $index;
+			_view.uploadItem.index = $index;
+			_initPhoto();
 		}
 		
-		private function get copartner():CopartnerComplex
+		private function _initPhoto():void
+		{
+			//photoMediator的名称用CopartnerComplexMediator的名称加上UploadResourceMediator的名称加上CopartnerComplexMediator的序号表示
+			_photoMediator = new UploadResourceMediator(NAME+UploadResourceMediator.NAME+_index, _view.photo);
+			facade.registerMediator(_photoMediator);
+		}
+		
+		private function get _view():CopartnerComplex
 		{
 			return viewComponent as CopartnerComplex;
 		}
 		
-		public function get uploadResource():UploadResource
+		public function getPhoto():UploadResourceVO
 		{
-			
-		}
-		
-		public function set index($index:int):void
-		{
-			copartner.uploadItem.index = $index;
+			return _photoMediator.getUpload();
 		}
 		
 		public function getVariable():String
 		{
-			copartner.validate();
+			_view.validate();
 			var __arr:Array = new Array();
 			__arr.push(_copartnerID);
-			__arr.push(copartner.nameTI.text);
-			__arr.push(copartner.emailTI.text);
-			__arr.push(copartner.phoneTI.text);
-			__arr.push(copartner.sexRBG.selectedValue);
-			__arr.push(copartner.(nationCB.selectedIndex==-1)?'':copartner.nationCB.selectedItem.@id);
-			__arr.push(copartner.mobileTI.text);
-			__arr.push(copartner.ageNS.value);
+			__arr.push(_view.nameTI.text);
+			__arr.push(_view.emailTI.text);
+			__arr.push(_view.phoneTI.text);
+			__arr.push(_view.sexRBG.selectedValue);
+			__arr.push(_view.(nationCB.selectedIndex==-1)?'':_view.nationCB.selectedItem.@id);
+			__arr.push(_view.mobileTI.text);
+			__arr.push(_view.ageNS.value);
 			return __arr.join(',');
 		}
 		
@@ -60,28 +67,30 @@ package view.sub
 			Logger.info('setVariable执行：\n{1}', $xml);
 			_copartnerInfo = $xml;
 			_copartnerID = _copartnerInfo.@id;
-			copartner.nameTI.text = _copartnerInfo.name;
-			copartner.emailTI.text = _copartnerInfo.email;
-			copartner.phoneTI.text = _copartnerInfo.phone;
-			copartner.mobileTI.text = _copartnerInfo.mobphone;
-			copartner.sexRBG.selectedValue = _copartnerInfo.sex;
-			copartner.ageNS.value = _copartnerInfo.age;
-			copartner.nationCB.selectedIndex = _getNationIndex(_copartnerInfo.nation);
+			_view.nameTI.text = _copartnerInfo.name;
+			_view.emailTI.text = _copartnerInfo.email;
+			_view.phoneTI.text = _copartnerInfo.phone;
+			_view.mobileTI.text = _copartnerInfo.mobphone;
+			_view.sexRBG.selectedValue = _copartnerInfo.sex;
+			_view.ageNS.value = _copartnerInfo.age;
+			_view.nationCB.selectedIndex = _getNationIndex(_copartnerInfo.nation);
 		}
 		
-		private function pull():void
+		public function removePhotoMediator():void
 		{
-			sendNotification(ApplicationFacade.UPLOAD_FILE_FILLED, __photoArr, StepType.RPC_STEP_PHOTO);
+			facade.removeMediator(_photoMediator.getMediatorName());
+			_photoMediator = null;
 		}
+		
 		
 		/**
 		 * 返回已经选择的nation的值在nation列表中的索引值
 		 * */
 		private function _getNationIndex($id:String):int
 		{
-			for(var i:int=0; i<nationList.length(); i++)
+			for(var i:int=0; i<_nationList.length(); i++)
 			{
-				if(nationList[i].@id == $id)
+				if(_nationList[i].@id == $id)
 				{
 					return i;
 				}
