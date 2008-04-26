@@ -20,7 +20,7 @@ package controller
 					__uploadProxy.uploadPhoto = notification.getBody() as Array;
 					break;
 				case StepType.RPC_STEP_UPLOAD:
-					__uploadProxy.setData(notification.getBody() as Array);
+					__uploadProxy.uploadFile = notification.getBody() as Array;
 					break;
 			}
 			

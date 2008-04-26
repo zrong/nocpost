@@ -35,8 +35,6 @@ package view
 		private var _isTeacher:Boolean;	//当前选中的项目是不是教师项目
 		private var _hasModule:Boolean;	//是否有教学模式属性
 		
-		private var _catMediator:CopartnerAndTeacherMediator;
-		
 		public function StepWorksMediator(viewComponent:Object=null)
 		{
 			super(NAME, viewComponent);
@@ -47,8 +45,6 @@ package view
 		private function _initMVC():void
 		{
 			_getInfoProxy = facade.retrieveProxy(GetInfoProxy.NAME) as GetInfoProxy;
-			_catMediator = new CopartnerAndTeacherMediator(stepWorks.cat);
-			facade.registerMediator(_catMediator);
 		}
 		
 		private function _initEvent():void
@@ -58,7 +54,7 @@ package view
 			stepWorks.addEventListener(StepWorks.GROUP_CHANGE, _groupChangeHandler);
 		}
 		
-		private function get stepWorks():StepWorks
+		private function get _view():StepWorks
 		{
 			return viewComponent as StepWorks;
 		}
@@ -74,7 +70,7 @@ package view
 			{
 				case ApplicationFacade.RPC_STEP_GET_INFO_DONE:
 					_data = _getInfoProxy.getData() as XML;
-					stepWorks.info = _data;
+					_view.info = _data;
 					_buildFrameFromModeTypeAndUserType();
 					_update();
 					break;
@@ -97,7 +93,7 @@ package view
 			}
 			else
 			{
-				stepWorks.hideTeacher();
+				_view.hideTeacher();
 			}
 		}
 		
@@ -109,15 +105,13 @@ package view
 			if(_isTeacher)
 			//如果是教师项目，就增加教师独有的信息，同时根据教师参加的项目的参与者数量添加参与者字段
 			{
-				stepWorks.moduleFI.visible = _hasModule;
-				stepWorks.hideTeacher();
-				_catMediator.buildTeacher($project);
+				_view.moduleFI.visible = _hasModule;
+				_view.hideTeacher();
 			}
 			else
 			//如果是学生项目，就移除教师独有的表单，同时根据学生参加的项目添加参与者与辅导教师相关的字段
 			{
-				stepWorks.showTeacher();
-				_catMediator.buildStudent($project);
+				_view.showTeacher();
 			}
 		}
 		//===========================================
@@ -132,7 +126,6 @@ package view
 			if(ConfigProxy.IS_MODIFY)
 			{
 				_fillForHasValue(!ConfigProxy.IS_USER, true);	
-				_catMediator.fillCopartnerAndHelppingTeacher();			
 			}
 			else
 			{
@@ -143,16 +136,16 @@ package view
 				else
 				{
 					//nameTI.text 
-					stepWorks.projectCB.dataProvider = _data.project.item;
+					_view.projectCB.dataProvider = _data.project.item;
 					//projectCB.selectedIndex = 0;
 					//groupCB.dataProvider = _groupDP;
 					//groupCB.selectedIndex = 0;
 					//gradeCB.dataProvider = _gradeDP;
 					//gradeCB.selectedIndex = 0;
-					stepWorks.subjectCB.dataProvider = _data.subject.item;
+					_view.subjectCB.dataProvider = _data.subject.item;
 					//subjectCB.selectedIndex = 0;
 					//bookTI.text = __modify.pdt_book_edition;
-					stepWorks.moduleCB.dataProvider = _data.module_type.item;
+					_view.moduleCB.dataProvider = _data.module_type.item;
 					//moduleCB.selectedIndex = 0;
 				}
 			}
@@ -169,32 +162,32 @@ package view
 		private function _fillForHasValue($isAdmin:Boolean, $isModify:Boolean):void
 		{
 			var __modify:XML = XML(_data.mod_content[0]);
-			stepWorks.nameTI.text = __modify.pdt_name;
-			stepWorks.projectCB.dataProvider = _data.project.item.(@id==__modify.pdt_kind);
-			stepWorks.projectCB.selectedIndex = 0;
-			stepWorks.projectCB.enabled = false;
-			stepWorks.groupCB.dataProvider = _data.group.item.(@id==__modify.pdt_group);
-			stepWorks.groupCB.selectedIndex = 0;
-			stepWorks.groupCB.enabled = false;
-			stepWorks.gradeCB.dataProvider = _data.grade.item.(@id==__modify.pdt_author_grade);
-			stepWorks.gradeCB.selectedIndex = 0;
-			stepWorks.gradeCB.enabled = false;
-			stepWorks.bookTI.text = __modify.pdt_book_edition;
+			_view.nameTI.text = __modify.pdt_name;
+			_view.projectCB.dataProvider = _data.project.item.(@id==__modify.pdt_kind);
+			_view.projectCB.selectedIndex = 0;
+			_view.projectCB.enabled = false;
+			_view.groupCB.dataProvider = _data.group.item.(@id==__modify.pdt_group);
+			_view.groupCB.selectedIndex = 0;
+			_view.groupCB.enabled = false;
+			_view.gradeCB.dataProvider = _data.grade.item.(@id==__modify.pdt_author_grade);
+			_view.gradeCB.selectedIndex = 0;
+			_view.gradeCB.enabled = false;
+			_view.bookTI.text = __modify.pdt_book_edition;
 			if($isModify)
 			//修改状态，就使用选定的值
 			{
-				stepWorks.subjectCB.dataProvider = _data.subject.item.(@id==__modify.pdt_subject);
-				stepWorks.moduleCB.dataProvider = _data.module_type.item.(@id==__modify.pdt_module_type);
-				stepWorks.subjectCB.selectedIndex = 0;
-				stepWorks.moduleCB.selectedIndex = 0;
-				stepWorks.subjectCB.editable = $isAdmin;				
-				stepWorks.moduleCB.enabled = $isAdmin;
+				_view.subjectCB.dataProvider = _data.subject.item.(@id==__modify.pdt_subject);
+				_view.moduleCB.dataProvider = _data.module_type.item.(@id==__modify.pdt_module_type);
+				_view.subjectCB.selectedIndex = 0;
+				_view.moduleCB.selectedIndex = 0;
+				_view.subjectCB.editable = $isAdmin;				
+				_view.moduleCB.enabled = $isAdmin;
 			}
 			//插入状态，就使用全部的值
 			else
 			{
-				stepWorks.subjectCB.dataProvider = _data.subject.item;
-				stepWorks.moduleCB.dataProvider = _data.module_type.item;
+				_view.subjectCB.dataProvider = _data.subject.item;
+				_view.moduleCB.dataProvider = _data.module_type.item;
 			}			
 		}
 		
@@ -209,7 +202,7 @@ package view
 		public function buildVariable():void
 		{
 			Logger.info('StepWorksMediator.buildVariable执行');	
-			stepWorks.validate(_isTeacher, _hasModule);
+			_view.validate(_isTeacher, _hasModule);
 			_sendVO();
 			
 		}
@@ -217,37 +210,21 @@ package view
 		private function _sendVO():void
 		{
 			var __vo:StepWorksVO = new StepWorksVO();
-			__vo.pdt_name = stepWorks.nameTI.text;
-			__vo.pdt_kind = stepWorks.projectCB.selectedItem.@id;
-			__vo.pdt_group = stepWorks.groupCB.selectedItem.@id;					
-			__vo.pdt_author_grade = stepWorks.gradeCB.selectedItem.@id;
-			if(ConfigProxy.IS_NEED_COPARTNER_INFO)
-			//如果需要合作者的详细信息，就采用pdt_author_other_info这个变量提交
-			{
-				__vo.pdt_author_other_info = _catMediator.buildCopartnerStringForSubmit();
-			}
-			else
-			//如果只需要合作者姓名，就采用pdt_author_other这个变量提交
-			{
-				__vo.pdt_author_other = _catMediator.buildCopartnerStringForSubmit();
-			}
+			__vo.pdt_name = _view.nameTI.text;
+			__vo.pdt_kind = _view.projectCB.selectedItem.@id;
+			__vo.pdt_group = _view.groupCB.selectedItem.@id;					
+			__vo.pdt_author_grade = _view.gradeCB.selectedItem.@id;
 			if(_isTeacher)
 			//只有教师才有科目、教材版本、教学模式信息
 			{
-				__vo.pdt_subject = stepWorks.subjectCB.selectedItem.@id;
-				__vo.pdt_book_edition = stepWorks.bookTI.text; 
+				__vo.pdt_subject = _view.subjectCB.selectedItem.@id;
+				__vo.pdt_book_edition = _view.bookTI.text; 
 				if(_hasModule)
 				//只有当教师的这个项目有模式的时候才需要调用模式信息
 				{
-					__vo.pdt_module_type = stepWorks.moduleCB.selectedItem.@id;
+					__vo.pdt_module_type = _view.moduleCB.selectedItem.@id;
 				}										
 			}
-			else
-			//只有学生才有辅导教师信息
-			{
-				__vo.pdt_teacher = _catMediator.buildHelppingTeacherStrinForSubmit();
-			}
-			
 			sendNotification(ApplicationFacade.VAR_UPDATE, __vo);				
 		}
 		
@@ -266,7 +243,7 @@ package view
 		 * */
 		private function _projectChangeHandler(evt:Event):void
 		{
-			var __project:XML = stepWorks.projectCB.selectedItem as XML;
+			var __project:XML = _view.projectCB.selectedItem as XML;
 			sendNotification(ApplicationFacade.PROJECT_CHANGE, __project);
 			_buildFrame(__project, _getIsTeacher(__project));
 			Logger.info('projectChangeHandler执行，__projectID:{1}', __projectID);
@@ -284,9 +261,9 @@ package view
 			{
 				_groupDP = _getGroupOfUser(false);
 			}
-			stepWorks.groupCB.dataProvider = _groupDP;
-			stepWorks.groupCB.selectedIndex = -1;
-			stepWorks.groupCB.enabled = true;	
+			_view.groupCB.dataProvider = _groupDP;
+			_view.groupCB.selectedIndex = -1;
+			_view.groupCB.enabled = true;	
 		}
 		
 		//===========================================
@@ -297,7 +274,7 @@ package view
 		 * */
 		private function _groupChangeHandler(evt:Event):void
 		{
-			var __xml:XML = stepWorks.groupCB.selectedItem as XML;
+			var __xml:XML = _view.groupCB.selectedItem as XML;
 			if(_isTeacher)
 			{
 				_gradeDP = _getGradeOfGroup(__xml.@teacher_group);
@@ -306,9 +283,9 @@ package view
 			{
 				_gradeDP = _getGradeOfGroup(__xml.@student_group);	
 			}
-			stepWorks.gradeCB.dataProvider = _gradeDP;
-			stepWorks.gradeCB.selectedIndex = -1;
-			stepWorks.gradeCB.enabled = true;
+			_view.gradeCB.dataProvider = _gradeDP;
+			_view.gradeCB.selectedIndex = -1;
+			_view.gradeCB.enabled = true;
 		}
 		
 		//===========================================
@@ -382,13 +359,13 @@ package view
 		//==========================
 		private function debugFill():void
 		{
-			stepWorks.nameTI.text = '测试作品名称'+Math.random().toString();
-			stepWorks.projectCB.selectedIndex = 0;
-			stepWorks.groupCB.selectedIndex = 0;
-			stepWorks.gradeCB.selectedIndex = 0;
-			stepWorks.subjectCB.selectedIndex = 0;
-			stepWorks.bookTI.text = '《测试教材名称》'+Math.random().toString();
-			stepWorks.moduleCB.selectedIndex = 0;
+			_view.nameTI.text = '测试作品名称'+Math.random().toString();
+			_view.projectCB.selectedIndex = 0;
+			_view.groupCB.selectedIndex = 0;
+			_view.gradeCB.selectedIndex = 0;
+			_view.subjectCB.selectedIndex = 0;
+			_view.bookTI.text = '《测试教材名称》'+Math.random().toString();
+			_view.moduleCB.selectedIndex = 0;
 		}			
 		//==========================
 	}

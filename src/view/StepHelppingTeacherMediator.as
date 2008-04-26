@@ -1,6 +1,8 @@
 package view
 {
 	import model.ConfigProxy;
+	import model.GetInfoProxy;
+	import model.vo.StepHelppingTeacherVO;
 	
 	import org.puremvc.as3.patterns.mediator.Mediator;
 	
@@ -13,27 +15,22 @@ package view
 	{
 		public static const NAME:String = 'StepHelppingTeacherMediator';
 		private var _mediatorNameList:Array = [];
+		private var _data:XML;
+		private var _list:XMLList;
 		
 		public function StepHelppingTeacherMediator(viewComponent:Object=null)
 		{
 			super(NAME, viewComponent);
+			_data = (facade.retrieveProxy(GetInfoProxy.NAME) as GetInfoProxy).getData() as XML;
+			if(ConfigProxy.IS_MODIFY)
+			{
+				_list = _data.mod_content.pdt_teacher.item;
+			}
 		}
 		
 		private function get _view():StepHelppingTeacher
 		{
 			return viewComponent as StepHelppingTeacher;
-		}
-		
-		public function buildVariable():void
-		{
-			Logger.info('StepHelppingTeacherMediator.buildVariable调用,_mediatorNameList.length:{0}', _mediatorNameList.length);
-			var __arr:Array = new Array();
-			for each(var i:String in _mediatorNameList)
-			{
-				var __mediator:ICopartner = facade.retrieveMediator(i);
-				__arr.push(__mediator.getVariable());
-			}
-			return __arr.join(ConfigProxy.SEPARATOR);
 		}
 		
 		public function buildSub($num:int):void
@@ -46,13 +43,24 @@ package view
 			{
 				for(var j:int=0; j< $num; j++)
 				{
-					var __id:String = (j+1).toString();
-					var __mediatorName:String = HelppingTeacherMediator.NAME + __id;
 					var __helppingTeacher:HelppingTeacher = new HelppingTeacher();
-					__helppingTeacher.label = '辅导教师'+__id;
+					__helppingTeacher.label = '辅导教师'+(j+1);
 					_view.addChild(__helppingTeacher);	//把建立的辅导教师加入显示列表
-					facade.registerMediator(new HelppingTeacherMediator(__mediatorName, __helppingTeacher));	//注册辅导教师的Mediator
-					_mediatorNameList.push(__mediatorName);		//把建立的辅导教师的Mediator名称加入数组，以便于移除辅导教师的时候解除注册
+					var __mediator:HelppingTeacherMediator = new HelppingTeacherMediator(j, __helppingTeacher);
+					if(ConfigProxy.IS_MODIFY)
+					{
+						//修改信息的时候，必须有提交过的辅导教师信息，才允许填充
+						if(_list.length() > 0)
+						{
+							var __info:XML = _list[j] as XML;
+							if(__info != null)
+							{
+								__mediator.setVariable(__info);
+							}
+						}
+					}
+					facade.registerMediator(__mediator);
+					_mediatorNameList.push(__mediator.getMediatorName());		//把建立的辅导教师的Mediator名称加入数组，以便于移除辅导教师的时候解除注册
 				}
 			}
 		}
@@ -66,5 +74,23 @@ package view
 			_view.removeAllChildren();
 		}
 		
+		public function buildVariable():void
+		{
+			Logger.info('StepHelppingTeacherMediator.buildVariable调用,_mediatorNameList.length:{0}', _mediatorNameList.length);
+			_sendVO();
+		}
+		
+		private function _sendVO():void
+		{
+			var __vo:StepHelppingTeacherVO = new StepHelppingTeacherVO();
+			var __arr:Array = new Array();
+			for each(var i:String in _mediatorNameList)
+			{
+				var __mediator:ICopartner = facade.retrieveMediator(i);
+				__arr.push(__mediator.getVariable());
+			}
+			__vo.pdt_teacher = __arr.join(ConfigProxy.SEPARATOR);			
+			sendNotification(ApplicationFacade.VAR_UPDATE, __vo);
+		}		
 	}
 }

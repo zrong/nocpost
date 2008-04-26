@@ -19,15 +19,15 @@ package view.sub
 		//辅导教师ID，仅当修改的时候有值
 		public var helppingTeacherID:String = '';
 		
-		public function HelppingTeacherMediator($name:String, viewComponent:Object=null)
+		public function HelppingTeacherMediator($index:int, viewComponent:Object=null)
 		{
-			super($name, viewComponent);
+			super(NAME + $index.toString(), viewComponent);
 			_getInfoProxy = facade.retrieveProxy(GetInfoProxy.NAME) as GetInfoProxy;
 			_nationList = (_getInfoProxy.getData() as XML).nation.item;
-			ht.nationCB.dataProvider = _nationList;
+			_view.nationCB.dataProvider = _nationList;
 		}
 		
-		private function get ht():HelppingTeacher
+		private function get _view():HelppingTeacher
 		{
 			return viewComponent as HelppingTeacher;
 		}
@@ -36,11 +36,11 @@ package view.sub
 		{
 			var __arr:Array = new Array();
 			__arr.push(helppingTeacherID);
-			__arr.push(ht.nameTI.text);
-			__arr.push(ht.emailTI.text);
-			__arr.push(ht.mobileTI.text);
-			__arr.push(ht.sexRBG.selectedValue);
-			__arr.push((ht.nationCB.selectedIndex==-1)?'':ht.nationCB.selectedItem.@id);
+			__arr.push(_view.nameTI.text);
+			__arr.push(_view.emailTI.text);
+			__arr.push(_view.mobileTI.text);
+			__arr.push(_view.sexRBG.selectedValue);
+			__arr.push((_view.nationCB.selectedIndex==-1)?'':_view.nationCB.selectedItem.@id);
 			return __arr.join(',');
 		}
 		
@@ -49,11 +49,11 @@ package view.sub
 			Logger.info('setVariable执行：\n{1}', $xml);
 			_helppingTeacherInfo = $xml;
 			helppingTeacherID = _helppingTeacherInfo.@id;
-			ht.nameTI.text = _helppingTeacherInfo.name;
-			ht.emailTI.text = _helppingTeacherInfo.email;
-			ht.mobileTI.text = _helppingTeacherInfo.phone;
-			ht.sexRBG.selectedValue = _helppingTeacherInfo.sex;
-			ht.nationCB.selectedIndex = _getNationIndex(_helppingTeacherInfo.nation);
+			_view.nameTI.text = _helppingTeacherInfo.name;
+			_view.emailTI.text = _helppingTeacherInfo.email;
+			_view.mobileTI.text = _helppingTeacherInfo.phone;
+			_view.sexRBG.selectedValue = _helppingTeacherInfo.sex;
+			_view.nationCB.selectedIndex = _getNationIndex(_helppingTeacherInfo.nation);
 		}
 		
 		/**

@@ -1,5 +1,9 @@
 package view
 {
+	import model.ConfigProxy;
+	import model.GetInfoProxy;
+	import model.vo.StepCopartnerVO;
+	
 	import org.puremvc.as3.patterns.mediator.Mediator;
 	
 	import view.component.StepCopartnerSimple;
@@ -12,10 +16,17 @@ package view
 	{
 		public static const NAME:String = 'StepCopartnerSimpleMediator';
 		private var _mediatorNameList:Array = [];
+		private var _data:XML;
+		private var _list:XMLList;	//修改的时候提供的已有的信息列表
 		
 		public function StepCopartnerSimpleMediator(viewComponent:Object=null)
 		{
 			super(NAME, viewComponent);
+			_data = (facade.retrieveProxy(GetInfoProxy.NAME) as GetInfoProxy).getData() as XML;
+			if(ConfigProxy.IS_MODIFY)
+			{
+				_list = _data.mod_content.pdt_author_other_info.item;
+			}
 		}
 		
 		public function get _view():StepCopartnerSimple
@@ -34,13 +45,16 @@ package view
 				for(var i:int=0; i< $cnum; i++)
 				{
 					//是否显示详细信息，生成的填写合作者信息的表单是不同的
-					var __mediatorName:String = CopartnerSimple.NAME + i.toString();
 					var __copartner:CopartnerSimple = new CopartnerSimple();;
 					__copartner.label = '合作者'+(i+1);
 					_view.addChild(__copartner);
-					var __copartnerMediator:CopartnerSimpleMediator = new CopartnerSimpleMediator(__mediatorName, __copartner);;
-					facade.registerMediator(__copartnerMediator);
-					_mediatorNameList.push(__mediatorName);
+					var __mediator:CopartnerSimpleMediator = new CopartnerSimpleMediator(i, __copartner);;
+					if(ConfigProxy.IS_MODIFY)
+					{
+						__mediator.setVariable(_list[i]);
+					}
+					facade.registerMediator(__mediator);
+					_mediatorNameList.push(__mediator.getMediatorName());
 				}
 			}
 		}
@@ -57,14 +71,20 @@ package view
 		public function buildVariable():void
 		{
 			Logger.info('StepCopartnerSimpleMediator.buildVariable调用,_mediatorNameList.length:{0}', _mediatorNameList.length);
-
+			_sendVO();			
+		}
+		
+		private function _sendVO():void
+		{
+			var __vo:StepCopartnerVO = new StepCopartnerVO();
 			var __arr:Array = new Array();
 			for each(var i:String in _mediatorNameList)
 			{
 				var __mediator:ICopartner = facade.retrieveMediator(i);
 				__arr.push(__mediator.getVariable());
 			}
-			return __arr.join(ConfigProxy.SEPARATOR);
+			__vo.pdt_author_other = __arr.join(ConfigProxy.SEPARATOR);			
+			sendNotification(ApplicationFacade.VAR_UPDATE, __vo);
 		}
 	}
 }
