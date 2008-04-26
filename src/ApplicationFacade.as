@@ -38,7 +38,7 @@ package
 		public static const VAR_SUBMIT_SET_PROGRESS_BAR:String = 'varSubmitSetPB';
 		
 		public static const SET_CONFIG_IS_TEACHER:String = 'setIsTeacher';
-		public static const SET_CONFIG_IS_NEED_COPARTNER_INFO:String = 'setIsNeedCopartnerInfo';
+		public static const SET_CONFIG_IS_COPARTNER_COMPLEX:String = 'setIsCopartnerComplex';
 		
 		public static const BUILD_TEACHER:String = 'buildTeacher';
 		public static const BUILD_STUDENT:String = 'buildStudent';

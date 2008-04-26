@@ -69,6 +69,11 @@ package view.sub
 			copartner.nationCB.selectedIndex = _getNationIndex(_copartnerInfo.nation);
 		}
 		
+		private function pull():void
+		{
+			sendNotification(ApplicationFacade.UPLOAD_FILE_FILLED, __photoArr, StepType.RPC_STEP_PHOTO);
+		}
+		
 		/**
 		 * 返回已经选择的nation的值在nation列表中的索引值
 		 * */

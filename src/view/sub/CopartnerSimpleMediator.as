@@ -9,25 +9,26 @@ package view.sub
 	{
 		public static const NAME:String = 'CopartnerSimpleMediator';
 		
-		public function CopartnerSimpleMediator(viewComponent:Object=null)
+		public function CopartnerSimpleMediator($mediatorName:String, viewComponent:Object=null)
 		{
-			super(NAME, viewComponent);
+			super($mediatorName, viewComponent);
 		}
 		
-		private function get copartner():CopartnerSimple
+		private function get _step():CopartnerSimple
 		{
 			return viewComponent as CopartnerSimple;
 		}
 		
 		public function set index($index:int):void{}
+		
 		public function getVariable():String
 		{
-			return copartner.nameTI.text;
+			return _step.nameTI.text;
 		}
 			
 		public function setVariable($name:XML):void
 		{
-			copartner.nameTI.text = $name.name;
+			_step.nameTI.text = $name.name;
 		}
 	
 	}
