@@ -9,19 +9,28 @@ package view
 	
 	import net.zengrong.logging.Logger;
 	
+	import org.puremvc.as3.interfaces.IMediator;
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
 	
+	import view.component.StepBasic;
+	import view.component.StepCopartnerComplex;
+	import view.component.StepCopartnerSimple;
+	import view.component.StepCopyright;
+	import view.component.StepHelppingTeacher;
+	import view.component.StepTeacherPay;
 	import view.component.StepText;
+	import view.component.StepUpload;
 	import view.component.StepVS;
 	import view.interfaces.IStep;
+	import view.interfaces.IStepBuildSub;
 
 	public class StepVSMediator extends Mediator
 	{
 		public static const NAME:String = 'StepVSMediator';
 		private var _data:XML;
 		private var _project:XML;
-		private var _stepTextMediatorList:Array = [];	//保存动态注册的Mediator的名称
+		private var _dynamicStepMediatorList:Array = [];	//保存动态注册的Mediator的名称
 		
 		public function StepVSMediator(viewComponent:Object=null)
 		{
@@ -53,11 +62,12 @@ package view
 					{
 						_project = _data.project.item.(@id==_data.mod_content.pdt_kind)[0] as XML;
 						_buildVS(_project);	
-					}					
+					}			
 					break;
 				case ApplicationFacade.PROJECT_CHANGE:
 					_project = notification.getBody() as XML;
 					_buildVS(_project);
+					break;
 				case ApplicationFacade.NAV_ACCEPT:
 					vs.selectedIndex ++;
 					break;
@@ -133,105 +143,37 @@ package view
 		private function _buildVS($project:XML):void
 		{
 			_removeVS();
-			//根据传来的项目id获取当前的项目
-			var __isNeedCopartnerInfo:Boolean = _getIsNeedCopartnerInfo($project);
-			var __cnum:int = int($project.cnum);			
+			var __isTeacher:Boolean = _getIsTeacher($project);
+			var __isComplexCopartner:Boolean = _getIsNeedCopartnerInfo($project);
+			var __cnum:int = int($project.cnum);
+			var __tnum:int = int($project.tnum);
 			//Logger.info('buildTeacher执行，__project：\n{1}', _data.project.item.(@id=$projectID));
-			Logger.info('buildTeacher执行，$project:{0}',$project);			
-			if(__isNeedCopartnerInfo)
+			Logger.info('buildTeacher执行，$project:{0}',$project);	
+			if(__isTeacher)
 			{
-				_buildCopartnerComplex(__cnum)
+				_buildTeacherUserVS(__cnum, __isNeedCopartnerInfo)
 			}
 			else
 			{
-				_buildCopartnerSimple(__cnum);
-			}
-			//当项目发生改变的时候 更新IS_NEED_COPARTNER_INFO的值			
-			sendNotification(ApplicationFacade.BUILD_TEACHER, $project);
-		}
-		
-		/**
-		 * 建立第一步和第二步表单之后的表单
-		 * */
-		 
-		private function _buildTeacherVS():void
-		{
-			_removeVS();
-			
-			var __tStep3:StepText = new StepText();
-			__tStep3.percentWidth = 100;
-			__tStep3.percentHeight = 100;
-			__tStep3.name = TextVarNameType.INTRODUCE;
-			__tStep3.label = Message.LABEL_STEP_INTRODUCE;
-			
-			var __tStep4:StepText = new StepText();
-			__tStep4.percentWidth = 100;
-			__tStep4.percentWidth = 100;
-			__tStep4.name = TextVarNameType.REMARK;
-			__tStep4.isRequired = false;
-			__tStep4.label = Message.LABEL_STEP_REMARK;
-			
-			var __tStep5:StepTeacherPay = new StepTeacherPay();
-			__tStep5.percentWidth = 100;
-			__tStep5.percentWidth = 100;
-			__tStep5.name = StepType.STEP_TEACHER_PAY;
-			
-			stepUpload.label = Message.LABEL_STEP_UPLOAD_TEACHER;
-			
-			_buildMediator(__tStep3, __tStep4, __tStep5);
-		}
-		
-		private function _buildStudentVS():void
-		{
-			_removeVS();
-			
-			var __sStep3:StepText = new StepText();
-			__sStep3.percentWidth = 100;
-			__sStep3.percentWidth = 100;
-			__sStep3.name = TextVarNameType.IDEA;
-			__sStep3.label = Message.LABEL_STEP_IDEA;
-			
-			var __sStep4:StepText = new StepText();
-			__sStep4.percentWidth = 100;
-			__sStep4.percentWidth = 100;
-			__sStep4.name = TextVarNameType.PROCESS;
-			__sStep4.label = Message.LABEL_STEP_PROCESS;
-			
-			var __sStep5:StepText = new StepText();
-			__sStep5.percentWidth = 100;
-			__sStep5.percentWidth = 100;
-			__sStep5.name = TextVarNameType.LITERATURE;
-			__sStep5.label = Message.LABEL_STEP_LITERATURE;
-			
-			stepUpload.label = Message.LABEL_STEP_UPLOAD_STUDENT;
-
-			_buildMediator(__sStep3, __sStep4, __sStep5);
-		}
-		
-		/**
-		 * 建立并注册StepText的Mediator
-		 * */
-		private function _buildMediator(...$step):void
-		{
-			for each(var i:StepText in $step)
-			{
-				vs.addChildAt(i, vs.getChildIndex(stepUpload));
-				var __stepTextMediator:StepTextMediator = new StepTextMediator(i.name, i);
-				facade.registerMediator(__stepTextMediator);
-				_stepTextMediatorList.push(i.name);
+				_buildStudentUserVS(__cnum, __tnum);
 			}
 		}
 		
 		/**
 		 * 在根据用户类型建立VS之前，必须先将VS还原成初始状态
 		 * */
-		private function _removeVS():void{
+		private function _removeVS():void
+		{
 			Logger.info('removeVS运行，删除前的vs子数量：{0}', vs.numChildren);
+			_removeMediator();
 			var __toRemovedArr:Array = new Array();
 			for(var i:int=0; i < vs.numChildren; i++)
 			{
 				var __step:UIComponent = vs.getChildAt(i) as UIComponent;
-				var __isInitStep:Boolean = __step == vs.copyright || __step == vs.stepBasic || __step == vs.stepWorks || __step == vs.stepUpload;
+				var __isInitStep:Boolean =	(__step is StepCopyright)	||
+											(__step is StepBasic) 		|| 
+											(__step is StepWorks)		||
+											(__step is StepUpload);
 				//Logger.info('当前的step name:{1}，是否保留:{2},当前序号{3}', __step.name, __isInitStep,i);
 				if(	!__isInitStep)
 				{
@@ -242,22 +184,151 @@ package view
 			{
 				vs.removeChild(k);
 			}
-			_removeMediator();
 			Logger.info('removeVS运行，删除后的vs子数量：{0}', vs.numChildren);
+		}
+		
+		/**
+		 * 建立第一步和第二步表单之后的表单
+		 * */
+		private function _buildTeacherUserVS($cnum:int, $isComplex):void
+		{
+			_removeVS();
+			if($isComplex)
+			{
+				_buildStepCopartnerSimple($cnum);
+			}
+			else
+			{
+				_buildStepCopartnerComplex($cnum);
+			}
+			var __stepIntroduce:StepText = new StepText();
+			__stepIntroduce.percentWidth = 100;
+			__stepIntroduce.percentHeight = 100;
+			__stepIntroduce.name = TextVarNameType.INTRODUCE;
+			__stepIntroduce.label = Message.LABEL_STEP_INTRODUCE;
+			
+			var __stepRemark:StepText = new StepText();
+			__stepRemark.percentWidth = 100;
+			__stepRemark.percentWidth = 100;
+			__stepRemark.name = TextVarNameType.REMARK;
+			__stepRemark.isRequired = false;
+			__stepRemark.label = Message.LABEL_STEP_REMARK;
+			
+			var __stepTeacherPay:StepTeacherPay = new StepTeacherPay();
+			__stepTeacherPay.percentWidth = 100;
+			__stepTeacherPay.percentWidth = 100;
+			__stepTeacherPay.name = StepType.STEP_TEACHER_PAY;
+			
+			stepUpload.label = Message.LABEL_STEP_UPLOAD_TEACHER;
+			
+			_buildStepTextMediator(__stepIntroduce, __stepRemark, __stepTeacherPay);
+		}
+		
+		private function _buildStudentUserVS($cnum:int, $tnum:int):void
+		{
+			_removeVS();
+			_buildStepCopartnerSimple($cnum);
+			_buildStepHelppingTeacher($tnum);
+			
+			var __stepIdea:StepText = new StepText();
+			__stepIdea.percentWidth = 100;
+			__stepIdea.percentWidth = 100;
+			__stepIdea.name = TextVarNameType.IDEA;
+			__stepIdea.label = Message.LABEL_STEP_IDEA;
+			
+			var __stepProgress:StepText = new StepText();
+			__stepProgress.percentWidth = 100;
+			__stepProgress.percentWidth = 100;
+			__stepProgress.name = TextVarNameType.PROCESS;
+			__stepProgress.label = Message.LABEL_STEP_PROCESS;
+			
+			var __stepLiterature:StepText = new StepText();
+			__stepLiterature.percentWidth = 100;
+			__stepLiterature.percentWidth = 100;
+			__stepLiterature.name = TextVarNameType.LITERATURE;
+			__stepLiterature.label = Message.LABEL_STEP_LITERATURE;
+			
+			stepUpload.label = Message.LABEL_STEP_UPLOAD_STUDENT;
+
+			_buildStepTextMediator(__stepIdea, __stepProgress, __stepLiterature);
+		}
+		
+		private function _buildStepCopartnerSimple($num:int):void
+		{
+			var __stepCopartner:StepCopartnerSimple = new StepCopartnerSimple();
+			__stepCopartner.percentWidth = 100;
+			__stepCopartner.percentHeight = 100;
+			vs.addChildAt(__stepCopartner, vs.getChildIndex(stepUpload));
+			var __mediator:StepCopartnerSimpleMediator = new StepCopartnerSimpleMediator(StepCopartnerSimpleMediator.NAME, __stepCopartner);
+			__mediator.buildSub($num);
+			facade.registerMediator(__mediator);
+			_dynamicStepMediatorList.push(StepCopartnerSimpleMediator.NAME);
+		}
+		
+		private function _buildStepCopartnerComplex($num:int):void
+		{
+			var __stepCopartner:StepCopartnerComplex = new StepCopartnerComplex();
+			__stepCopartner.percentWidth = 100;
+			__stepCopartner.percentHeight = 100;
+			vs.addChildAt(i__stepCopartner, vs.getChildIndex(stepUpload));
+			var __mediator:StepCopartnerComplexMediator = new StepCopartnerComplexMediator(StepCopartnerComplexMediator.NAME, __stepCopartner);
+			__mediator.buildSub($num);
+			facade.registerMediator(__mediator);
+			_dynamicStepMediatorList.push(StepCopartnerComplexMediator.NAME);
+		}
+		
+		private function _buildStepHelppingTeacher($num:int):void
+		{
+			var __stepHelppingTeacher:StepHelppingTeacher = new StepHelppingTeacher();
+			__stepHelppingTeacher.percentWidth = 100;
+			__stepHelppingTeacher.percentHeight = 100;
+			vs.addChildAt(__stepHelppingTeacher, vs.getChildIndex(stepUpload));
+			var __mediator:StepHelppingTeacherMediator = new StepHelppingTeacherMediator(HelppingTeacherMediator.NAME, __stepHelppingTeacher);
+			__mediator.buildSub($num);
+			facade.registerMediator(__mediator);
+			_dynamicStepMediatorList.push(StepHelppingTeacherMediator.NAME);
+		}
+		
+		/**
+		 * 建立并注册StepText的Mediator
+		 * */
+		private function _buildStepTextMediator(...$step):void
+		{
+			for each(var i:UIComponent in $step)
+			{
+				vs.addChildAt(i, vs.getChildIndex(stepUpload));
+				var __stepMediator:IMediator;
+				if(i is StepTeacherPay)
+				{
+					__stepMediator = new StepTeacherPayMediator(i.name, i);
+				}	
+				else
+				{
+					__stepMediator = new StepTextMediator(i.name, i);
+				}
+				facade.registerMediator(__stepMediator);
+				_dynamicStepMediatorList.push(i.name);
+			}
 		}
 		
 		private function _removeMediator():void
 		{
-			while(_stepTextMediatorList.length>0)
+			while(_dynamicStepMediatorList.length>0)
 			{
-				facade.removeMediator(_stepTextMediatorList.shift().toString());
+				var __mediator:IMediator= facade.retriveMediator(_dynamicStepMediatorList.shift().toString());
+				//如果这个Mediator拥有建立子界面的能力，则要在移除它的时候先移除它的子界面的Mediator
+				if(__mediator is IStepBuildSub)
+				{
+					(__mediator as IStepBuildSub).removeSub();
+				}
+				facade.removeMediator();				
 			}
 		}
 		
-		private function _getIsNeedCopartnerInfo($project:XML):Boolean
+		private function _getIsCopartnerComplex($project:XML):Boolean
 		{
 			var __bool:Boolean = $project.author_need_info == '1';
-			sendNotification(ApplicationFacade.SET_CONFIG_IS_NEED_COPARTNER_INFO, __bool);
+			sendNotification(ApplicationFacade.SET_CONFIG_IS_COPARTNER_COMPLEX, __bool);
 			return __bool;
 		}
 		
