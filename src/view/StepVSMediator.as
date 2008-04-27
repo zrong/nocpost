@@ -2,6 +2,7 @@ package view
 {
 	import model.GetInfoProxy;
 	import model.txt.Message;
+	import model.type.ErrorType;
 	import model.type.StepType;
 	import model.type.TextVarNameType;
 	
@@ -22,6 +23,7 @@ package view
 	import view.component.StepText;
 	import view.component.StepUpload;
 	import view.component.StepVS;
+	import view.component.StepWorks;
 	import view.interfaces.IStep;
 	import view.interfaces.IStepBuildSub;
 
@@ -45,25 +47,16 @@ package view
 		
 		override public function listNotificationInterests():Array
 		{
-			return [	ApplicationFacade.RPC_STEP_GET_INFO_DONE,
+			return [	ApplicationFacade.PROJECT_CHANGE,
 						ApplicationFacade.NAV_ACCEPT,
 						ApplicationFacade.NAV_NEXT,
-						ApplicationFacade.NAV_PREV,
-						ApplicationFacade.BUILD_TEACHER,
-						ApplicationFacade.BUILD_STUDENT	];
+						ApplicationFacade.NAV_PREV	];
 		}
 		
 		override public function handleNotification(notification:INotification):void
 		{
 			switch(notification.getName())
 			{
-				case ApplicationFacade.RPC_STEP_GET_INFO_DONE:
-					if(ConfigProxy.IS_MODIFY || ConfigProxy.IS_USER)
-					{
-						_project = _data.project.item.(@id==_data.mod_content.pdt_kind)[0] as XML;
-						_buildVS(_project);	
-					}			
-					break;
 				case ApplicationFacade.PROJECT_CHANGE:
 					_project = notification.getBody() as XML;
 					_buildVS(_project);
@@ -74,14 +67,8 @@ package view
 				case ApplicationFacade.NAV_NEXT:
 					toNextStep();
 					break;
-				case ApplicationFacade.NAV_START:
+				case ApplicationFacade.NAV_PREV:
 					toPrevStep();
-					break;
-				case ApplicationFacade.BUILD_TEACHER:
-					_buildTeacherVS();
-					break;
-				case ApplicationFacade.BUILD_STUDENT:
-					_buildStudentVS();
 					break;
 			}
 		}
@@ -144,14 +131,14 @@ package view
 		{
 			_removeVS();
 			var __isTeacher:Boolean = _getIsTeacher($project);
-			var __isComplexCopartner:Boolean = _getIsNeedCopartnerInfo($project);
+			var __isComplexCopartner:Boolean = _getIsCopartnerComplex($project);
 			var __cnum:int = int($project.cnum);
 			var __tnum:int = int($project.tnum);
 			//Logger.info('buildTeacher执行，__project：\n{1}', _data.project.item.(@id=$projectID));
 			Logger.info('buildTeacher执行，$project:{0}',$project);	
 			if(__isTeacher)
 			{
-				_buildTeacherUserVS(__cnum, __isNeedCopartnerInfo)
+				_buildTeacherUserVS(__cnum, __isComplexCopartner)
 			}
 			else
 			{
@@ -190,7 +177,7 @@ package view
 		/**
 		 * 建立第一步和第二步表单之后的表单
 		 * */
-		private function _buildTeacherUserVS($cnum:int, $isComplex):void
+		private function _buildTeacherUserVS($cnum:int, $isComplex:Boolean):void
 		{
 			_removeVS();
 			if($isComplex)
@@ -219,7 +206,7 @@ package view
 			__stepTeacherPay.percentWidth = 100;
 			__stepTeacherPay.name = StepType.STEP_TEACHER_PAY;
 			
-			stepUpload.label = Message.LABEL_STEP_UPLOAD_TEACHER;
+			vs.stepUpload.label = Message.LABEL_STEP_UPLOAD_TEACHER;
 			
 			_buildStepTextMediator(__stepIntroduce, __stepRemark, __stepTeacherPay);
 		}
@@ -248,7 +235,7 @@ package view
 			__stepLiterature.name = TextVarNameType.LITERATURE;
 			__stepLiterature.label = Message.LABEL_STEP_LITERATURE;
 			
-			stepUpload.label = Message.LABEL_STEP_UPLOAD_STUDENT;
+			vs.stepUpload.label = Message.LABEL_STEP_UPLOAD_STUDENT;
 
 			_buildStepTextMediator(__stepIdea, __stepProgress, __stepLiterature);
 		}
@@ -258,7 +245,7 @@ package view
 			var __stepCopartner:StepCopartnerSimple = new StepCopartnerSimple();
 			__stepCopartner.percentWidth = 100;
 			__stepCopartner.percentHeight = 100;
-			vs.addChildAt(__stepCopartner, vs.getChildIndex(stepUpload));
+			vs.addChildAt(__stepCopartner, vs.getChildIndex(vs.stepUpload));
 			var __mediator:StepCopartnerSimpleMediator = new StepCopartnerSimpleMediator(__stepCopartner);
 			__mediator.buildSub($num);
 			facade.registerMediator(__mediator);
@@ -270,7 +257,7 @@ package view
 			var __stepCopartner:StepCopartnerComplex = new StepCopartnerComplex();
 			__stepCopartner.percentWidth = 100;
 			__stepCopartner.percentHeight = 100;
-			vs.addChildAt(i__stepCopartner, vs.getChildIndex(stepUpload));
+			vs.addChildAt(__stepCopartner, vs.getChildIndex(vs.stepUpload));
 			var __mediator:StepCopartnerComplexMediator = new StepCopartnerComplexMediator(__stepCopartner);
 			__mediator.buildSub($num);
 			facade.registerMediator(__mediator);
@@ -282,7 +269,7 @@ package view
 			var __stepHelppingTeacher:StepHelppingTeacher = new StepHelppingTeacher();
 			__stepHelppingTeacher.percentWidth = 100;
 			__stepHelppingTeacher.percentHeight = 100;
-			vs.addChildAt(__stepHelppingTeacher, vs.getChildIndex(stepUpload));
+			vs.addChildAt(__stepHelppingTeacher, vs.getChildIndex(vs.stepUpload));
 			var __mediator:StepHelppingTeacherMediator = new StepHelppingTeacherMediator(__stepHelppingTeacher);
 			__mediator.buildSub($num);
 			facade.registerMediator(__mediator);
@@ -296,11 +283,11 @@ package view
 		{
 			for each(var i:UIComponent in $step)
 			{
-				vs.addChildAt(i, vs.getChildIndex(stepUpload));
+				vs.addChildAt(i, vs.getChildIndex(vs.stepUpload));
 				var __stepMediator:IMediator;
 				if(i is StepTeacherPay)
 				{
-					__stepMediator = new StepTeacherPayMediator(i.name, i);
+					__stepMediator = new StepTeacherPayMediator(i);
 				}	
 				else
 				{
@@ -315,13 +302,14 @@ package view
 		{
 			while(_dynamicStepMediatorList.length>0)
 			{
-				var __mediator:IMediator= facade.retriveMediator(_dynamicStepMediatorList.shift().toString());
+				var __mediatorName:String = _dynamicStepMediatorList.shift().toString();
+				var __mediator:IMediator= facade.retrieveMediator(__mediatorName) as IMediator;
 				//如果这个Mediator拥有建立子界面的能力，则要在移除它的时候先移除它的子界面的Mediator
 				if(__mediator is IStepBuildSub)
 				{
 					(__mediator as IStepBuildSub).removeSub();
 				}
-				facade.removeMediator();				
+				facade.removeMediator(__mediatorName);				
 			}
 		}
 		

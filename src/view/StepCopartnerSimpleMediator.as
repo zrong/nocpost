@@ -4,6 +4,8 @@ package view
 	import model.GetInfoProxy;
 	import model.vo.StepCopartnerVO;
 	
+	import net.zengrong.logging.Logger;
+	
 	import org.puremvc.as3.patterns.mediator.Mediator;
 	
 	import view.component.StepCopartnerSimple;
@@ -42,7 +44,7 @@ package view
 			_view.removeAllChildren();
 			if($num > 0)
 			{			
-				for(var i:int=0; i< $cnum; i++)
+				for(var i:int=0; i< $num; i++)
 				{
 					//是否显示详细信息，生成的填写合作者信息的表单是不同的
 					var __copartner:CopartnerSimple = new CopartnerSimple();;
@@ -80,7 +82,7 @@ package view
 			var __arr:Array = new Array();
 			for each(var i:String in _mediatorNameList)
 			{
-				var __mediator:ICopartner = facade.retrieveMediator(i);
+				var __mediator:ICopartner = facade.retrieveMediator(i) as ICopartner;
 				__arr.push(__mediator.getVariable());
 			}
 			__vo.pdt_author_other = __arr.join(ConfigProxy.SEPARATOR);			

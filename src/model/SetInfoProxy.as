@@ -4,6 +4,7 @@ package model
 	
 	import model.dao.SetInfoDelegate;
 	import model.type.ErrorType;
+	import model.type.ModeType;
 	import model.type.StepType;
 	import model.vo.IVariables;
 	import model.vo.SetPBVO;
@@ -21,12 +22,12 @@ package model
 		
 		public function SetInfoProxy(data:Object=null)
 		{
-			super(NAME, new XML();
+			super(NAME, new XML());
 		}
 				
 		public function setInfo():void
 		{
-			data[StepType.STEP_NAME] = StepType.STEP_SET_INFO;
+			data[StepType.RPC_STEP_NAME] = StepType.RPC_STEP_SET_INFO;
 			data[ModeType.MODE_NAME] = ConfigProxy.MOD_TYPE;
 			data.pdt_id = ConfigProxy.PDT_ID;
 			
@@ -35,7 +36,7 @@ package model
 			{
 				__delegate.setInfo(ConfigProxy.URL, _submitVar);
 				var __vo:SetPBVO = new SetPBVO(true, '提交数据到服务器', '提交数据到服务器，请稍候...');
-				sendNotification(ApplicationFacade.VAR_SUBMIT_SET_PROGRESS_BAR, __vo);
+				sendNotification(ApplicationFacade.SET_PROGRESS_BAR, __vo);
 			}
 			catch(err:Error)
 			{
@@ -83,7 +84,7 @@ package model
 			_removeSubmitPanel();
 		}
 		
-		private _removeSubmitPanel():void
+		private function _removeSubmitPanel():void
 		{
 			sendNotification(ApplicationFacade.SUBMIT_PANEL_REMOVE);
 		}

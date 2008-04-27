@@ -1,7 +1,10 @@
 package view.sub
 {
+	import flash.events.Event;
+	import flash.events.MouseEvent;
 	import flash.net.FileFilter;
 	import flash.net.FileReference;
+	import flash.net.URLRequest;
 	import flash.net.navigateToURL;
 	
 	import model.ConfigProxy;
@@ -10,7 +13,6 @@ package view.sub
 	import model.vo.UploadResourceVO;
 	
 	import mx.controls.Button;
-	import mx.events.PropertyChangeEvent;
 	
 	import net.zengrong.logging.Logger;
 	
@@ -30,9 +32,10 @@ package view.sub
 		//只有这个值为真，才会允许将这个上传模块加入上传列表中
 		public var isModify:Boolean;	
 		
-		public function UploadResourceMediator($uploadItem:XML=null, viewComponent:Object=null)
+		//$prefix是一个前缀，UploadResource被CopartnerComplex使用的时候可能会用到这个前缀
+		public function UploadResourceMediator($uploadItem:XML=null, viewComponent:Object=null, $prefix:String='')
 		{
-			super(NAME + $uploadItem.@id, viewComponent);
+			super($prefix + NAME + $uploadItem.@id, viewComponent);
 			_uploadItem = $uploadItem;
 			_setInfoProxy = facade.retrieveProxy(SetInfoProxy.NAME) as SetInfoProxy;
 			init();
@@ -51,7 +54,8 @@ package view.sub
 			_view.limitLabel.text = _uploadItem.upload_attribute_introduce+'  允许的文件格式：'+
 									_uploadItem.upload_attribute_postfix+'  文件大小限制：'+
 									_uploadItem.upload_attribute_size_limit+'MB';			
-			_view.addEventListener(_view.UPLOAD_CLICK, _selectBTNClickHandler);
+			_view.addEventListener(UploadResource.UPLOAD_CLICK, _selectBTNClickHandler);
+			
 			_uploadFR = new FileReference();
 			_uploadFR.addEventListener(Event.SELECT, selectHandler);
 			_buildDownBlankWordBTN();
@@ -95,7 +99,7 @@ package view.sub
 			isModify = false;
 			Logger.debug('_uploadItem:{0}',  _uploadItem);				
 			var __file:FileReference = evt.target as FileReference;
-			var __size:Number = _toByteNum(Number(_uploadItem.upload_attribute_size_limit));
+			var __size:Number = ConfigProxy.toByteNum(Number(_uploadItem.upload_attribute_size_limit));
 			if(__file.size > __size)
 			{
 				sendNotification(ApplicationFacade.ERROR, '选择的文件过大！', ErrorType.ALERT);
@@ -118,32 +122,7 @@ package view.sub
 		public function getUpload():UploadResourceVO
 		{
 			_view.validate();
-			var __setInfoData:XML = _setInfoProxy.getData() as XML;
-			var __var:URLVariables = new URLVariables();
-			__var[StepType.STEP_NAME] = StepType.STEP_UPLOAD;
-			__var[ModeType.MODE_NAME] = ConfigProxy.MOD_TYPE;
-			__var.upload_attribute_id = uploadItem.@id;
-			__var.pdt_id = __setInfoData.pdt_id;
-			__var.game_code = __setInfoData.game_code;
-			__var.pdt_kind_code = __setInfoData.pdt_kind_code;
-			__var.pdt_group = __setInfoData.pdt_group;
-			__var.pdt_area = __setInfoData.pdt_area;
-			/** 如果这个项目需要详细的合作者信息，并且uploadItem.index有值，就设置author_other_info_id的值
-			 * uploaditem.index在默认的情况下不会有值，因为如果是从PHP获取的XML，根本就没有这个节点。
-			 * 只有是在CopartnerComplex类中设置的XML才添加了这个index节点
-			 * author_other_info_id这个变量，仅当当前上传的图片是合作者的照片的时候，才需要设定
-			 * 它的值，来自于step_set_info时返回的值
-			 * uploadItem.index的值是基于0的序号，正好可以用来获取SetInfoProxy.pdt_author_other_info_id.item这个XMLList的值
-			 * */
-			 Logger.info("Config.IS_NEED_COPARTNER_INFO:{0}", ConfigProxy.IS_NEED_COPARTNER_INFO);
-			 Logger.info(" uploadItem.index:{0}",  uploadItem.index);
-			if(ConfigProxy.IS_NEED_COPARTNER_INFO && (uploadItem.index != null))				
-			{
-				__var.author_other_info_id = __setInfoData.pdt_author_other_info_id.item[uploadItem.index].@id;
-			}
-			Logger.info('__var:\n{0}', __var);
-			
-			return new UploadResourceVO(_uploadFR, __var);
+			return new UploadResourceVO(_uploadFR, _uploadItem.@id, _uploadItem.index);
 		}
 		
 		/**

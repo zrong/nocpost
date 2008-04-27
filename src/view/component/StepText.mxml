@@ -33,7 +33,7 @@
 		]]>
 	</mx:Script>
 	<mx:StringValidator id="txtV" source="{textTA}" property="text" minLength="0" maxLength="1000"
-		requiredFieldError="{Config.REQUIRED_FIELD_ERROR}"
+		requiredFieldError="{Message.REQUIRED_FIELD_ERROR}"
 		tooShortError="{StringUtil.substitute(Message.TOO_SHORT_ERROR, this.txtV.minLength)}"
 		tooLongError="{StringUtil.substitute(Message.TOO_LONG_ERROR, this.txtV.maxLength)}"/>
 	<mx:Text id="labelText" textAlign="center" width="100%" htmlText="{this.label}"/>

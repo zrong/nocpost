@@ -13,11 +13,12 @@ package model
 	public class GetInfoProxy extends Proxy implements IResponder
 	{
 		public static const NAME:String = 'GetInfoProxy';
-		private var _configProxy:ConfigProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
+		private var _configProxy:ConfigProxy;
 		
 		public function GetInfoProxy(data:Object=null)
 		{
 			super(NAME, new XML());
+			_configProxy = facade.retrieveProxy(ConfigProxy.NAME) as ConfigProxy;
 		}
 		
 		public function getInfo():void

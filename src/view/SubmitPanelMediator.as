@@ -26,7 +26,7 @@ package view
 		
 		override public function listNotificationInterests():Array
 		{
-			return [	ApplicationFacade.VAR_SUBMIT_SET_PROGRESS_BAR	];
+			return [	ApplicationFacade.SET_PROGRESS_BAR	];
 		}
 		
 		override public function handleNotification(notification:INotification):void

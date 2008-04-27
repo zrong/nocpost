@@ -1,12 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical" width="400" height="100"  creationComplete="init()">
+<mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical" width="400" height="100">
 	<mx:Script>
 		<![CDATA[
 			import model.vo.SetPBVO;
-			import mx.controls.ProgressBarMode;
-			import net.zengrong.logging.Logger;
-			import model.type.ModeType;
-			import model.type.StepType;
 	
 			/**
 			 * 每换一个提交对象的时候设置进度条 
@@ -18,118 +14,7 @@
 				pb.label = $vo.label;
 				pb.mode = $vo.mode;
 				pb.source = $vo.source;
-			}			
-
-			
-			/**
-			 * 当提交填写的数据成功的时候调用
-			 * */
-			private function _resultHandler(evt:ResultEvent):void
-			{
-				Logger.info('_http提交成功！\n{1}', evt.result);
-				if(evt.result.is_error=='true')
-				{
-					Output.alert('提交数据失败，请重新提交。');
-					PopUpManager.removePopUp(this);
-				}
-				else
-				//数据提交和写入都成功，进入上传文件流程
-				{
-					Logger.info('提交数据成功！准备开始上传流程。');
-					Config.RESULT_DATA = evt.result as XML;
-					//数据写入成功后，如果当前的合作者需要详细信息，就把合作者的照片加入上传列表中
-					if(Config.IS_NEED_COPARTNER_INFO)
-					{
-						for each(var i:UploadResource in Config.UPLOAD_COPARTNER_PHOTO)
-						{
-							i.buildVariable();
-							Config.UPLOAD_FILES.push(i);
-						}
-					}
-					_uploadQueue();
-				}
-			}
-			
-			
-			/**
-			 * 上传队列中的文件
-			 * */
-			private function _uploadQueue():void
-			{
-				if(Config.UPLOAD_FILES.length <= 0)
-				{
-					_close();
-					return;					
-				}
-				var __uploadWork:UploadResource = Config.UPLOAD_FILES.shift();
-				var __file:FileReference = __uploadWork.uploadFR;
-				var __request:URLRequest = new URLRequest(Config.URL);
-				__request.method = URLRequestMethod.POST;
-				__request.data = __uploadWork.buildVariable();
-				
-				__file.addEventListener(ProgressEvent.PROGRESS, _progressHandler);
-				__file.addEventListener(Event.COMPLETE, _completeHandler);
-				__file.addEventListener(DataEvent.UPLOAD_COMPLETE_DATA, _completeDataHandler);
-				__file.upload(__request, 'upload_data');
-				
-				//更新进度条，在顶端显示上传的文件名和文件大小
-				setPB(	false, 
-						'正在上传文件：'+__file.name+'，' + '文件大小：'+ Config.toByteName(__file.size), 
-						'已上传 %3％', 
-						ProgressBarMode.EVENT, 
-						__file);
-			}
-			
-			private function _progressHandler(evt:ProgressEvent):void
-			{
-				trace(evt.bytesLoaded, evt.bytesTotal);				
-			}
-			
-			private function _completeHandler(evt:Event):void
-			{
-				Logger.debug('上传'+(evt.target as FileReference).name+'成功');
-			}
-			
-			/**
-			 * 上传成功并返回数据后，再次上传队列中的下一个文件
-			 * */
-			private function _completeDataHandler(evt:DataEvent):void
-			{				
-				try
-				{
-					Logger.debug('上传'+(evt.target as FileReference).name+'返回数据,evt.data：\n{1}', evt.data);
-					Config.RESULT_DATA = new XML(evt.data);
-					Logger.debug('上传'+(evt.target as FileReference).name+'返回数据,Config.RESULT_DATA：\n{1}', Config.RESULT_DATA);
-					_uploadQueue();
-				}
-				catch(err:Error)				
-				{
-					Logger.debug(err.getStackTrace());
-					Output.alert(err.message);
-				}
-			}
-			
-			/**
-			 * 所有文件上传成功后，倒计时三秒钟关闭页面
-			 * */
-			private function _close():void
-			{
-				var __timerHandler:Function = function(evt:TimerEvent):void
-				{
-					var __countdown:int = (evt.target as Timer).repeatCount - (evt.target as Timer).currentCount;
-					setPB(true, '所有项目提交成功！', __countdown.toString()+'秒后自动关闭窗口');
-				}
-				
-				var __timerCompleteHandler:Function = function(evt:TimerEvent):void
-				{
-					Output.close();
-				}
-				var __timer:Timer = new Timer(1000, 6);
-				__timer.addEventListener(TimerEvent.TIMER, __timerHandler);
-				__timer.addEventListener(TimerEvent.TIMER_COMPLETE, __timerCompleteHandler);
-				__timer.start();
-			}
-			
+			}		
 		]]>
 	</mx:Script>
 	<mx:ProgressBar id="pb" labelPlacement="center" width="100%" height="100%"/>

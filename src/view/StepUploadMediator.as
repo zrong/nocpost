@@ -2,6 +2,10 @@ package view
 {
 	import model.type.StepType;
 	
+	import mx.core.UIComponent;
+	
+	import net.zengrong.logging.Logger;
+	
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
 	
@@ -28,19 +32,16 @@ package view
 		
 		override public function listNotificationInterests():Array
 		{
-			return [	ApplicationFacade.BUILD_STUDENT,
-						ApplicationFacade.BUILD_TEACHER	];
+			return [	ApplicationFacade.PROJECT_CHANGE	];
 		}
 		
 		override public function handleNotification(notification:INotification):void
-		{
+		{			
 			switch(notification.getName())
 			{
-				case ApplicationFacade.BUILD_STUDENT:
-					_update(notification.getBody() as XML);
-					break;
-				case ApplicationFacade.BUILD_TEACHER:
-					_update(notification.getBody() as XML);
+				case ApplicationFacade.PROJECT_CHANGE:
+					var __project:XML = notification.getBody() as XML;
+					_update(__project);
 					break;
 			}
 		}
@@ -81,7 +82,7 @@ package view
 			}
 			for each(var k:UIComponent in __toRemovedArr)
 			{
-				this.removeChild(k);
+				stepUpload.removeChild(k);
 			}
 			while(_uploadMediatorNameList.length > 0)
 			{
@@ -98,7 +99,7 @@ package view
 			{
 				var __upload:UploadResource = new UploadResource();
 				__upload.percentWidth = 100;				
-				this.addChild(__upload);
+				stepUpload.addChild(__upload);
 				var __mediator:UploadResourceMediator = new UploadResourceMediator(j, __upload);
 				facade.registerMediator(__mediator);
 				_uploadMediatorNameList.push(__mediator.getMediatorName());

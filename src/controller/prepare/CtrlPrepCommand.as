@@ -12,8 +12,7 @@ package controller.prepare
 		{
 			facade.registerCommand(ApplicationFacade.ERROR, ErrorCommand);
 			facade.registerCommand(ApplicationFacade.RPC_STEP_GET_CONFIG_DONE, GetConfigDoneCommand);
-			//设置变量改到SetpVSMediator中
-			//facade.registerCommand(ApplicationFacade.RPC_STEP_GET_INFO_DONE, GetInfoDoneCommand);	
+			facade.registerCommand(ApplicationFacade.RPC_STEP_GET_INFO_DONE, GetInfoDoneCommand);	
 			
 			facade.registerCommand(ApplicationFacade.VAR_UPDATE, VarUpdateCommand);
 			facade.registerCommand(ApplicationFacade.VAR_SUBMIT, VarSubmitCommand);
@@ -23,8 +22,8 @@ package controller.prepare
 			
 			facade.registerCommand(ApplicationFacade.UPLOAD_FILE_FILLED, UploadFilledCommand);
 			
-			facade.removeCommand(ApplicationFacade.SUBMIT_PANEL_BUILD, SubmitPanelBuildCommand);
-			facade.removeCommand(ApplicationFacade.SUBMIT_PANEL_REMOVE, SubmitPanelRemoveCommand);
+			facade.registerCommand(ApplicationFacade.SUBMIT_PANEL_BUILD, SubmitPanelBuildCommand);
+			facade.registerCommand(ApplicationFacade.SUBMIT_PANEL_REMOVE, SubmitPanelRemoveCommand);
 		}
 		
 	}
