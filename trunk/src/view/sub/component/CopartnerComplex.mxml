@@ -2,6 +2,9 @@
 <mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml" xmlns:view="view.sub.component.*">
 	<mx:Script>
 		<![CDATA[
+			import net.zengrong.logging.Logger;
+			import mx.events.ValidationResultEvent;
+			import mx.core.UIComponent;
 			import model.txt.Message;
 			import mx.utils.StringUtil;
 			
@@ -45,7 +48,7 @@
 		invalidCharError="{Message.INVALID_CHAR_ERROR}"
 		invalidDomainError="{Message.INVALID_DOMAIN_ERROR}"
 		invalidIPDomainError="{Message.INVALID_IP_DOMAIN_ERROR}"
-		invalidPeriodsInDomainError="{Config.INVALID_PERIODS_IN_DOMAIN_ERROR}"
+		invalidPeriodsInDomainError="{Message.INVALID_PERIODS_IN_DOMAIN_ERROR}"
 		missingAtSignError="{Message.MISSING_AT_SIGN_ERROR}"
 		missingPeriodInDomainError="{Message.MISSING_PERIODS_IN_DOMAIN_ERROR}"
 		missingUsernameError="{Message.MISSING_USER_NAME_ERROR}"
@@ -59,17 +62,6 @@
 	<mx:StringValidator id="phoneV" source="{phoneTI}" property="text" minLength="7" required="false" maxLength="8"
 		requiredFieldError="{Message.REQUIRED_FIELD_ERROR}"
 		tooShortError="{StringUtil.substitute(Message.TOO_SHORT_ERROR, this.phoneV.minLength)}"/>
-	
-	<mx:XML id="uploadItem">
-		<item id="author_other_photo" name="{this.label}-照片">
-			<index/>
-			<upload_attribute_introduce>请上传{this.label}的照片</upload_attribute_introduce>
-			<upload_attribute_postfix>*.jpg;*.png;*.gif;*.jpeg</upload_attribute_postfix>
-			<upload_attribute_size_limit>2.0</upload_attribute_size_limit> 
-			<upload_attribute_type>photo</upload_attribute_type> 
-			<upload_blank_word /> 
-		</item>
-	</mx:XML>
 	<mx:Label text="{this.label}" fontWeight="bold"/>
 	<mx:HBox width="580">
 		<mx:FormItem label="姓名：" width="200" required="true">

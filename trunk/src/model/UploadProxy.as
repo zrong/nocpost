@@ -1,17 +1,25 @@
 package model
 {
+	import flash.events.DataEvent;
+	import flash.events.Event;
 	import flash.events.ProgressEvent;
 	import flash.events.TimerEvent;
 	import flash.net.FileReference;
 	import flash.net.URLRequest;
+	import flash.net.URLRequestMethod;
 	import flash.net.URLVariables;
 	import flash.utils.Timer;
 	
 	import model.type.ErrorType;
+	import model.type.ModeType;
+	import model.type.StepType;
+	import model.type.TextVarNameType;
 	import model.vo.SetPBVO;
 	import model.vo.UploadResourceVO;
 	
 	import mx.controls.ProgressBarMode;
+	
+	import net.zengrong.logging.Logger;
 	
 	import org.puremvc.as3.patterns.proxy.Proxy;
 
@@ -55,21 +63,20 @@ package model
 			var __file:FileReference = __vo.file;
 			var __request:URLRequest = new URLRequest(ConfigProxy.URL);
 			__request.method = URLRequestMethod.POST;
-			__request.data = __vo.submitVar;
-			//__request.
+			__request.data = _getUploadVariable(__vo.id, __vo.index);
 			
 			__file.addEventListener(ProgressEvent.PROGRESS, _progressHandler);
 			__file.addEventListener(Event.COMPLETE, _completeHandler);
 			__file.addEventListener(DataEvent.UPLOAD_COMPLETE_DATA, _completeDataHandler);
-			__file.upload(__request, 'upload_data');
+			__file.upload(__request, TextVarNameType.UPLOAD_DATA);
 			
 			//更新进度条，在顶端显示上传的文件名和文件大小
-			var __vo:SetPBVO = new SetPBVO(	false, 
+			var __pbvo:SetPBVO = new SetPBVO(	false, 
 											'正在上传文件：'+__file.name+'，' + '文件大小：'+ ConfigProxy.toByteName(__file.size), 
 											'已上传 %3％', 
 											ProgressBarMode.EVENT, 
 											__file);
-			sendNotification(ApplicationFacade.SET_PROGRESS_BAR, __vo);
+			sendNotification(ApplicationFacade.SET_PROGRESS_BAR, __pbvo);
 		}
 		
 		private function _progressHandler(evt:ProgressEvent):void
@@ -104,32 +111,34 @@ package model
 		/**
 		 * 获取上传文件的时候需要附带的变量
 		 * */
-		private function _getUploadVariable():URLVariables
+		private function _getUploadVariable($id:String, $index:String):URLVariables
 		{
 			var __setInfoData:XML = _setInfoProxy.getData() as XML;
 			var __var:URLVariables = new URLVariables();
-			__var[StepType.STEP_NAME] = StepType.STEP_UPLOAD;
+			__var[StepType.RPC_STEP_NAME] = StepType.RPC_STEP_UPLOAD;
 			__var[ModeType.MODE_NAME] = ConfigProxy.MOD_TYPE;
-			__var.upload_attribute_id = uploadItem.@id;
 			__var.pdt_id = _uploadResult.pdt_id;
 			__var.game_code = _uploadResult.game_code;
 			__var.pdt_kind_code = _uploadResult.pdt_kind_code;
 			__var.pdt_group = _uploadResult.pdt_group;
 			__var.pdt_area = _uploadResult.pdt_area;
-			/** 如果这个项目需要详细的合作者信息，并且uploadItem.index有值，就设置author_other_info_id的值
-			 * uploaditem.index在默认的情况下不会有值，因为如果是从PHP获取的XML，根本就没有这个节点。
-			 * 只有是在CopartnerComplex类中设置的XML才添加了这个index节点
-			 * author_other_info_id这个变量，仅当当前上传的图片是合作者的照片的时候，才需要设定
-			 * 它的值，来自于step_set_info时返回的值
-			 * uploadItem.index的值是基于0的序号，正好可以用来获取SetInfoProxy.pdt_author_other_info_id.item这个XMLList的值
+			
+			__var.upload_attribute_id = $id;
+			/** 如果这个项目需要详细的合作者信息，并且$index有值，就设置author_other_info_id的值
+			 * $index在默认的情况下不会有值，因为如果是从PHP获取的XML，根本就没有这个节点。
+			 * 只有是在CopartnerComplex类中设置的_uploadItem才添加了这个index节点
+			 * author_other_info_id这个变量，仅当当前上传的图片是合作者的照片的时候，才需要设定它的值，
+			 * 它的值来自于step_set_info时返回的值
+			 * CopartnerComplex中的$index的值是基于0的序号，正好可以用来获取SetInfoProxy.pdt_author_other_info_id.item这个XMLList的值
 			 * */
 			 Logger.info("Config.IS_NEED_COPARTNER_INFO:{0}", ConfigProxy.IS_NEED_COPARTNER_INFO);
-			 Logger.info(" uploadItem.index:{0}",  uploadItem.index);
-			if(ConfigProxy.IS_NEED_COPARTNER_INFO && (uploadItem.index != null))				
+			 Logger.info(" $index:{0}",  $index);
+			if(ConfigProxy.IS_NEED_COPARTNER_INFO && ($index != null))				
 			{
-				__var.author_other_info_id = __setInfoData.pdt_author_other_info_id.item[uploadItem.index].@id;
+				__var.author_other_info_id = __setInfoData.pdt_author_other_info_id.item[$index].@id;
 			}
 			Logger.info('__var:\n{0}', __var);
+			return __var;
 		}
 		
 		private function _getUploadList():void
@@ -142,10 +151,11 @@ package model
 		 * */
 		private function _close():void
 		{
-			var __timerHandler:Function = function(evt:TimerEventr):void
+			var __timerHandler:Function = function(evt:TimerEvent):void
 			{
 				var __countdown:int = (evt.target as Timer).repeatCount - (evt.target as Timer).currentCount;
-				setPB(true, '所有项目提交成功！', __countdown.toString()+'秒后自动关闭窗口');
+				var __vo:SetPBVO = new SetPBVO(true, '所有项目提交成功！', __countdown.toString()+'秒后自动关闭窗口');
+				sendNotification(ApplicationFacade.SET_PROGRESS_BAR, __vo);
 			}
 			
 			var __timerCompleteHandler:Function = function(evt:TimerEvent):void

@@ -4,9 +4,12 @@ package view
 	import model.GetInfoProxy;
 	import model.vo.StepHelppingTeacherVO;
 	
+	import net.zengrong.logging.Logger;
+	
 	import org.puremvc.as3.patterns.mediator.Mediator;
 	
 	import view.component.StepHelppingTeacher;
+	import view.interfaces.ICopartner;
 	import view.interfaces.IStepBuildSub;
 	import view.sub.HelppingTeacherMediator;
 	import view.sub.component.HelppingTeacher;
@@ -37,8 +40,8 @@ package view
 		{
 			Logger.info('StepHelppingTeacherMediator.buildSub执行 ');
 			_mediatorNameList = new Array();	//清空原来的辅导教师数组
-			cat.helppingTeacherTile.removeAllChildren();	//移除当前辅导教师容器中的所有辅导教师
-			if($tnum > 0)
+			removeSub();	//移除当前辅导教师容器中的所有辅导教师
+			if($num > 0)
 			//如果数量大于0，就按照数量在容器中建立辅导教师
 			{
 				for(var j:int=0; j< $num; j++)
@@ -86,7 +89,7 @@ package view
 			var __arr:Array = new Array();
 			for each(var i:String in _mediatorNameList)
 			{
-				var __mediator:ICopartner = facade.retrieveMediator(i);
+				var __mediator:ICopartner = facade.retrieveMediator(i) as ICopartner;
 				__arr.push(__mediator.getVariable());
 			}
 			__vo.pdt_teacher = __arr.join(ConfigProxy.SEPARATOR);			

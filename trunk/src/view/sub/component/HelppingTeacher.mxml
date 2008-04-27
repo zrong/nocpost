@@ -3,6 +3,7 @@
 	<mx:Script>
 		<![CDATA[
 			import model.txt.Message;
+			import mx.utils.StringUtil;
 			
 			/**
 			 * 检测非空的控件填写是否复合规则

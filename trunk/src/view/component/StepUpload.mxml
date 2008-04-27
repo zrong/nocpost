@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml"
-	xmlns:common='common.*' horizontalAlign="center" 
-	implements="view.interfaces.IStep">
+	 horizontalAlign="center">
 	<mx:Script>
 		<![CDATA[
+			import mx.validators.Validator;
+			import mx.events.ValidationResultEvent;
 			import view.sub.component.UploadResource;
 			import mx.core.UIComponent;
 			import net.zengrong.logging.Logger;

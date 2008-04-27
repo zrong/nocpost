@@ -13,7 +13,6 @@ package view
 	
 	import view.component.StepWorks;
 	import view.interfaces.IStep;
-	import view.sub.CopartnerAndTeacherMediator;
 
 	public class StepWorksMediator extends Mediator implements IStep
 	{
@@ -49,9 +48,9 @@ package view
 		
 		private function _initEvent():void
 		{
-			stepWorks.addEventListener(StepWorks.DEBUG_FILL, debugFill);
-			stepWorks.addEventListener(StepWorks.PROJECT_CHANGE, _projectChangeHandler);
-			stepWorks.addEventListener(StepWorks.GROUP_CHANGE, _groupChangeHandler);
+			_view.addEventListener(StepWorks.DEBUG_FILL, debugFill);
+			_view.addEventListener(StepWorks.PROJECT_CHANGE, _projectChangeHandler);
+			_view.addEventListener(StepWorks.GROUP_CHANGE, _groupChangeHandler);
 		}
 		
 		private function get _view():StepWorks
@@ -246,13 +245,6 @@ package view
 			var __project:XML = _view.projectCB.selectedItem as XML;
 			sendNotification(ApplicationFacade.PROJECT_CHANGE, __project);
 			_buildFrame(__project, _getIsTeacher(__project));
-			Logger.info('projectChangeHandler执行，__projectID:{1}', __projectID);
-			//Logger.info('projectChangeHandler执行，__xml:{1}', _data.project);
-			/*
-			Logger.info('_isTeacher:{1}', _isTeacher);
-			Logger.info('_hasModule:{1}', _hasModule);
-			Logger.info('__cnum:{1}', __cnum);
-			Logger.info('__tnum:{1}', __tnum);*/
 			if(_isTeacher)
 			{
 				_groupDP = _getGroupOfUser(true);

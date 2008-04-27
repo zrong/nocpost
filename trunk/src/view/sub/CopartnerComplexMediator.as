@@ -3,6 +3,8 @@ package view.sub
 	import model.GetInfoProxy;
 	import model.vo.UploadResourceVO;
 	
+	import net.zengrong.logging.Logger;
+	
 	import org.puremvc.as3.patterns.mediator.Mediator;
 	
 	import view.interfaces.ICopartner;
@@ -17,23 +19,29 @@ package view.sub
 		private var _copartnerInfo:XML;
 		private var _copartnerID:String = '';
 		private var _photoMediator:UploadResourceMediator;
-		private var _index:int;
+		private var _uploadItem:XML = 	<item id="author_other_photo" name="{_view.label}-照片">
+											<index/>
+											<upload_attribute_introduce>请上传{_view.label}的照片</upload_attribute_introduce>
+											<upload_attribute_postfix>*.jpg;*.png;*.gif;*.jpeg</upload_attribute_postfix>
+											<upload_attribute_size_limit>2.0</upload_attribute_size_limit> 
+											<upload_attribute_type>photo</upload_attribute_type> 
+											<upload_blank_word /> 
+										</item>;
 		
-		public function CopartnerSimpleMediator($index:int, viewComponent:Object=null)
+		public function CopartnerComplexMediator($index:int, viewComponent:Object=null)
 		{
 			super(NAME+$index.toString(), viewComponent);
 			_getInfoProxy = facade.retrieveProxy(GetInfoProxy.NAME) as GetInfoProxy;
 			_nationList = (_getInfoProxy.getData() as XML).nation.item;
 			_view.nationCB.dataProvider = _nationList;
-			_index = $index;
-			_view.uploadItem.index = $index;
+			_uploadItem.index = $index;
 			_initPhoto();
 		}
 		
 		private function _initPhoto():void
 		{
 			//photoMediator的名称用CopartnerComplexMediator的名称加上UploadResourceMediator的名称加上CopartnerComplexMediator的序号表示
-			_photoMediator = new UploadResourceMediator(NAME+UploadResourceMediator.NAME+_index, _view.photo);
+			_photoMediator = new UploadResourceMediator(_uploadItem, _view.photo, NAME);
 			facade.registerMediator(_photoMediator);
 		}
 		

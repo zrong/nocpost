@@ -2,6 +2,7 @@ package view
 {
 	import flash.events.Event;
 	
+	import model.ConfigProxy;
 	import model.GetInfoProxy;
 	import model.type.TextVarNameType;
 	import model.vo.StepTextVO;
@@ -54,13 +55,13 @@ package view
 			//Logger.info('StepText.{1}的__modify：{2}', varName, __modify);
 			if(ConfigProxy.IS_MODIFY)
 			{
-				textTA.text = __modify[stepText.varName];
+				stepText.textTA.text = __modify[stepText.varName];
 			}
 			else
 			{
-				if(Config.IS_USER)
+				if(ConfigProxy.IS_USER)
 				{
-					textTA.text = __modify[stepText.varName];
+					stepText.textTA.text = __modify[stepText.varName];
 				}
 				else
 				{

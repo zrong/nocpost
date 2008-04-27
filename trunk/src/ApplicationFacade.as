@@ -21,7 +21,6 @@ package
 		public static const RPC_STEP_SET_INFO_FAIL:String = 'stepSetInfoFail';
 		public static const RPC_STEP_SET_INFO_ERROR:String = 'stepSetInfoError';
 		
-		public static const RPC_STEP_SET_INFO_DONE:String = 'stepSetInfoDone';
 		public static const RPC_STEP_UPLOAD_DONE:String = 'stepUploadDone';
 		
 		public static const NAV_ACCEPT:String = 'navAccept';

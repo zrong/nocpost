@@ -58,7 +58,7 @@ package model
 			sendNotification(ApplicationFacade.RPC_STEP_GET_CONFIG_DONE);
 		}
 		
-		private function buildUrlGetInfoVar():URLVariables
+		private function buildUrlGetInfoVar():void
 		{
 			data[StepType.RPC_STEP_NAME] = StepType.RPC_STEP_GET_INFO;
 			data.pdt_id = PDT_ID;
