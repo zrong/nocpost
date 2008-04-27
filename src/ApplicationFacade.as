@@ -35,19 +35,17 @@ package
 		
 		public static const VAR_UPDATE:String = 'varUpdate';
 		public static const VAR_SUBMIT:String = 'varSubmit';
-		public static const VAR_SUBMIT_SET_PROGRESS_BAR:String = 'varSubmitSetPB';
 		
 		public static const SET_CONFIG_IS_TEACHER:String = 'setIsTeacher';
 		public static const SET_CONFIG_IS_COPARTNER_COMPLEX:String = 'setIsCopartnerComplex';
-		
-		public static const BUILD_TEACHER:String = 'buildTeacher';
-		public static const BUILD_STUDENT:String = 'buildStudent';
 		
 		public static const UPLOAD_FILE_FILLED:String = 'uploadFileFilled';
 		public static const UPLOAD_FILE_SUBMIT:String = 'uploadFileSubmit';
 		
 		public static const SUBMIT_PANEL_BUILD:String = 'spBuild';
 		public static const SUBMIT_PANEL_REMOVE:String = 'spRemove';
+		
+		public static const SET_PROGRESS_BAR:String = 'setPB';
 		
 		public static const PROJECT_CHANGE:String = 'projectChange';
 		

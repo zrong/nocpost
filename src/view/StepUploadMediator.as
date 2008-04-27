@@ -99,11 +99,9 @@ package view
 				var __upload:UploadResource = new UploadResource();
 				__upload.percentWidth = 100;				
 				this.addChild(__upload);
-				var __mediatorName:String = UploadResourceMediator.NAME + j.@id;
-				_uploadMediatorNameList.push(__mediatorName);
-				var __mediator:UploadResourceMediator = new UploadResourceMediator(__mediatorName, __upload);
-				__mediator.uploadItem = j;
+				var __mediator:UploadResourceMediator = new UploadResourceMediator(j, __upload);
 				facade.registerMediator(__mediator);
+				_uploadMediatorNameList.push(__mediator.getMediatorName());
 			}
 		}
 		
