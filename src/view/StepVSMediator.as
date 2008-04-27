@@ -245,6 +245,8 @@ package view
 			var __stepCopartner:StepCopartnerSimple = new StepCopartnerSimple();
 			__stepCopartner.percentWidth = 100;
 			__stepCopartner.percentHeight = 100;
+			__stepCopartner.label = Message.LABEL_STEP_COPARTNER;
+			__stepCopartner.name = StepCopartnerSimpleMediator.NAME;
 			vs.addChildAt(__stepCopartner, vs.getChildIndex(vs.stepUpload));
 			var __mediator:StepCopartnerSimpleMediator = new StepCopartnerSimpleMediator(__stepCopartner);
 			__mediator.buildSub($num);
@@ -257,6 +259,8 @@ package view
 			var __stepCopartner:StepCopartnerComplex = new StepCopartnerComplex();
 			__stepCopartner.percentWidth = 100;
 			__stepCopartner.percentHeight = 100;
+			__stepCopartner.label = Message.LABEL_STEP_COPARTNER;
+			__stepCopartner.name = StepCopartnerComplexMediator.NAME;
 			vs.addChildAt(__stepCopartner, vs.getChildIndex(vs.stepUpload));
 			var __mediator:StepCopartnerComplexMediator = new StepCopartnerComplexMediator(__stepCopartner);
 			__mediator.buildSub($num);
@@ -269,6 +273,8 @@ package view
 			var __stepHelppingTeacher:StepHelppingTeacher = new StepHelppingTeacher();
 			__stepHelppingTeacher.percentWidth = 100;
 			__stepHelppingTeacher.percentHeight = 100;
+			__stepHelppingTeacher.label = Message.LABEL_STEP_HELPPINGTEACHER;
+			__stepHelppingTeacher.name = StepHelppingTeacherMediator.NAME;
 			vs.addChildAt(__stepHelppingTeacher, vs.getChildIndex(vs.stepUpload));
 			var __mediator:StepHelppingTeacherMediator = new StepHelppingTeacherMediator(__stepHelppingTeacher);
 			__mediator.buildSub($num);
@@ -287,7 +293,7 @@ package view
 				var __stepMediator:IMediator;
 				if(i is StepTeacherPay)
 				{
-					__stepMediator = new StepTeacherPayMediator(i);
+					__stepMediator = new StepTeacherPayMediator(i.name, i);
 				}	
 				else
 				{

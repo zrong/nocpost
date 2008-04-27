@@ -4,7 +4,7 @@
 	xmlns:view='view.component.*'
 	creationPolicy="all">
 	<view:StepCopyright id="copyright" name="copyright" width="100%"/>
-	<view:StepBasic id="stepBasic" name="stepBasic" label="第一步：基本信息" width="100%" height="100%"/>
-	<view:StepWorks id="stepWorks" name='stepWorks' label='第二步：参赛信息' width="100%" height="100%"/>
-	<view:StepUpload id="stepUpload" name="stepUpload" width="100%" height="100%"/>
+	<view:StepBasic id="stepBasic" name="StepBasicMediator" label="第一步：基本信息" width="100%" height="100%"/>
+	<view:StepWorks id="stepWorks" name='StepWorksMediator' label='第二步：参赛信息' width="100%" height="100%"/>
+	<view:StepUpload id="stepUpload" name="StepUploadMediator" width="100%" height="100%"/>
 </mx:ViewStack>
