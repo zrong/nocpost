@@ -2,6 +2,7 @@
 <mx:Panel xmlns:mx="http://www.adobe.com/2006/mxml" layout="vertical" width="400" height="100"  creationComplete="init()">
 	<mx:Script>
 		<![CDATA[
+			import model.vo.SetPBVO;
 			import mx.controls.ProgressBarMode;
 			import net.zengrong.logging.Logger;
 			import model.type.ModeType;
@@ -10,13 +11,13 @@
 			/**
 			 * 每换一个提交对象的时候设置进度条 
 			 * */
-			private function setPB($indeter:Boolean, $title:String, $pbLabel:String, $mode:String='event', $source:*=null):void
+			public function setPB($vo:SetPBVO):void
 			{
-				this.title = $title;
-				pb.indeterminate = $indeter;
-				pb.label = $pbLabel;
-				pb.mode = $mode;
-				pb.source = $source;
+				this.title = $vo.title;
+				pb.indeterminate = $vo.indeterminate;
+				pb.label = $vo.label;
+				pb.mode = $vo.mode;
+				pb.source = $vo.source;
 			}			
 
 			

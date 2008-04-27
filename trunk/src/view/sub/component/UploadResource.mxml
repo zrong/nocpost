@@ -6,8 +6,6 @@
 			import model.txt.Message;
 			
 			public static const UPLOAD_CLICK:String = 'uploadClick';
-
-			[Bindable] public var uploadItem:XML;
 			
 			private function sendEvent($name:String):void
 			{
@@ -28,11 +26,11 @@
 	<mx:Validator id="selectV" source="{uploadNameLabel}" property="text" listener="{selectBTN}" 
 		requiredFieldError="{Message.REQUIRED_FIELD_ERROR}"/>
 	<mx:HBox id="selectBox">
-		<mx:Label id="itemNameLabel" text="{uploadItem.@name}" width="150" textAlign="right"/>
+		<mx:Label id="itemNameLabel" width="150" textAlign="right"/>
 		<mx:Button id="selectBTN" label="选择文件" click="_selectBTNClickHandler(event)"/>
-		<mx:Label id="uploadSizeLabel" width="80" text="{uploadItem.upload_file_size}"/>
-		<mx:Label id="uploadNameLabel" name="{itemNameLabel.text}" width="400" text="{uploadItem.upload_file_name}"/>
+		<mx:Label id="uploadSizeLabel" width="80"/>
+		<mx:Label id="uploadNameLabel" name="{itemNameLabel.text}" width="400"/>
 	</mx:HBox>
-	<mx:Label text="{uploadItem.upload_attribute_introduce}  允许的文件格式：{uploadItem.upload_attribute_postfix}  文件大小限制：{uploadItem.upload_attribute_size_limit}MB" textAlign="center"/>
+	<mx:Label id="limitLabel" textAlign="center"/>
 	<mx:HRule  width="100%"/>	
 </mx:VBox>

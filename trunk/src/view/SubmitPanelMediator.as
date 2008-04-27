@@ -1,5 +1,7 @@
 package view
 {
+	import model.vo.SetPBVO;
+	
 	import mx.managers.PopUpManager;
 	
 	import org.puremvc.as3.interfaces.INotification;
@@ -17,7 +19,7 @@ package view
 			super(NAME, viewComponent);
 		}
 		
-		private function get submitPanel():SubmitPanel
+		private function get _view():SubmitPanel
 		{
 			return viewComponent as SubmitPanel;
 		}
@@ -31,15 +33,15 @@ package view
 		{
 			switch(notification.getName())
 			{
-				case ApplicationFacade.VAR_SUBMIT_SET_PROGRESS_BAR:
-					submitPanel.setPB.apply(null, notification.getBody() as Array);
+				case ApplicationFacade.SET_PROGRESS_BAR:
+					_view.setPB(notification.getBody() as SetPBVO);
 					break;
 			}
 		}
 		
 		public function removeSubmitPanel():void
 		{
-			PopUpManager.removePopUp(submitPanel);
+			PopUpManager.removePopUp(_view);
 		}
 		
 		

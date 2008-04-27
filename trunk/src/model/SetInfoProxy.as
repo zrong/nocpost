@@ -6,6 +6,7 @@ package model
 	import model.type.ErrorType;
 	import model.type.StepType;
 	import model.vo.IVariables;
+	import model.vo.SetPBVO;
 	
 	import mx.rpc.IResponder;
 	
@@ -33,7 +34,8 @@ package model
 			try
 			{
 				__delegate.setInfo(ConfigProxy.URL, _submitVar);
-				sendNotification(ApplicationFacade.VAR_SUBMIT_SET_PROGRESS_BAR,[true, '提交数据到服务器', '提交数据到服务器，请稍候...']);
+				var __vo:SetPBVO = new SetPBVO(true, '提交数据到服务器', '提交数据到服务器，请稍候...');
+				sendNotification(ApplicationFacade.VAR_SUBMIT_SET_PROGRESS_BAR, __vo);
 			}
 			catch(err:Error)
 			{

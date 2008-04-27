@@ -64,5 +64,31 @@ package model
 			data.pdt_id = PDT_ID;
 			data.mod_type = MOD_TYPE;
 		}
+		
+		/**
+		 * 自动把传来的字节转成MB或者KB
+		 * */
+		public static function toByteName($byte:int):String
+		{
+			Logger.debug('toByName执行,$byte:{1}',$byte);
+			var __name:String;
+			var __num:Number;
+			if($byte < 1048576)
+			{
+				__name = 'KB';
+				__num = $byte/1024;
+			}
+			else
+			{
+				__name = 'MB';
+				__num = $byte/1048576;
+			}
+			return Math.floor(__num*10)/10+__name;
+		}
+		
+		public static  function toByteNum($mb:Number):int
+		{
+			return $mb*1048576;
+		}
 	}
 }
