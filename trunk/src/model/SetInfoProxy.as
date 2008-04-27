@@ -56,7 +56,7 @@ package model
 					_submitVar[i] = $var[i];
 				}
 			}
-			Logger.debug('要提交的变量：{0}' , data);
+			Logger.debug('要提交的变量：{0}' , _submitVar);
 		}
 		
 		public function result($data:Object):void

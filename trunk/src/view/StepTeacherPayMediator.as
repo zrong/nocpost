@@ -8,9 +8,9 @@ package view
 	{
 		public static const NAME:String = 'StepTeacherPayMediator';
 		
-		public function StepTeacherPayMediator(viewComponent:Object=null)
+		public function StepTeacherPayMediator($mediatorName:String=null, viewComponent:Object=null)
 		{
-			super(NAME, viewComponent);
+			super($mediatorName, viewComponent);
 		}
 		
 		public function buildVariable():void{}

@@ -19,7 +19,7 @@ package view
 
 	public class StepBasicMediator extends Mediator implements IStep
 	{
-		public static const NAME:String = 'StepBasicMediators';
+		public static const NAME:String = 'StepBasicMediator';
 		
 		private var _data:XML;
 		private var _getInfoProxy:GetInfoProxy;
