@@ -15,8 +15,6 @@
 			public static const PROJECT_CHANGE:String = 'projectChange';
 			public static const GROUP_CHANGE:String = 'groupChange';
 			
-			[Bindable] public var info:XML;
-			
 			private function sendEvent($name:String):void
 			{
 				dispatchEvent(new Event($name));
@@ -78,16 +76,16 @@
 		/**
 		 * 移去（其实是隐藏）教师相关的步骤，仅当用户为学生的时候使用
 		 * */
-		public function hideTeacher():void
+		public function hideHelppingTeacher():void
 		{
-			Logger.info('hideTeacher执行 ');
+			Logger.info('hideHelppingTeacher执行 ');
 			teacherBox.visible = false;
 			teacherBox.height = 0;
 		}
 		
-		public function showTeacher():void
+		public function showHelppingTeacher():void
 		{
-			Logger.info('showTeacher执行 ');
+			Logger.info('showHelppingTeacher执行 ');
 			teacherBox.height = 24;
 			teacherBox.visible = true;
 		}
@@ -138,7 +136,7 @@
 			<mx:TextInput id="bookTI" name="教材" width="130" maxChars="40"/>
 		</mx:FormItem>
 		<mx:FormItem id="moduleFI" label="模式：" width="34%" required="true">
-			<mx:ComboBox id="moduleCB" name="模式" width="135" prompt="请选择" labelField="@name" dataProvider="{info.module_type.item}" dropdownWidth="170" rowCount="6"/>
+			<mx:ComboBox id="moduleCB" name="模式" width="135" prompt="请选择" labelField="@name" dropdownWidth="170" rowCount="6"/>
 		</mx:FormItem>
 	</mx:HBox>
 	<mx:Button label="自动填写（调试用）" height="40" click="sendEvent(DEBUG_FILL)"/>		

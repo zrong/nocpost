@@ -134,8 +134,7 @@ package view
 			var __isComplexCopartner:Boolean = _getIsCopartnerComplex($project);
 			var __cnum:int = int($project.cnum);
 			var __tnum:int = int($project.tnum);
-			//Logger.info('buildTeacher执行，__project：\n{1}', _data.project.item.(@id=$projectID));
-			Logger.info('buildTeacher执行，$project:{0}',$project);	
+			//Logger.info('StepVSMediator._buildVS执行，$project:{0}',$project);	
 			if(__isTeacher)
 			{
 				_buildTeacherUserVS(__cnum, __isComplexCopartner)
@@ -151,7 +150,7 @@ package view
 		 * */
 		private function _removeVS():void
 		{
-			Logger.info('removeVS运行，删除前的vs子数量：{0}', vs.numChildren);
+			//Logger.info('removeVS运行，删除前的vs子数量：{0}', vs.numChildren);
 			_removeMediator();
 			var __toRemovedArr:Array = new Array();
 			for(var i:int=0; i < vs.numChildren; i++)
@@ -171,7 +170,7 @@ package view
 			{
 				vs.removeChild(k);
 			}
-			Logger.info('removeVS运行，删除后的vs子数量：{0}', vs.numChildren);
+			//Logger.info('removeVS运行，删除后的vs子数量：{0}', vs.numChildren);
 		}
 		
 		/**

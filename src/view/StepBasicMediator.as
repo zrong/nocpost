@@ -28,10 +28,10 @@ package view
 		{
 			super(NAME, viewComponent);
 			_getInfoProxy = facade.retrieveProxy(GetInfoProxy.NAME) as GetInfoProxy;			
-			stepBasic.addEventListener(StepBasic.DEBUG_FILL, _debugFill);
+			_view.addEventListener(StepBasic.DEBUG_FILL, _debugFill);
 		}
 		
-		private function get stepBasic():StepBasic
+		private function get _view():StepBasic
 		{
 			return viewComponent as StepBasic;
 		}
@@ -54,7 +54,7 @@ package view
 		public function buildVariable():void
 		{
 			Logger.info('StepBasicMediator.buildVariable执行');	
-			stepBasic.validate();
+			_view.validate();
 			_sendVO();					
 		}
 		
@@ -76,12 +76,12 @@ package view
 				{
 					//gameCodeLabel.text
 					//nameTI.text
-					stepBasic.nationCB.dataProvider = _data.nation.item;
+					_view.nationCB.dataProvider = _data.nation.item;
 					//nationCB.selectedIndex
 					//maleRB.selected
 					//femaleRB.selected
 					//sexRBG.enabled
-					stepBasic.areaCB.dataProvider = _data.province.item;
+					_view.areaCB.dataProvider = _data.province.item;
 					//ageNS.value
 					//emailTI.text
 					//zipTI.text
@@ -101,46 +101,46 @@ package view
 		private function _fillForHasValue($isAdmin:Boolean):void
 		{
 			var __modify:XML = _data.mod_content[0] as XML;
-			stepBasic.gameCodeLabel.text = __modify.game_code;
-			stepBasic.nameTI.text = __modify.pdt_author;
-			stepBasic.nameTI.enabled = $isAdmin;
-			stepBasic.nationCB.dataProvider = _data.nation.item.(@id==__modify.pdt_author_nation);
-			stepBasic.nationCB.enabled = false;
-			stepBasic.nationCB.selectedIndex = 0;
-			stepBasic.sexRBG.selectedValue = __modify.pdt_author_sex;
-			stepBasic.sexRBG.enabled = $isAdmin;
-			stepBasic.areaCB.dataProvider = _data.province.item.(@id==__modify.pdt_area);
-			stepBasic.areaCB.selectedIndex = 0;
-			stepBasic.areaCB.enabled = false;		
-			stepBasic.ageNS.value = __modify.pdt_author_age;
-			stepBasic.emailTI.text = __modify.pdt_author_email;
-			stepBasic.emailTI.enabled = $isAdmin;
-			stepBasic.zipTI.text = __modify.pdt_author_zip;
-			stepBasic.zoneTI.text = __modify.pdt_author_phone.split('-')[0];
-			stepBasic.zoneTI.enabled = $isAdmin;
-			stepBasic.phoneTI.text = __modify.pdt_author_phone.split('-')[1];
-			stepBasic.phoneTI.enabled = $isAdmin;
-			stepBasic.mobileTI.text = __modify.pdt_author_mobphone;
-			stepBasic.mobileTI.enabled = $isAdmin;
-			stepBasic.schoolTI.text = __modify.pdt_school;
-			stepBasic.schoolTI.enabled = $isAdmin;
-			stepBasic.addressTI.text = __modify.pdt_author_address;
+			_view.gameCodeLabel.text = __modify.game_code;
+			_view.nameTI.text = __modify.pdt_author;
+			_view.nameTI.enabled = $isAdmin;
+			_view.nationCB.dataProvider = _data.nation.item.(@id==__modify.pdt_author_nation);
+			_view.nationCB.enabled = false;
+			_view.nationCB.selectedIndex = 0;
+			_view.sexRBG.selectedValue = __modify.pdt_author_sex;
+			_view.sexRBG.enabled = $isAdmin;
+			_view.areaCB.dataProvider = _data.province.item.(@id==__modify.pdt_area);
+			_view.areaCB.selectedIndex = 0;
+			_view.areaCB.enabled = false;		
+			_view.ageNS.value = __modify.pdt_author_age;
+			_view.emailTI.text = __modify.pdt_author_email;
+			_view.emailTI.enabled = $isAdmin;
+			_view.zipTI.text = __modify.pdt_author_zip;
+			_view.zoneTI.text = __modify.pdt_author_phone.split('-')[0];
+			_view.zoneTI.enabled = $isAdmin;
+			_view.phoneTI.text = __modify.pdt_author_phone.split('-')[1];
+			_view.phoneTI.enabled = $isAdmin;
+			_view.mobileTI.text = __modify.pdt_author_mobphone;
+			_view.mobileTI.enabled = $isAdmin;
+			_view.schoolTI.text = __modify.pdt_school;
+			_view.schoolTI.enabled = $isAdmin;
+			_view.addressTI.text = __modify.pdt_author_address;
 		}
 		
 		private function _sendVO():void
 		{
 			var __basicVO:StepBasicVO = new StepBasicVO();
-			__basicVO.pdt_author = StringUtil.trim(stepBasic.nameTI.text);
-			__basicVO.pdt_author_nation = stepBasic.nationCB.selectedItem.@id;
-			__basicVO.pdt_author_sex = stepBasic.sexRBG.selectedValue.toString();
-			__basicVO.pdt_author_age = stepBasic.ageNS.value;
-			__basicVO.pdt_area = stepBasic.areaCB.selectedItem.@id;
-			__basicVO.pdt_author_email = stepBasic.emailTI.text; 
-			__basicVO.pdt_author_phone = stepBasic.zoneTI.text + '-' + stepBasic.phoneTI.text;
-			__basicVO.pdt_author_mobphone = stepBasic.mobileTI.text;
-			__basicVO.pdt_author_zip = stepBasic.zipTI.text;
-			__basicVO.pdt_school = stepBasic.schoolTI.text;
-			__basicVO.pdt_author_address = stepBasic.addressTI.text;
+			__basicVO.pdt_author = StringUtil.trim(_view.nameTI.text);
+			__basicVO.pdt_author_nation = _view.nationCB.selectedItem.@id;
+			__basicVO.pdt_author_sex = _view.sexRBG.selectedValue.toString();
+			__basicVO.pdt_author_age = _view.ageNS.value;
+			__basicVO.pdt_area = _view.areaCB.selectedItem.@id;
+			__basicVO.pdt_author_email = _view.emailTI.text; 
+			__basicVO.pdt_author_phone = _view.zoneTI.text + '-' + _view.phoneTI.text;
+			__basicVO.pdt_author_mobphone = _view.mobileTI.text;
+			__basicVO.pdt_author_zip = _view.zipTI.text;
+			__basicVO.pdt_school = _view.schoolTI.text;
+			__basicVO.pdt_author_address = _view.addressTI.text;
 			
 			sendNotification(ApplicationFacade.VAR_UPDATE, __basicVO);
 		}
@@ -148,23 +148,23 @@ package view
 		//=================================================
 		private function _debugFill(evt:Event):void
 		{
-			stepBasic.nameTI.text = '用户'+Math.floor(Math.random()*1000).toString();
-			stepBasic.nationCB.selectedIndex = 0;
-			stepBasic.maleRB.selected = true;
-			stepBasic.ageNS.value = 10;
-			stepBasic.areaCB.selectedIndex = 0;
-			stepBasic.emailTI.text = 'zrongzrong@gmail.com';
-			stepBasic.zoneTI.text = Math.floor(Math.random()*10000).toString();
-			stepBasic.phoneTI.text = Math.floor(Math.random()*100000000).toString();
-			stepBasic.mobileTI.text = Math.floor(Math.random()*1000000000000).toString();
-			stepBasic.zipTI.text = Math.floor(Math.random()*1000000).toString();
-			stepBasic.schoolTI.text = 'abcdefghijklmnopqrstuvwxyz';
-			stepBasic.addressTI.text = 'abcdefghijklmnopqrstuvwxyz';
+			_view.nameTI.text = '用户'+Math.floor(Math.random()*1000).toString();
+			_view.nationCB.selectedIndex = 0;
+			_view.maleRB.selected = true;
+			_view.ageNS.value = 10;
+			_view.areaCB.selectedIndex = 0;
+			_view.emailTI.text = 'zrongzrong@gmail.com';
+			_view.zoneTI.text = Math.floor(Math.random()*10000).toString();
+			_view.phoneTI.text = Math.floor(Math.random()*100000000).toString();
+			_view.mobileTI.text = Math.floor(Math.random()*1000000000000).toString();
+			_view.zipTI.text = Math.floor(Math.random()*1000000).toString();
+			_view.schoolTI.text = 'abcdefghijklmnopqrstuvwxyz';
+			_view.addressTI.text = 'abcdefghijklmnopqrstuvwxyz';
 		}
 		/*
 		private function debugDelFlash():void
 		{
-			var __var:Array = stepBasic.delFlashTI.text.split(',');
+			var __var:Array = _view.delFlashTI.text.split(',');
 			ExternalInterface.call(__var[0], __var[1]);
 		}
 		*/			
