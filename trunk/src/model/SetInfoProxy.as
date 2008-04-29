@@ -3,6 +3,7 @@ package model
 	import flash.net.URLVariables;
 	
 	import model.dao.SetInfoDelegate;
+	import model.enum.VarEnum;
 	import model.type.ErrorType;
 	import model.type.ModeType;
 	import model.type.StepType;
@@ -49,11 +50,12 @@ package model
 		 * */
 		public function updateData($var:IVariables):void
 		{
-			for(var i:String in $var)
+			//Logger.debug(($var as Object).);
+			for each(var i:VarEnum in $var.data)
 			{
-				if($var[i] != null)
+				if(i.value != null)
 				{
-					_submitVar[i] = $var[i];
+					_submitVar[i.name] = i.value;
 				}
 			}
 			Logger.debug('要提交的变量：{0}' , _submitVar);

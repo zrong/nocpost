@@ -60,62 +60,49 @@ package view
 		
 		override public function listNotificationInterests():Array
 		{
-			return [	ApplicationFacade.RPC_STEP_GET_INFO_DONE	];
+			return [	ApplicationFacade.RPC_STEP_GET_INFO_DONE,
+						ApplicationFacade.PROJECT_CHANGE	];
 		}
 		
 		override public function handleNotification(notification:INotification):void
 		{
+			Logger.debug('StepWorksMediator.handleNotification:{0}', notification.getName());
 			switch(notification.getName())
 			{
 				case ApplicationFacade.RPC_STEP_GET_INFO_DONE:
 					_data = _getInfoProxy.getData() as XML;
-					_view.info = _data;
-					_buildFrameFromModeTypeAndUserType();
+					_update();
+					break;
+				case ApplicationFacade.PROJECT_CHANGE:
+					var __project:XML = notification.getBody() as XML;
+					_isTeacher = _getIsTeacher(__project);
+					_hasModule = _getHasModule(__project);
+					_buildFrame(__project);
 					_update();
 					break;
 			}
 		}		
 		
-		//======================================================================================
-		//
-		//	实例方法 buildVariable()、update()以及他们调用的方法
-		//
-		//======================================================================================
-		
-		private function _buildFrameFromModeTypeAndUserType():void
+		/**
+		 * 根据project的值，隐藏或者显示相关的界面
+		 * */		
+		private function _buildFrame($project:XML):void
 		{
-			var __project:XML;
-			if(ConfigProxy.IS_MODIFY || ConfigProxy.IS_USER)
-			{
-				__project = _data.project.item.(@id==_data.mod_content.pdt_kind)[0] as XML;
-				_buildFrame(__project, ConfigProxy.IS_TEACHER);				
-			}
-			else
-			{
-				_view.hideTeacher();
-			}
-		}
-		
-		private function _buildFrame($project:XML, $isTeacher:Boolean):void
-		{
-			_isTeacher = $isTeacher;
-			Logger.info('_buildFrame执行，__project：\n{0}', $project);
-			_hasModule = _getHasModule($project);
+			if(!(ConfigProxy.IS_MODIFY || ConfigProxy.IS_USER)) _view.hideHelppingTeacher();
+			Logger.info('StepWorksMediator._buildFrame执行，__project：\n{0}', $project);
 			if(_isTeacher)
 			//如果是教师项目，就增加教师独有的信息，同时根据教师参加的项目的参与者数量添加参与者字段
 			{
 				_view.moduleFI.visible = _hasModule;
-				_view.hideTeacher();
+				_view.hideHelppingTeacher();
 			}
 			else
 			//如果是学生项目，就移除教师独有的表单，同时根据学生参加的项目添加参与者与辅导教师相关的字段
 			{
-				_view.showTeacher();
+				_view.showHelppingTeacher();
 			}
 		}
-		//===========================================
-		//	update()	被Application._buildFrameFromModeTypeAndUserType()和buildVS()和调用
-		//===========================================
+
 		/**
 		 * 更新界面，填写表单元素的初始值
 		 * */
@@ -243,8 +230,7 @@ package view
 		private function _projectChangeHandler(evt:Event):void
 		{
 			var __project:XML = _view.projectCB.selectedItem as XML;
-			sendNotification(ApplicationFacade.PROJECT_CHANGE, __project);
-			_buildFrame(__project, _getIsTeacher(__project));
+			_isTeacher = _getIsTeacher(__project);
 			if(_isTeacher)
 			{
 				_groupDP = _getGroupOfUser(true);
@@ -255,7 +241,8 @@ package view
 			}
 			_view.groupCB.dataProvider = _groupDP;
 			_view.groupCB.selectedIndex = -1;
-			_view.groupCB.enabled = true;	
+			_view.groupCB.enabled = true;
+			sendNotification(ApplicationFacade.PROJECT_CHANGE, __project);
 		}
 		
 		//===========================================
