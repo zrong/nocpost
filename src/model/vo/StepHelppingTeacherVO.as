@@ -2,7 +2,7 @@ package model.vo
 {
 	import model.enum.VarEnum;
 	
-	public class StepHelppingTeacherVO
+	public class StepHelppingTeacherVO implements IVariables
 	{
 		public var pdt_teacher:String = null;
 		

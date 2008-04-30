@@ -73,7 +73,7 @@ package view.sub
 		private function _buildDownBlankWordBTN():void
 		{
 			var blankWordURL:String = _uploadItem.upload_blank_word.toString();
-			Logger.info('build_downBlankWordBTN执行,blankWordURL：{0},length:{1}', blankWordURL, blankWordURL.length);
+			Logger.info('UploadResourceMediator._buildDownBlankWordBTN执行,blankWordURL：{0},length:{1}', blankWordURL, blankWordURL.length);
 			if(blankWordURL.length > 0)
 			//如果提供了空白word电子表格下载地址，就建立一个按钮下载空白电子表格
 			{

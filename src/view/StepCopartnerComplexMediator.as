@@ -38,9 +38,9 @@ package view
 		
 		public function buildSub($num:int):void
 		{
-			Logger.info('StepCopartnerComplexMediator.buildSub执行 ');
+			Logger.info('StepCopartnerComplexMediator.buildSub执行，数量{0}', $num);
 			_mediatorNameList = new Array();
-			_view.removeAllChildren();
+			removeSub();
 			if($num > 0)
 			{			
 				for(var i:int=0; i< $num; i++)
@@ -48,6 +48,7 @@ package view
 					//是否显示详细信息，生成的填写合作者信息的表单是不同的
 					var __copartner:CopartnerComplex = new CopartnerComplex();
 					__copartner.label = '合作者'+(i+1);
+					__copartner.percentWidth = 100;
 					_view.addChild(__copartner);
 					var __mediator:CopartnerComplexMediator = new CopartnerComplexMediator(i, __copartner);
 					if(ConfigProxy.IS_MODIFY)
@@ -70,7 +71,7 @@ package view
 				__mediator.removePhotoMediator();
 				facade.removeMediator(__name);
 			}
-			_view.removeAllChildren();
+			_view.removeAllChildExceptLabel();
 		}
 		
 		public function buildVariable():void

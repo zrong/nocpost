@@ -78,7 +78,6 @@ package view
 					_isTeacher = _getIsTeacher(__project);
 					_hasModule = _getHasModule(__project);
 					_buildFrame(__project);
-					_update();
 					break;
 			}
 		}		
@@ -88,19 +87,23 @@ package view
 		 * */		
 		private function _buildFrame($project:XML):void
 		{
-			if(!(ConfigProxy.IS_MODIFY || ConfigProxy.IS_USER)) _view.hideHelppingTeacher();
-			Logger.info('StepWorksMediator._buildFrame执行，__project：\n{0}', $project);
+			if(!(ConfigProxy.IS_MODIFY || ConfigProxy.IS_USER)) _view.hideTeacherBox();
+			Logger.debug('StepWorksMediator._buildFrame执行----');
+			//Logger.debug(!(ConfigProxy.IS_MODIFY || ConfigProxy.IS_USER));
+			//Logger.debug('_isTeacher:{0}', _isTeacher);
 			if(_isTeacher)
 			//如果是教师项目，就增加教师独有的信息，同时根据教师参加的项目的参与者数量添加参与者字段
 			{
-				_view.moduleFI.visible = _hasModule;
-				_view.hideHelppingTeacher();
+				_view.showTeacherBox();
+				_view.moduleFI.visible = _hasModule;				
 			}
 			else
 			//如果是学生项目，就移除教师独有的表单，同时根据学生参加的项目添加参与者与辅导教师相关的字段
 			{
-				_view.showHelppingTeacher();
+				_view.hideTeacherBox();
 			}
+			//Logger.info('StepWorksMediator._buildFrame执行，__project：\n{0}', $project);
+			Logger.info('StepWorksMediator._buildFrame执行完毕----');
 		}
 
 		/**
@@ -241,7 +244,9 @@ package view
 			}
 			_view.groupCB.dataProvider = _groupDP;
 			_view.groupCB.selectedIndex = -1;
+			_view.gradeCB.selectedIndex = -1;
 			_view.groupCB.enabled = true;
+			_view.gradeCB.enabled = false;
 			sendNotification(ApplicationFacade.PROJECT_CHANGE, __project);
 		}
 		
@@ -325,6 +330,7 @@ package view
 		private function _getIsTeacher($xml:XML):Boolean
 		{
 			var __isTeacher:Boolean = $xml.is_teacher == '1';
+			//Logger.debug('_getIsTeacher:{0}', __isTeacher);
 			sendNotification(ApplicationFacade.SET_CONFIG_IS_TEACHER, __isTeacher);	
 			return __isTeacher;
 		}
@@ -336,7 +342,7 @@ package view
 		 
 		
 		//==========================
-		private function debugFill():void
+		private function debugFill(evt:Event):void
 		{
 			_view.nameTI.text = '测试作品名称'+Math.random().toString();
 			_view.projectCB.selectedIndex = 0;

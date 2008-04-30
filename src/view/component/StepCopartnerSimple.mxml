@@ -1,4 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
-<mx:Tile xmlns:mx="http://www.adobe.com/2006/mxml">
+<mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml">
+	<mx:Script>
+		<![CDATA[
+			import mx.controls.Text;
+			public function removeAllChildExceptLabel():void
+			{
+				copartnerTile.removeAllChildren();
+			}
+			
+			public function addChildExceptLabel($obj:DisplayObject):void
+			{
+				copartnerTile.addChild($obj);
+			}
+		]]>
+	</mx:Script>
 	<mx:Text textAlign="center" width="100%" htmlText="{this.label}"/>
-</mx:Tile>
+	<mx:Tile id="copartnerTile" width="100%" height="100%"/>
+</mx:VBox>

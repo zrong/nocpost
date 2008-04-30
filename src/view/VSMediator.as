@@ -14,27 +14,18 @@ package view
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.mediator.Mediator;
 	
-	import view.component.StepBasic;
-	import view.component.StepCopartnerComplex;
-	import view.component.StepCopartnerSimple;
-	import view.component.StepCopyright;
-	import view.component.StepHelppingTeacher;
-	import view.component.StepTeacherPay;
-	import view.component.StepText;
-	import view.component.StepUpload;
-	import view.component.StepVS;
-	import view.component.StepWorks;
+	import view.component.*;
 	import view.interfaces.IStep;
 	import view.interfaces.IStepBuildSub;
 
-	public class StepVSMediator extends Mediator
+	public class VSMediator extends Mediator
 	{
 		public static const NAME:String = 'StepVSMediator';
 		private var _data:XML;
 		private var _project:XML;
 		private var _dynamicStepMediatorList:Array = [];	//保存动态注册的Mediator的名称
 		
-		public function StepVSMediator(viewComponent:Object=null)
+		public function VSMediator(viewComponent:Object=null)
 		{
 			super(NAME, viewComponent);
 			_data = (facade.retrieveProxy(GetInfoProxy.NAME) as GetInfoProxy).getData() as XML;
@@ -83,20 +74,20 @@ package view
 		
 		private function toNextStep():void
 		{
-			//try
-			//{
+			try
+			{
 				_getStep(vs.selectedChild).buildVariable();
 				vs.selectedIndex ++;
 				if(vs.selectedIndex > (vs.numChildren -2))
 				{
 					sendNotification(ApplicationFacade.NAV_END);
 				}
-			//}
-			//catch(err:Error)
-			//{
-				//Logger.debug(err.getStackTrace());
-				//sendNotification(ApplicationFacade.ERROR, err.message, ErrorType.ALERT);
-			//}
+			}
+			catch(err:Error)
+			{
+				Logger.debug(err.getStackTrace());
+				sendNotification(ApplicationFacade.ERROR, err.message, ErrorType.ALERT);
+			}
 			
 		}
 		
@@ -134,7 +125,7 @@ package view
 			var __isComplexCopartner:Boolean = _getIsCopartnerComplex($project);
 			var __cnum:int = int($project.cnum);
 			var __tnum:int = int($project.tnum);
-			//Logger.info('StepVSMediator._buildVS执行，$project:{0}',$project);	
+			Logger.info('StepVSMediator._buildVS执行，$project:{0}',$project);	
 			if(__isTeacher)
 			{
 				_buildTeacherUserVS(__cnum, __isComplexCopartner)
@@ -181,11 +172,11 @@ package view
 			_removeVS();
 			if($isComplex)
 			{
-				_buildStepCopartnerSimple($cnum);
+				_buildStepCopartnerComplex($cnum);
 			}
 			else
-			{
-				_buildStepCopartnerComplex($cnum);
+			{				
+				_buildStepCopartnerSimple($cnum);
 			}
 			var __stepIntroduce:StepText = new StepText();
 			__stepIntroduce.percentWidth = 100;
@@ -239,12 +230,16 @@ package view
 			_buildStepTextMediator(__stepIdea, __stepProgress, __stepLiterature);
 		}
 		
+		/**
+		 * 建立简单的参与者界面
+		 * */
 		private function _buildStepCopartnerSimple($num:int):void
 		{
 			var __stepCopartner:StepCopartnerSimple = new StepCopartnerSimple();
 			__stepCopartner.percentWidth = 100;
 			__stepCopartner.percentHeight = 100;
 			__stepCopartner.label = Message.LABEL_STEP_COPARTNER;
+			Logger.debug('__stepCopartner.label:{0}',__stepCopartner.label);
 			__stepCopartner.name = StepCopartnerSimpleMediator.NAME;
 			vs.addChildAt(__stepCopartner, vs.getChildIndex(vs.stepUpload));
 			var __mediator:StepCopartnerSimpleMediator = new StepCopartnerSimpleMediator(__stepCopartner);
@@ -253,6 +248,9 @@ package view
 			_dynamicStepMediatorList.push(StepCopartnerSimpleMediator.NAME);
 		}
 		
+		/**
+		 * 建立复杂的参与者界面
+		 * */
 		private function _buildStepCopartnerComplex($num:int):void
 		{
 			var __stepCopartner:StepCopartnerComplex = new StepCopartnerComplex();
@@ -267,6 +265,9 @@ package view
 			_dynamicStepMediatorList.push(StepCopartnerComplexMediator.NAME);
 		}
 		
+		/**
+		 * 建立指导教师界面
+		 * */
 		private function _buildStepHelppingTeacher($num:int):void
 		{
 			var __stepHelppingTeacher:StepHelppingTeacher = new StepHelppingTeacher();

@@ -19,9 +19,9 @@ package view.sub
 		private var _copartnerInfo:XML;
 		private var _copartnerID:String = '';
 		private var _photoMediator:UploadResourceMediator;
-		private var _uploadItem:XML = 	<item id="author_other_photo" name="{_view.label}-照片">
+		private var _uploadItem:XML = 	<item id="author_other_photo">
 											<index/>
-											<upload_attribute_introduce>请上传{_view.label}的照片</upload_attribute_introduce>
+											<upload_attribute_introduce/>
 											<upload_attribute_postfix>*.jpg;*.png;*.gif;*.jpeg</upload_attribute_postfix>
 											<upload_attribute_size_limit>2.0</upload_attribute_size_limit> 
 											<upload_attribute_type>photo</upload_attribute_type> 
@@ -34,8 +34,15 @@ package view.sub
 			_getInfoProxy = facade.retrieveProxy(GetInfoProxy.NAME) as GetInfoProxy;
 			_nationList = (_getInfoProxy.getData() as XML).nation.item;
 			_view.nationCB.dataProvider = _nationList;
-			_uploadItem.index = $index;
+			_initXML($index);
 			_initPhoto();
+		}
+		
+		private function _initXML($index:int):void
+		{
+			_uploadItem.@name = _view.label+'-照片';
+			_uploadItem.index = $index;
+			_uploadItem.upload_attribute_introduce = '请上传'+_view.label+'的照片';
 		}
 		
 		private function _initPhoto():void
@@ -64,7 +71,7 @@ package view.sub
 			__arr.push(_view.emailTI.text);
 			__arr.push(_view.phoneTI.text);
 			__arr.push(_view.sexRBG.selectedValue);
-			__arr.push(_view.(nationCB.selectedIndex==-1)?'':_view.nationCB.selectedItem.@id);
+			__arr.push((_view.nationCB.selectedIndex==-1)?'':_view.nationCB.selectedItem.@id);
 			__arr.push(_view.mobileTI.text);
 			__arr.push(_view.ageNS.value);
 			return __arr.join(',');
