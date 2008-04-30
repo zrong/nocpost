@@ -15,7 +15,7 @@ package controller.prepare
 			
 			facade.registerMediator(new ApplicationMediator(__app));
 			facade.registerMediator(new NavButtonMediator(__app.nav));
-			facade.registerMediator(new StepVSMediator(__app.vs));			
+			facade.registerMediator(new VSMediator(__app.vs));			
 			facade.registerMediator(new StepBasicMediator(__app.vs.stepBasic));
 			facade.registerMediator(new StepWorksMediator(__app.vs.stepWorks));
 			facade.registerMediator(new StepUploadMediator(__app.vs.stepUpload));

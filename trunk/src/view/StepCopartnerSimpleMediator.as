@@ -36,12 +36,18 @@ package view
 			return viewComponent as StepCopartnerSimple;
 		}
 		
+		public function buildVariable():void
+		{
+			Logger.info('StepCopartnerSimpleMediator.buildVariable调用,_mediatorNameList.length:{0}', _mediatorNameList.length);
+			_sendVO();			
+		}
+		
 		public function buildSub($num:int):void
 		{
-			Logger.info('StepCopartnerSimpleMediator.buildSubView执行 ');
+			Logger.info('StepCopartnerSimpleMediator.buildSubView执行，数量：{0}', $num);
 			//Logger.info('copartnerTile.height:{0},titleWidth:{1}', cat.copartnerTile.height, cat.copartnerTile.tileWidth);
 			_mediatorNameList =  new Array();
-			_view.removeAllChildren();
+			removeSub();
 			if($num > 0)
 			{			
 				for(var i:int=0; i< $num; i++)
@@ -49,7 +55,8 @@ package view
 					//是否显示详细信息，生成的填写合作者信息的表单是不同的
 					var __copartner:CopartnerSimple = new CopartnerSimple();;
 					__copartner.label = '合作者'+(i+1);
-					_view.addChild(__copartner);
+					__copartner.percentWidth = 100;
+					_view.addChildExceptLabel(__copartner);
 					var __mediator:CopartnerSimpleMediator = new CopartnerSimpleMediator(i, __copartner);;
 					if(ConfigProxy.IS_MODIFY)
 					{
@@ -67,14 +74,10 @@ package view
 			{
 				facade.removeMediator(_mediatorNameList.shift().toString());
 			}
-			_view.removeAllChildren();
+			_view.removeAllChildExceptLabel();
 		}
 		
-		public function buildVariable():void
-		{
-			Logger.info('StepCopartnerSimpleMediator.buildVariable调用,_mediatorNameList.length:{0}', _mediatorNameList.length);
-			_sendVO();			
-		}
+		
 		
 		private function _sendVO():void
 		{

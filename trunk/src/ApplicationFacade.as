@@ -56,7 +56,7 @@ package
 		
 		public function startup(app:Object):void
 		{
-			Logger.TYPE = Logger.TRACE;
+			Logger.TYPE = Logger.FIREBUG;
 			sendNotification(STARTUP, app);
 		}
 		

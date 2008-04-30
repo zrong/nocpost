@@ -76,16 +76,16 @@
 		/**
 		 * 移去（其实是隐藏）教师相关的步骤，仅当用户为学生的时候使用
 		 * */
-		public function hideHelppingTeacher():void
+		public function hideTeacherBox():void
 		{
-			Logger.info('hideHelppingTeacher执行 ');
+			Logger.info('hideTeacherBox执行 ');
 			teacherBox.visible = false;
 			teacherBox.height = 0;
 		}
 		
-		public function showHelppingTeacher():void
+		public function showTeacherBox():void
 		{
-			Logger.info('showHelppingTeacher执行 ');
+			Logger.info('showTeacherBox执行 ');
 			teacherBox.height = 24;
 			teacherBox.visible = true;
 		}

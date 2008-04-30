@@ -38,7 +38,7 @@ package view
 		
 		public function buildSub($num:int):void
 		{
-			Logger.info('StepHelppingTeacherMediator.buildSub执行 ');
+			Logger.info('StepHelppingTeacherMediator.buildSub执行，数量：{0}', $num);
 			_mediatorNameList = new Array();	//清空原来的辅导教师数组
 			removeSub();	//移除当前辅导教师容器中的所有辅导教师
 			if($num > 0)
@@ -47,6 +47,7 @@ package view
 				for(var j:int=0; j< $num; j++)
 				{
 					var __helppingTeacher:HelppingTeacher = new HelppingTeacher();
+					__helppingTeacher.percentWidth = 100;
 					__helppingTeacher.label = '辅导教师'+(j+1);
 					_view.addChild(__helppingTeacher);	//把建立的辅导教师加入显示列表
 					var __mediator:HelppingTeacherMediator = new HelppingTeacherMediator(j, __helppingTeacher);
@@ -74,7 +75,7 @@ package view
 			{
 				facade.removeMediator(_mediatorNameList.shift().toString());
 			}
-			_view.removeAllChildren();
+			_view.removeAllChildExceptLabel();
 		}
 		
 		public function buildVariable():void
