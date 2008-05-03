@@ -2,16 +2,25 @@
 <mx:VBox xmlns:mx="http://www.adobe.com/2006/mxml">
 	<mx:Script>
 		<![CDATA[
+			import mx.core.UIComponent;
+			import mx.events.ValidationResultEvent;
+			import mx.validators.Validator;
+			import net.zengrong.logging.Logger;
 			import model.txt.Message;
 			import mx.utils.StringUtil;
 			
 			/**
 			 * 检测非空的控件填写是否复合规则
 			 * */
-			public function checkNoNullControls():void
+			public function validate():void
 			{
-				var __controls:Array = _getValidatorsFormHasValueControls([nameV, sexV, nationV, emailV, mobileV]);
-				var __validators:Array;
+				var __validArr:Array = [nameV, sexV, nationV, emailV, mobileV];
+				var __validatorResults:Array = Validator.validateAll(__validArr);
+				Logger.info("HelppingTeacher.__validatorResults.length:{0}", __validatorResults.length);
+				if(__validatorResults.length > 0){
+					var __v:ValidationResultEvent = __validatorResults[0] as ValidationResultEvent;
+					throw new Error(__v.message);
+				}
 			}
 			
 			/**
@@ -30,15 +39,15 @@
 			}
 		]]>
 	</mx:Script>
-	<mx:StringValidator id="nameV" source="{nameTI}" property="text" minLength="2" required="false"
-		requiredFieldError="{Message.REQUIRED_FIELD_ERROR}" 
+	<mx:StringValidator id="nameV" source="{nameTI}" property="text" minLength="2"
+		requiredFieldError="{this.label} 姓名为必填项！" 
 		tooShortError="{StringUtil.substitute(Message.TOO_SHORT_ERROR, this.nameV.minLength)}"/>
 	<mx:Validator id="sexV" source="{sexRBG}" property="selectedValue"
-		requiredFieldError="{Message.REQUIRED_FIELD_ERROR}"/>
-	<mx:Validator id="nationV" source="{nationCB}" property="selectedLabel" required="false"
-		requiredFieldError="{Message.REQUIRED_FIELD_ERROR}"/>
-	<mx:EmailValidator id="emailV" source="{emailTI}" property="text" required="false"
-		requiredFieldError="{Message.REQUIRED_FIELD_ERROR}"
+		requiredFieldError="{this.label} 姓别为必填项！"/>
+	<mx:Validator id="nationV" source="{nationCB}" property="selectedLabel"
+		requiredFieldError="{this.label} 民族为必填项！"/>
+	<mx:EmailValidator id="emailV" source="{emailTI}" property="text"
+		requiredFieldError="{this.label} E-mail为必填项！"
 		invalidCharError="{Message.INVALID_CHAR_ERROR}"
 		invalidDomainError="{Message.INVALID_DOMAIN_ERROR}"
 		invalidIPDomainError="{Message.INVALID_IP_DOMAIN_ERROR}"
@@ -47,9 +56,9 @@
 		missingPeriodInDomainError="{Message.MISSING_PERIODS_IN_DOMAIN_ERROR}"
 		missingUsernameError="{Message.MISSING_USER_NAME_ERROR}"
 		tooManyAtSignsError="{Message.TOO_MANY_ANT_SIGN_ERROR}"/>
-	<mx:StringValidator id="mobileV" source="{mobileTI}" property="text" minLength="11" required="false"
-		requiredFieldError="{Message.REQUIRED_FIELD_ERROR}"
-		tooShortError="{StringUtil.substitute(Message.TOO_SHORT_ERROR, this.mobileV.minLength)}"/>
+	<mx:StringValidator id="mobileV" source="{mobileTI}" property="text" minLength="11"
+		requiredFieldError="{this.label} 电话为必填项！"
+		tooShortError="{this.label} 电话号码{StringUtil.substitute(Message.TOO_SHORT_ERROR, this.mobileV.minLength)}"/>
 	
 	<mx:Label text="{this.label}" fontWeight="bold"/>
 	<mx:HBox width="100%">

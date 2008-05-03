@@ -3,6 +3,7 @@ package model
 	import flash.net.URLVariables;
 	
 	import model.dao.GetInfoDelegate;
+	import model.type.ErrorType;
 	
 	import mx.rpc.IResponder;
 	
@@ -45,7 +46,8 @@ package model
 		public function fault($info:Object):void
 		{
 			Logger.info('HTTP提交返回失败：\n{0}\n{1}{2}',$info.fault.getStackTrace(), $info.messageId, $info.message);
-			sendNotification(ApplicationFacade.ERROR, $info.fault.message+"\n"+$info.message.toString());
+			//sendNotification(ApplicationFacade.ERROR, $info.fault.message+"\n"+$info.message.toString(), ErrorType.CLOSE);
+			sendNotification(ApplicationFacade.ERROR, '获取参数失败，请重试。', ErrorType.CLOSE);
 		}
 		
 	}

@@ -31,6 +31,6 @@
 		<mx:Label id="uploadSizeLabel" width="80"/>
 		<mx:Label id="uploadNameLabel" name="{itemNameLabel.text}" width="400"/>
 	</mx:HBox>
-	<mx:Label id="limitLabel" textAlign="center"/>
+	<mx:Text id="limitLabel" textAlign="center" selectable="false"/>
 	<mx:HRule  width="100%"/>	
 </mx:VBox>

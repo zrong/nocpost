@@ -66,7 +66,7 @@
 						__thisValidatior.push(moduleV);
 					}				
 				}
-				Logger.debug('StepWorks中加入检测的validator：\n{0}', __thisValidatior);
+				//Logger.debug('StepWorks中加入检测的validator：\n{0}', __thisValidatior.toString());
 				return __thisValidatior;				
 			}
 			
@@ -139,5 +139,7 @@
 			<mx:ComboBox id="moduleCB" name="模式" width="135" prompt="请选择" labelField="@name" dropdownWidth="170" rowCount="6"/>
 		</mx:FormItem>
 	</mx:HBox>
-	<mx:Button label="自动填写（调试用）" height="40" click="sendEvent(DEBUG_FILL)"/>		
+	<!--
+	<mx:Button label="自动填写（调试用）" height="40" click="sendEvent(DEBUG_FILL)"/>
+	-->		
 </mx:VBox>

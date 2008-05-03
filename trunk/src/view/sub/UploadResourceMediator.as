@@ -51,7 +51,7 @@ package view.sub
 			_view.itemNameLabel.text = _uploadItem.@name;
 			_view.uploadSizeLabel.text = _uploadItem.upload_file_size;
 			_view.uploadNameLabel.text = _uploadItem.upload_file_name;
-			_view.limitLabel.text = _uploadItem.upload_attribute_introduce+'  允许的文件格式：'+
+			_view.limitLabel.text = _uploadItem.upload_attribute_introduce+'\n允许的文件格式：'+
 									_uploadItem.upload_attribute_postfix+'  文件大小限制：'+
 									_uploadItem.upload_attribute_size_limit+'MB';			
 			_view.addEventListener(UploadResource.UPLOAD_CLICK, _selectBTNClickHandler);

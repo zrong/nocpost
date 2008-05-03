@@ -27,8 +27,8 @@ package model
 	{
 		public static const NAME:String = 'UploadProxy'
 		
-		private var _photo:Array;	//第三步详细的参与者信息中的参与者照片（仅教师有）
-		private var _file:Array;	//最后一步要上传的所有文件
+		private var _photo:Array = [];	//第三步详细的参与者信息中的参与者照片（仅教师有）
+		private var _file:Array = [];	//最后一步要上传的所有文件
 		private var _allUpload:Array;	//包含photo和file的数组
 		
 		private var _setInfoProxy:SetInfoProxy;
@@ -114,14 +114,15 @@ package model
 		private function _getUploadVariable($id:String, $index:String):URLVariables
 		{
 			var __setInfoData:XML = _setInfoProxy.getData() as XML;
+			Logger.debug('__setInfoData:{0}', __setInfoData.toString());
 			var __var:URLVariables = new URLVariables();
 			__var[StepType.RPC_STEP_NAME] = StepType.RPC_STEP_UPLOAD;
 			__var[ModeType.MODE_NAME] = ConfigProxy.MOD_TYPE;
-			__var.pdt_id = _uploadResult.pdt_id;
-			__var.game_code = _uploadResult.game_code;
-			__var.pdt_kind_code = _uploadResult.pdt_kind_code;
-			__var.pdt_group = _uploadResult.pdt_group;
-			__var.pdt_area = _uploadResult.pdt_area;
+			__var.pdt_id = __setInfoData.pdt_id;
+			__var.game_code = __setInfoData.game_code;
+			__var.pdt_kind_code = __setInfoData.pdt_kind_code;
+			__var.pdt_group = __setInfoData.pdt_group;
+			__var.pdt_area = __setInfoData.pdt_area;
 			
 			__var.upload_attribute_id = $id;
 			/** 如果这个项目需要详细的合作者信息，并且$index有值，就设置author_other_info_id的值

@@ -28,9 +28,9 @@ package model
 				
 		public function setInfo():void
 		{
-			data[StepType.RPC_STEP_NAME] = StepType.RPC_STEP_SET_INFO;
-			data[ModeType.MODE_NAME] = ConfigProxy.MOD_TYPE;
-			data.pdt_id = ConfigProxy.PDT_ID;
+			_submitVar[StepType.RPC_STEP_NAME] = StepType.RPC_STEP_SET_INFO;
+			_submitVar[ModeType.MODE_NAME] = ConfigProxy.MOD_TYPE;
+			_submitVar.pdt_id = ConfigProxy.PDT_ID;
 			
 			var __delegate:SetInfoDelegate = new SetInfoDelegate(this);
 			try
@@ -63,20 +63,27 @@ package model
 		
 		public function result($data:Object):void
 		{
-			Logger.info('_http提交成功！\n{0}', $data.result);
-			if($data.result.is_error=='true')
+			try
 			{
-				sendNotification(ApplicationFacade.ERROR, '提交数据失败，请重新提交。', ErrorType.ALERT);
-				_removeSubmitPanel();
+				Logger.info('_http提交成功！\n{0}', $data.result);
+				if($data.result.is_error=='true')
+				{
+					sendNotification(ApplicationFacade.ERROR, '提交数据失败，请重新提交。', ErrorType.ALERT);
+					_removeSubmitPanel();
+				}
+				else
+				//数据提交和写入都成功，进入上传文件流程
+				{
+					Logger.info('提交数据成功！准备开始上传流程。');
+					data = $data.result as XML;
+					_removeSubmitPanel();
+					sendNotification(ApplicationFacade.UPLOAD_FILE_SUBMIT);
+				}
 			}
-			else
-			//数据提交和写入都成功，进入上传文件流程
+			catch(err:Error)
 			{
-				Logger.info('提交数据成功！准备开始上传流程。');
-				data = $data.result as XML;
-				_removeSubmitPanel();
-				sendNotification(ApplicationFacade.UPLOAD_FILE_SUBMIT);
-			}
+				sendNotification(ApplicationFacade.ERROR, err.message+'\r'+err.getStackTrace(), ErrorType.ALERT);
+			}			
 		}
 		
 		public function fault($info:Object):void

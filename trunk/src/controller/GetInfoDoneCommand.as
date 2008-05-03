@@ -3,6 +3,8 @@ package controller
 	import model.ConfigProxy;
 	import model.GetInfoProxy;
 	
+	import net.zengrong.logging.Logger;
+	
 	import org.puremvc.as3.interfaces.INotification;
 	import org.puremvc.as3.patterns.command.SimpleCommand;
 
@@ -17,7 +19,9 @@ package controller
 			var __isModifyOrUser:Boolean = (ConfigProxy.IS_MODIFY||ConfigProxy.IS_USER);
 			if(__isModifyOrUser)
 			{
-				var __project:XML = __data.project.item.(@id==__data.mod_content.pdt_kind)[0] as XML;				
+				var __project:XML = __data.project.item.(@id==__data.mod_content.pdt_kind)[0] as XML;
+				//Logger.debug('GetInfoDoneCommand.__data:{0}', __data.toXMLString());
+				//Logger.debug('GetInfoDoneCommand.__project:{0}', __project);				
 				sendNotification(ApplicationFacade.PROJECT_CHANGE, __project);
 			}
 		}

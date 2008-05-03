@@ -88,9 +88,10 @@ package view
 		private function _buildFrame($project:XML):void
 		{
 			if(!(ConfigProxy.IS_MODIFY || ConfigProxy.IS_USER)) _view.hideTeacherBox();
-			Logger.debug('StepWorksMediator._buildFrame执行----');
+			Logger.debug('StepWorksMediator._buildFrame执行======');
+			Logger.debug('_project:{0}', $project.toString());
 			//Logger.debug(!(ConfigProxy.IS_MODIFY || ConfigProxy.IS_USER));
-			//Logger.debug('_isTeacher:{0}', _isTeacher);
+			Logger.debug('_isTeacher:{0}', _isTeacher);
 			if(_isTeacher)
 			//如果是教师项目，就增加教师独有的信息，同时根据教师参加的项目的参与者数量添加参与者字段
 			{

@@ -18,6 +18,7 @@ package view.sub
 		private var _helppingTeacherInfo:XML;
 		//辅导教师ID，仅当修改的时候有值
 		public var helppingTeacherID:String = '';
+		private var _isRequired:Boolean = false;
 		
 		public function HelppingTeacherMediator($index:int, viewComponent:Object=null)
 		{
@@ -25,6 +26,11 @@ package view.sub
 			_getInfoProxy = facade.retrieveProxy(GetInfoProxy.NAME) as GetInfoProxy;
 			_nationList = (_getInfoProxy.getData() as XML).nation.item;
 			_view.nationCB.dataProvider = _nationList;
+			if($index == 0)
+			//只有第一个辅导教师才是必需的
+			{
+				_isRequired = true;
+			}
 		}
 		
 		private function get _view():HelppingTeacher
@@ -34,6 +40,12 @@ package view.sub
 				
 		public function getVariable():String
 		{
+			Logger.debug('HelppingTeacherMediator.getVariable执行, isRequired:{0}',_isRequired); 
+			if(_isRequired)
+			//如果需要检查辅导教师的信息才进行检查
+			{
+				_view.validate();
+			}
 			var __arr:Array = new Array();
 			__arr.push(helppingTeacherID);
 			__arr.push(_view.nameTI.text);
