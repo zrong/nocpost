@@ -1,6 +1,7 @@
 package view
 {
 	import model.type.StepType;
+	import model.vo.UploadResourceVO;
 	
 	import mx.core.UIComponent;
 	
@@ -117,9 +118,10 @@ package view
 				 * 如果当前的状态是修改已有作品，并且不检测当前上传的项目是否重新选择过了
 				 * 这是没有选择的upload也会被加入队列，造成上传失败
 				 * */
+				var __uploadVO:UploadResourceVO = __mediator.getUpload();
 				if(__mediator.isModify)
 				{
-					__uploadArr.push(__mediator.getUpload());
+					__uploadArr.push(__uploadVO);
 				}
 			}
 			return __uploadArr;

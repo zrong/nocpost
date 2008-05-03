@@ -41,7 +41,8 @@ package view
 			return [	ApplicationFacade.PROJECT_CHANGE,
 						ApplicationFacade.NAV_ACCEPT,
 						ApplicationFacade.NAV_NEXT,
-						ApplicationFacade.NAV_PREV	];
+						ApplicationFacade.NAV_PREV,
+						ApplicationFacade.NAV_SUBMIT	];
 		}
 		
 		override public function handleNotification(notification:INotification):void
@@ -60,6 +61,9 @@ package view
 					break;
 				case ApplicationFacade.NAV_PREV:
 					toPrevStep();
+					break;
+				case ApplicationFacade.NAV_SUBMIT:
+					toSubmit();
 					break;
 			}
 		}
@@ -125,7 +129,7 @@ package view
 			var __isComplexCopartner:Boolean = _getIsCopartnerComplex($project);
 			var __cnum:int = int($project.cnum);
 			var __tnum:int = int($project.tnum);
-			Logger.info('StepVSMediator._buildVS执行，$project:{0}',$project);	
+			Logger.debug('VSMediator._buildVS执行，$project:{0}',$project);	
 			if(__isTeacher)
 			{
 				_buildTeacherUserVS(__cnum, __isComplexCopartner)

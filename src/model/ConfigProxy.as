@@ -35,6 +35,8 @@ package model
 		
 		public function getConfig():void
 		{
+			Logger.TYPE = Logger.TRACE;
+			Logger.TYPE = Logger.FIREBUG;
 			var __param:Object = Application.application.parameters; 
 			URL = __param.config;
 			USER_TYPE = __param.user_type;
@@ -44,10 +46,9 @@ package model
 			IS_MODIFY = (MOD_TYPE == ModeType.MODIFY);
 			IS_USER = (USER_TYPE == UserType.USER);
 			//====================调试信息
-			IS_MODIFY = false;
-			URL = '../assets/get_info.xml';
-			ConfigProxy.URL = 'http://10.2.1.9/noc_source/zpsc/zp_upload_deal_all.php?mod_step=step_get_info';
-			//Config.URL = 'http://10.2.1.3/noc/zpsc/zp_upload_deal_all.php?mod_step=step_get_info&pdt_id=2&mod_type=mod';
+			//IS_MODIFY = false;
+			//URL = '../assets/get_info.xml';
+			//URL = '/noc_source/zpsc/zp_upload_deal_all.php?mod_step=step_get_info';
 			USER_TYPE = '99';
 			PDT_ID = '2';
 			//=====================

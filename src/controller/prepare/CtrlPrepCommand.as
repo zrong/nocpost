@@ -21,6 +21,7 @@ package controller.prepare
 			facade.registerCommand(ApplicationFacade.SET_CONFIG_IS_COPARTNER_COMPLEX, SetIsCopartnerComplexCommand);
 			
 			facade.registerCommand(ApplicationFacade.UPLOAD_FILE_FILLED, UploadFilledCommand);
+			facade.registerCommand(ApplicationFacade.UPLOAD_FILE_SUBMIT, UploadSubmitCommand);
 			
 			facade.registerCommand(ApplicationFacade.SUBMIT_PANEL_BUILD, SubmitPanelBuildCommand);
 			facade.registerCommand(ApplicationFacade.SUBMIT_PANEL_REMOVE, SubmitPanelRemoveCommand);

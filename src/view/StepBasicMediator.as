@@ -62,18 +62,22 @@ package view
 		{
 			Logger.debug('StepBasicMediator.update执行！');
 			_data = _getInfoProxy.getData() as XML;
+			//Logger.debug('ConfigProxy.IS_MODIFY:{0}', ConfigProxy.IS_MODIFY);
 			if(ConfigProxy.IS_MODIFY)
 			{
+				Logger.info('执行修改');
 				_fillForHasValue(!ConfigProxy.IS_USER)				
 			}
 			else
 			{
 				if(ConfigProxy.IS_USER)
 				{
+					Logger.info('执行用户提交');
 					_fillForHasValue(false);
 				}
 				else
 				{
+					Logger.info('执行管理员提交');
 					//gameCodeLabel.text
 					//nameTI.text
 					_view.nationCB.dataProvider = _data.nation.item;
@@ -100,7 +104,9 @@ package view
 		 * */
 		private function _fillForHasValue($isAdmin:Boolean):void
 		{
+			Logger.debug('StepBasicMediator._fillForHasValue执行');
 			var __modify:XML = _data.mod_content[0] as XML;
+			Logger.debug('modify:{0}', __modify);
 			_view.gameCodeLabel.text = __modify.game_code;
 			_view.nameTI.text = __modify.pdt_author;
 			_view.nameTI.enabled = $isAdmin;
