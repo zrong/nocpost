@@ -47,7 +47,7 @@ package view
 				{
 					//是否显示详细信息，生成的填写合作者信息的表单是不同的
 					var __copartner:CopartnerComplex = new CopartnerComplex();
-					__copartner.label = '合作者'+(i+1);
+					__copartner.label = '参赛队员'+(i+1);
 					__copartner.percentWidth = 100;
 					_view.addChild(__copartner);
 					var __mediator:CopartnerComplexMediator = new CopartnerComplexMediator(i, __copartner);
