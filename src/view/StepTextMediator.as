@@ -75,8 +75,9 @@ package view
 			if(stepText.isRequired)
 			{
 				stepText.validate();
-				_sendVO();
 			}
+			_sendVO();
+			
 		}
 		
 		private function _sendVO():void
