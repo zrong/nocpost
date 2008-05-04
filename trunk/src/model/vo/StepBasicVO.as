@@ -27,6 +27,7 @@ package model.vo
 						new VarEnum('pdt_author_sex', pdt_author_sex),
 						new VarEnum('pdt_author_age', pdt_author_age),
 						new VarEnum('pdt_area', pdt_area),
+						new VarEnum('pdt_author_email', pdt_author_email),
 						new VarEnum('pdt_author_phone', pdt_author_phone),
 						new VarEnum('pdt_author_mobphone', pdt_author_mobphone),
 						new VarEnum('pdt_author_zip', pdt_author_zip),

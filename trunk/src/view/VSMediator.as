@@ -31,9 +31,9 @@ package view
 			_data = (facade.retrieveProxy(GetInfoProxy.NAME) as GetInfoProxy).getData() as XML;
 		}
 		
-		public function get vs():StepVS
+		public function get vs():VS
 		{
-			return viewComponent as StepVS;
+			return viewComponent as VS;
 		}
 		
 		override public function listNotificationInterests():Array
